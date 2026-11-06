@@ -1,147 +1,426 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Fractions et pourcentages</title><meta name="theme-color" content="#2F7F86"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Pourcentages">
+<title>Mes maths pas à pas</title><meta name="theme-color" content="#2F7F86">
+<link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="Maths pas à pas">
 <style>
-:root{--ink:#1D2240;--soft:#545B7A;--bg:#F6F8FC;--card:#fff;--line:#C9D3E8;--teal:#2F7F86;--ok:#1E7A46;--ko:#B3261E;--c1:#2F7F86;--c2:#2F5FA8;--c3:#6A3F9E}
-@media(prefers-color-scheme:dark){:root{--ink:#EEF1FA;--soft:#A9B1CF;--bg:#12162B;--card:#1B2040;--line:#39406B;--teal:#6CC3CA;--ok:#6FD39A;--ko:#FF8B83;--c1:#6CC3CA;--c2:#8FB4F2;--c3:#C3A2F0}}
+:root{--ink:#1D2240;--soft:#545B7A;--bg:#F6F8FC;--card:#fff;--line:#C9D3E8;--teal:#2F7F86;--ok:#1E7A46;--ko:#B3261E;--c1:#2F7F86;--c2:#2F5FA8;--c3:#6A3F9E;--on:#fff}
+@media(prefers-color-scheme:dark){:root{--ink:#EEF1FA;--soft:#A9B1CF;--bg:#12162B;--card:#1B2040;--line:#39406B;--teal:#6CC3CA;--ok:#6FD39A;--ko:#FF8B83;--c1:#6CC3CA;--c2:#8FB4F2;--c3:#C3A2F0;--on:#12162B}}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
-.w{max-width:720px;margin:0 auto;padding:16px}
+.w{max-width:760px;margin:0 auto;padding:16px}
 h1{font-size:1.5rem;margin:.2em 0}h2{font-size:1.15rem;margin:.2em 0 .5em}
 header p{color:var(--soft);margin:.2em 0 .8em}
-nav[role=tablist]{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
-nav button{flex:1 1 140px;min-height:48px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;font:inherit;font-weight:700;cursor:pointer}
-nav button[aria-selected=true]{border-color:var(--c);background:var(--c);color:#fff;--c:var(--teal)}
-nav button:focus-visible,button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 .card{background:var(--card);border:2px solid var(--line);border-radius:16px;padding:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.nc{display:flex;gap:12px;align-items:flex-start;text-align:left;width:100%;min-height:76px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:16px;padding:12px;font:inherit;cursor:pointer}
+.nc .n{flex:none;width:38px;height:38px;border-radius:50%;background:var(--teal);color:var(--on);display:flex;align-items:center;justify-content:center;font-weight:800}
+.nc b{display:block}.nc small{color:var(--soft)}
+.dots{display:flex;gap:6px;margin-top:6px}.dots i{width:14px;height:14px;border-radius:50%;border:2px solid var(--line);display:block}.dots i.on{background:var(--ok);border-color:var(--ok)}
+nav[role=tablist]{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+nav button{flex:1 1 110px;min-height:48px;border:2px solid var(--line);background:var(--card);color:var(--ink);border-radius:14px;font:inherit;font-weight:700;cursor:pointer}
+nav button[aria-selected=true]{border-color:var(--teal);background:var(--teal);color:var(--on)}
+button:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--teal);outline-offset:2px}
 .q{border-top:1px solid var(--line);padding:12px 0}.q:first-of-type{border-top:0}
 .q label{display:block;font-weight:600;margin-bottom:6px}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 input[type=text]{font:inherit;min-height:48px;width:11em;max-width:100%;border:2px solid var(--line);border-radius:12px;padding:6px 12px;background:var(--bg);color:var(--ink)}
 .u{color:var(--soft)}
-button.p{min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--teal);color:#fff;font:inherit;font-weight:700;cursor:pointer}
-html[data-d] button.p{color:#12162B}
+button.p{min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--teal);color:var(--on);font:inherit;font-weight:700;cursor:pointer}
 button.s{min-height:44px;padding:0 14px;border:2px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
 .fb{margin-top:6px;font-weight:700}.fb.ok{color:var(--ok)}.fb.ko{color:var(--ko)}
 .bar{height:14px;border-radius:99px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--teal);width:0;transition:width .3s}
 .pill{display:inline-block;border-radius:99px;padding:2px 12px;font-weight:700;background:var(--line)}
-table{border-collapse:collapse;width:100%}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+table{border-collapse:collapse;width:100%}.tw{overflow-x:auto;max-width:100%}.tw td,.tw th{font-size:.9rem;padding:6px 4px}td,th{border-bottom:1px solid var(--line);padding:6px;text-align:left}
+.tdec td,.tdec th{text-align:center;border:1px solid var(--line)}
 details{margin:8px 0}summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
 .sr{position:absolute;left:-9999px}
 footer{color:var(--soft);font-size:.85rem;margin:20px 0}
 .tip{border-left:5px solid var(--teal);padding:6px 12px;background:var(--card);border-radius:8px}
 </style></head><body><div class="w">
-<header><h1>Fractions et pourcentages</h1><p>Un calcul, une réponse, une correction. Les nombres changent à chaque série.</p></header>
-<nav role="tablist" aria-label="Choisir une activité" id="tabs"></nav>
+<header><h1>Mes maths pas à pas</h1><p>Dix thèmes, trois paliers. Un calcul, une réponse, une correction. Les nombres changent à chaque série.</p></header>
 <main id="main" aria-live="polite"></main>
 <div class="card"><h2>Mes séries</h2><div id="stats"></div>
 <div class="row"><button class="s" id="exp">Exporter mes résultats</button><button class="s" id="imp">Importer</button><button class="s" id="clr">Tout effacer</button><input type="file" id="file" accept="application/json" class="sr" tabindex="-1" aria-label="Fichier à importer"></div><p id="msg" role="status" class="u"></p></div>
 <div class="card" id="inst" hidden><h2>Installer l’appli</h2><div id="instbody"></div></div>
-<details class="card"><summary>À propos</summary><p>Appli d’entraînement du pilote MLDS « Fractions et pourcentages » (séance d’1 h, de la fin de collège au niveau bac pro). Les questions sont tirées au hasard et chaque réponse attendue est calculée par programme. Auteur : T. Rougeaud · CC BY-NC 4.0.</p></details>
+<details class="card"><summary>À propos</summary><p>Appli d’entraînement du programme différencié MLDS : dix thèmes de maths, de la fin de collège au niveau bac pro. Les questions sont tirées au hasard et chaque réponse attendue est calculée par programme. Auteur : T. Rougeaud · CC BY-NC 4.0.</p></details>
 <details class="card"><summary>Confidentialité</summary><p>Aucun compte, aucun serveur, aucun suivi. Tes résultats restent dans ce navigateur, sur cet appareil. Le bouton « Exporter » te donne un fichier que tu peux garder ou donner à ton professeur ; « Tout effacer » supprime tout.</p></details>
-<footer>MLDS · Fractions et pourcentages // T. Rougeaud · CC BY-NC 4.0</footer></div>
+<footer>MLDS · programme différencié // T. Rougeaud · CC BY-NC 4.0</footer></div>
+<script type="application/json" id="data-pedago">[{"id":"calc","n":1,"titre":"Nombres et calculs","court":"Calculs, relatifs, priorités","theme":"caisse et températures","retiens":"Priorités : parenthèses, puis × et ÷, puis + et −. · Même signe : on additionne et on garde le signe. · Signes différents : on soustrait et on garde le signe du plus grand. · (−) × (−) = (+) ; (−) × (+) = (−).","pal":{"1":{"titre":"Je reprends","sous":"Additions, soustractions, multiplications et divisions : on calcule posément."},"2":{"titre":"Je consolide","sous":"Nombres relatifs et priorités opératoires."},"3":{"titre":"Je vais plus loin","sous":"Parenthèses, puissances, racines, situations avec des nombres relatifs."}}},{"id":"frac","n":2,"titre":"Fractions","court":"Fractions, simplifier, calculer","theme":"pizzas et recettes","retiens":"a/b de n : on divise n par b, puis on multiplie par a. · On simplifie en divisant en haut et en bas par le même nombre. · Pour additionner, il faut le même dénominateur. · Diviser par une fraction, c’est multiplier par son inverse.","pal":{"1":{"titre":"Je reprends","sous":"Les moitiés, les quarts, les tiers : une fraction d’une quantité."},"2":{"titre":"Je consolide","sous":"Simplifier, passer en décimal, additionner des fractions simples."},"3":{"titre":"Je vais plus loin","sous":"Additionner, soustraire, multiplier et diviser des fractions."}}},{"id":"pct","n":3,"titre":"Pourcentages","court":"Pourcentages, réductions, hausses","theme":"jeux vidéo, foot et musique","retiens":"100 % = le tout · 50 % = la moitié (÷ 2) · 25 % = le quart (÷ 4) · 10 % = le dixième (÷ 10) · 75 % = trois quarts.","pal":{"1":{"titre":"Je reprends","sous":"Les moitiés, les quarts, les dixièmes : on calcule de tête."},"2":{"titre":"Je consolide","sous":"Un pourcentage d’un nombre, un prix soldé, un score en pourcentage."},"3":{"titre":"Je vais plus loin","sous":"Évolutions successives, retour au prix de départ, pourcentage de pourcentage."}}},{"id":"prop","n":4,"titre":"Proportionnalité","court":"Proportionnalité, règle de trois, échelles","theme":"recettes, prix et trajets","retiens":"Passer par l’unité : on divise pour avoir 1, puis on multiplie. · Le coefficient de proportionnalité relie les deux lignes du tableau. · Vitesse = distance ÷ durée. · Si l’un double et l’autre est divisé par 2, ce n’est pas proportionnel.","pal":{"1":{"titre":"Je reprends","sous":"Doubler, tripler, trouver le prix d’une unité."},"2":{"titre":"Je consolide","sous":"Règle de trois, échelle, consommation, salaire."},"3":{"titre":"Je vais plus loin","sous":"Vitesse, échelle, grandeurs inversement proportionnelles, mélanges."}}},{"id":"unit","n":5,"titre":"Unités et conversions","court":"Longueurs, masses, durées, capacités","theme":"colis, trajets et recettes","retiens":"1 km = 1 000 m · 1 m = 100 cm = 1 000 mm · 1 kg = 1 000 g · 1 L = 100 cL = 1 000 mL · 1 h = 60 min · 1 m² = 10 000 cm² · 1 m³ = 1 000 L.","pal":{"1":{"titre":"Je reprends","sous":"Longueurs, masses, capacités, durées : les conversions simples."},"2":{"titre":"Je consolide","sous":"Durées, capacités, conversions en deux temps."},"3":{"titre":"Je vais plus loin","sous":"Aires, volumes, litres, vitesses : conversions à retenir."}}},{"id":"geo","n":6,"titre":"Périmètres, aires et volumes","court":"Périmètre, aire, volume, Pythagore","theme":"chantier, carrelage et piscine","retiens":"Rectangle : aire = L × l ; périmètre = 2 × (L + l). · Triangle : aire = b × h ÷ 2. · Disque : aire = π × r² ; cercle : périmètre = 2 × π × r. · Pavé : V = L × l × h. · Pythagore : hypoténuse² = a² + b².","pal":{"1":{"titre":"Je reprends","sous":"Périmètre et aire des figures simples."},"2":{"titre":"Je consolide","sous":"Cercle, disque, volumes simples, trapèze (π ≈ 3,14)."},"3":{"titre":"Je vais plus loin","sous":"Pythagore, cylindre, pyramide, figures composées, volumes en litres."}}},{"id":"alg","n":7,"titre":"Calcul littéral et équations","court":"Expressions, équations, problèmes","theme":"forfaits, locations et tarifs","retiens":"3x signifie 3 × x. · Pour résoudre : on défait les opérations dans l’ordre inverse, des deux côtés. · On vérifie en remplaçant x par la solution. · Avec x des deux côtés : on regroupe les x d’un côté.","pal":{"1":{"titre":"Je reprends","sous":"Remplacer x par un nombre, résoudre une équation très simple."},"2":{"titre":"Je consolide","sous":"Résoudre ax = b et ax + b = c, calculer avec des parenthèses."},"3":{"titre":"Je vais plus loin","sous":"Équations avec x des deux côtés, parenthèses, problèmes."}}},{"id":"fonc","n":8,"titre":"Fonctions et graphiques","court":"Fonctions, droites, tableaux","theme":"abonnements et tarifs","retiens":"f(a) est l’image de a : on remplace x par a. · L’antécédent de y : on résout f(x) = y. · Droite y = mx + p : m est le coefficient directeur, p l’ordonnée à l’origine. · m = (y₂ − y₁) ÷ (x₂ − x₁).","pal":{"1":{"titre":"Je reprends","sous":"Images, antécédents et tableaux avec des fonctions simples."},"2":{"titre":"Je consolide","sous":"Fonctions affines : image, antécédent, coefficient, ordonnée à l’origine."},"3":{"titre":"Je vais plus loin","sous":"Coefficient directeur par deux points, intersections, fonctions du second degré."}}},{"id":"stat","n":9,"titre":"Statistiques","court":"Moyenne, médiane, étendue, quartiles","theme":"notes, sport et sondages","retiens":"Moyenne = somme des valeurs ÷ nombre de valeurs. · Étendue = plus grande valeur − plus petite. · Médiane : on range, on prend la valeur du milieu (ou la moyenne des deux du milieu). · Fréquence = effectif ÷ effectif total.","pal":{"1":{"titre":"Je reprends","sous":"Moyenne, étendue, médiane sur de petites séries."},"2":{"titre":"Je consolide","sous":"Moyenne, médiane, fréquence en pourcentage, moyenne pondérée simple."},"3":{"titre":"Je vais plus loin","sous":"Moyenne pondérée, deux groupes, quartiles, médiane d’un tableau."}}},{"id":"proba","n":10,"titre":"Probabilités","court":"Probabilités, chances, fréquences","theme":"jeux de hasard et loteries","retiens":"Probabilité = cas favorables ÷ cas possibles, toujours entre 0 et 1. · P(contraire) = 1 − P(A). · Avec remise, on multiplie les probabilités de chaque tirage. · Fréquence = nombre de fois ÷ nombre d’essais.","pal":{"1":{"titre":"Je reprends","sous":"Cas favorables, cas possibles : les chances en fractions."},"2":{"titre":"Je consolide","sous":"Événement contraire, pourcentages, fréquences."},"3":{"titre":"Je vais plus loin","sous":"Deux tirages, deux dés, gain moyen."}}}]</script>
 <script>
-/* MLDS · Fractions et pourcentages : générateurs communs à la fiche (tirage fixe) et à l’appli (nouveau tirage).
-   Trois paliers : 1 « Je reprends » (fin de collège), 2 « Je consolide » (3e / 2de pro), 3 « Je vais plus loin » (niveau bac pro).
-   Toutes les réponses sont calculées, jamais écrites à la main. */
+/* MLDS · programme différencié complet : noyau commun (aléa, formats, items). Toutes les réponses sont calculées. */
 (function (root) {
   'use strict';
   const rng = seed => { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; };
   const pick = (R, a) => a[Math.floor(R() * a.length)];
+  const int = (R, a, b) => a + Math.floor(R() * (b - a + 1));
   const rnd = (x, d) => Math.round((x + Number.EPSILON) * Math.pow(10, d)) / Math.pow(10, d);
-  const fr = (x, d) => { const s = (d == null ? String(rnd(x, 6)) : rnd(x, d).toFixed(d)); const [i, f] = s.replace('-', '').split('.'); const ii = i.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); return (x < 0 ? '−' : '') + ii + (f ? ',' + f.replace(/0+$/, '') : '').replace(/,$/, ''); };
-  const num = (t, v, d, u) => ({ t, v: rnd(v, d), d, tol: 0.5 * Math.pow(10, -d) + 1e-9, a: fr(v, d) + (u ? ' ' + u : ''), u: u || '' });
-  const P = ' %', E = ' €';
-  const LV = {
-    1: { titre: 'Je reprends', sous: 'Les moitiés, les quarts, les dixièmes : on calcule de tête.',
-      mk: R => { const pv = pick(R, [40, 80, 120, 200, 240]), pot = pick(R, [60, 80, 120, 200]), g = pick(R, [[1, 2], [1, 4], [3, 4], [1, 10], [1, 5]]), mt = pick(R, [4, 8, 20]), p = pick(R, [10, 25, 50]), pvv = pick(R, [100, 200, 240, 360]), pr = pick(R, [40, 60, 90, 120]), tir = pick(R, [[2, 8], [5, 20], [10, 40], [3, 12]]), coup = pick(R, [20, 30, 40, 50]);
-        return [
-          num(`Dans un jeu, une potion rend la moitié de tes ${pot} points de vie (PV). Combien de PV rends-tu ?`, pot / 2, 0, 'PV'),
-          num(`Ton équipe a gagné ${g[0]} match${g[0] > 1 ? 's' : ''} sur ${g[1]}. Quel pourcentage de victoires est-ce ?`, g[0] / g[1] * 100, 0, '%'),
-          num(`Calcule ${p} % de ${fr(pvv)}.`, pvv * p / 100, 0),
-          num(`Ta barre de vie compte 100 PV. Un coup enlève ${coup} %. Combien de PV te reste-t-il ?`, 100 - coup, 0, 'PV'),
-          num(`Un joueur tente ${tir[1]} tirs et en cadre ${tir[0]}. Quel pourcentage de tirs cadrés ?`, tir[0] / tir[1] * 100, 0, '%'),
-          num(`Un jeu coûte ${pr} €. Il est à moitié prix. Quel est son prix soldé ?`, pr / 2, 0, '€')
-        ]; } },
-    2: { titre: 'Je consolide', sous: 'Un pourcentage d’un nombre, un prix soldé, un score en pourcentage.',
-      mk: R => { const p = pick(R, [15, 35, 60, 5, 30]), n = pick(R, [80, 120, 200, 360]), kt = pick(R, [[18, 24], [21, 28], [15, 20], [9, 12], [14, 40]]), pr = pick(R, [45, 60, 80, 120]), r = pick(R, [20, 30, 40, 15]), h = pick(R, [20, 15, 10, 30]), ab = pick(R, [8, 10, 12, 15]), ec = pick(R, [800, 1000, 1200, 2000]), gain = pick(R, [[10, 100], [20, 100], [25, 100], [15, 100]]);
-        return [
-          num(`Calcule ${p} % de ${fr(n)}.`, n * p / 100, 1),
-          num(`Tu réussis ${kt[0]} défis sur ${kt[1]}. Quel pourcentage de réussite ? (arrondi à l’unité)`, kt[0] / kt[1] * 100, 0, '%'),
-          num(`Un jeu à ${pr} € est soldé à − ${r} %. Quel est son prix soldé ?`, pr * (1 - r / 100), 2, '€'),
-          num(`Une chanson passe de ${fr(ec)} à ${fr(ec * (1 + h / 100))} écoutes. Quel est le pourcentage de hausse ?`, h, 0, '%'),
-          num(`Un abonnement à ${ab} € par mois augmente de ${h} %. Quel est le nouveau prix ?`, ab * (1 + h / 100), 2, '€'),
-          num(`Sur ${n} joueurs, ${p} % jouent en équipe. Combien de joueurs jouent en équipe ?`, n * p / 100, 0)
-        ]; } },
-    3: { titre: 'Je vais plus loin', sous: 'Évolutions successives, retour au prix de départ, pourcentage de pourcentage.',
-      mk: R => { const t1 = pick(R, [20, 10, 25, 30]), t2 = pick(R, [20, 10, 50]), pf = pick(R, [48, 60, 72, 90, 120]), tt = pick(R, [25, 20, 50, 10]), pa = pick(R, [8, 10, 20, 40]), dp = pick(R, [2, 4, 5]), a = pick(R, [40, 50, 60]), b = pick(R, [25, 50]), t3 = pick(R, [10, 20, 25]);
-        return [
-          num(`Un prix augmente de ${t1} % puis baisse de ${t2} %. Quel est le coefficient multiplicateur global ?`, (1 + t1 / 100) * (1 - t2 / 100), 3),
-          num(`Après une hausse de ${tt} %, un jeu coûte ${fr(pf * (1 + tt / 100), 2)} €. Quel était son prix avant la hausse ?`, pf, 2, '€'),
-          num(`Un forfait passe de ${pa} € à ${pa + dp} €. Quel est le pourcentage de hausse ? (arrondi à 0,1)`, dp / pa * 100, 1, '%'),
-          num(`${a} % des joueurs jouent en ligne, et ${b} % d’entre eux jouent en équipe. Quel pourcentage de tous les joueurs cela représente-t-il ?`, a * b / 100, 1, '%'),
-          num(`Un prix baisse de ${t3} % puis augmente de ${t3} %. Quel est le coefficient global ? (arrondi à 0,001)`, (1 - t3 / 100) * (1 + t3 / 100), 3),
-          num(`Une valeur est multipliée par ${fr((1 + t1 / 100) * (1 + t2 / 100), 3)}. Quel est le taux d’évolution global, en % ? (arrondi à 0,1)`, ((1 + t1 / 100) * (1 + t2 / 100) - 1) * 100, 1, '%')
-        ]; } }
-  };
-  const FLASH = R => { const a = pick(R, [60, 80, 120]), b = pick(R, [200, 350, 500]), c = pick(R, [18, 30, 44]), d = pick(R, [40, 80, 200]), e = pick(R, [90, 40, 120]), f = pick(R, [100, 400]);
-    return [num(`La moitié de ${a}`, a / 2, 0), num(`Le quart de ${d}`, d / 4, 0), num(`10 % de ${b}`, b / 10, 0), num(`50 % de ${c}`, c / 2, 0), num(`25 % de ${f}`, f / 4, 0), num(`Le dixième de ${e}`, e / 10, 0)]; };
-  const DEC = R => { const pr = pick(R, [40, 60, 80]), rr = [pick(R, [25]), pick(R, [50]), pick(R, [10])], nom = ['Jeu de course', 'Jeu d’aventure', 'Jeu de rythme'];
-    const jeux = [{ n: nom[0], p: pr, r: 25 }, { n: nom[1], p: pr + 20, r: 50 }, { n: nom[2], p: Math.round(pr / 2), r: 10 }];
-    return { jeux, qs: [
-      { t: 'Quel jeu a la plus forte réduction ?', a: jeux[1].n + ' (− 50 %)', text: true },
-      num(`Combien coûte le « ${jeux[1].n} » soldé ? (− 50 %, la moitié)`, jeux[1].p / 2, 0, '€'),
-      num(`Quelle est la réduction, en euros, sur le « ${jeux[0].n} » (− 25 %) ?`, jeux[0].p / 4, 2, '€'),
-      num('« Un quart de réduction » : quel pourcentage est-ce ?', 25, 0, '%')
-    ] }; };
-  const mk = (palier, seed) => LV[palier].mk(rng(seed));
-  const api = { rng, pick, fr, rnd, LV, mk, FLASH: s => FLASH(rng(s)), DEC: s => DEC(rng(s)) };
+  const fr = (x, d) => { const s = (d == null ? String(rnd(x, 6)) : rnd(x, d).toFixed(d)); const [i, f] = s.replace('-', '').split('.'); const ii = i.replace(/\B(?=(\d{3})+(?!\d))/g, ' '); const neg = x < 0 && Number(s) !== 0; return (neg ? '−' : '') + ii + (f ? ',' + f.replace(/0+$/, '') : '').replace(/,$/, ''); };
+  const gcd = (a, b) => { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a; };
+  const num = (t, v, d, u) => ({ t, v: rnd(v, d), raw: v, d, tol: 0.5 * Math.pow(10, -d) + 1e-9, a: fr(v, d) + (u ? ' ' + u : ''), u: u || '' });
+  const frc = (t, n, d) => { const g = gcd(n, d); n /= g; d /= g; return { t, k: 'f', n, d, v: n / d, a: d === 1 ? String(n) : n + '/' + d, u: '' }; };
+  const shuffle = (R, a) => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(R() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const api = { rng, pick, int, rnd, fr, gcd, num, frc, shuffle };
+  if (typeof module !== 'undefined') module.exports = api; else root.MLDSC = api;
+})(typeof window !== 'undefined' ? window : this);
+
+/* Notions 1 à 5 */
+(function (root) {
+  'use strict';
+  const C = root.MLDSC || require('./core.js');
+  const { pick, int, rnd, fr, num, frc, shuffle } = C;
+  const s = x => x < 0 ? `(−${-x})` : `${x}`;
+  const SUP = { 2: '²', 3: '³', 4: '⁴', 5: '⁵' };
+  const hm = m => `${Math.floor(m / 60)} h ${String(m % 60).padStart(2, '0')}`;
+  const T = (a, b, c) => ({ 1: { titre: 'Je reprends', sous: a, mk: null }, 2: { titre: 'Je consolide', sous: b, mk: null }, 3: { titre: 'Je vais plus loin', sous: c, mk: null } });
+  const N = [];
+
+  /* 1 · Nombres et calculs */
+  { const pal = T('Additions, soustractions, multiplications et divisions : on calcule posément.', 'Nombres relatifs et priorités opératoires.', 'Parenthèses, puissances, racines, situations avec des nombres relatifs.');
+    pal[1].mk = R => { const a = int(R, 12, 98) / 10, b = int(R, 11, 79) / 10, c = int(R, 20, 99), k = pick(R, [3, 4, 5, 6]), n = pick(R, [3, 4, 6, 8]), q = int(R, 12, 40), B = pick(R, [50, 100, 60]), nb = pick(R, [3, 4, 5]), pr = pick(R, [8, 12, 15, 9]), P = pick(R, [4, 5, 6]), pe = pick(R, [6, 8, 9, 12]);
+      const x = Math.max(a, b), y = Math.min(a, b);
+      return [num(`Calcule ${fr(a, 1)} + ${fr(b, 1)}.`, a + b, 1), num(`Calcule ${fr(x, 1)} − ${fr(y, 1)}.`, x - y, 1), num(`Calcule ${c} × ${k}.`, c * k, 0), num(`Calcule ${n * q} ÷ ${n}.`, q, 0),
+        num(`Tu as ${B} €. Tu achètes ${nb} articles à ${pr} €. Combien te reste-t-il ?`, B - nb * pr, 0, '€'), num(`Une pizza coûte ${P * pe} €. Vous êtes ${P} à la partager en parts égales. Combien paie chacun(e) ?`, pe, 0, '€')]; };
+    pal[2].mk = R => { const a = -int(R, 3, 12), b = int(R, 3, 15), c = int(R, -9, 9), d = -int(R, 1, 9), e = -int(R, 2, 9), f = int(R, 2, 9), g = int(R, 2, 9), h = int(R, 2, 9), i = int(R, 2, 9), j = -int(R, 2, 9), qq = int(R, 2, 9), m = -int(R, 2, 8), t = int(R, 5, 14);
+      return [num(`Calcule ${s(a)} + ${s(b)}.`, a + b, 0), num(`Calcule ${s(c)} − ${s(d)}.`, c - d, 0), num(`Calcule ${s(e)} × ${s(f)}.`, e * f, 0), num(`Calcule ${g} + ${h} × ${i}.`, g + h * i, 0), num(`Calcule ${s(qq * j)} ÷ ${s(j)}.`, qq, 0),
+        num(`Il fait ${s(m)} °C le matin et ${t} °C l’après-midi. De combien la température a-t-elle augmenté ?`, t - m, 0, '°C')]; };
+    pal[3].mk = R => { const a = int(R, 2, 9), b = -pick(R, [1, 2, 3, 4, 5, 6, 7, 8].filter(v => v !== a)), c = int(R, 2, 6), d = int(R, 1, 9), bs = int(R, 2, 5), ex = int(R, 3, 5), ng = -int(R, 2, 9), sq = pick(R, [49, 64, 81, 100, 121, 144, 169]), c1 = pick(R, [2.5, 4.5, 0.8, 3.2]), k = int(R, 2, 4), X = int(R, 60, 200), dep = int(R, 40, 120), ret = int(R, 30, 90);
+      return [num(`Calcule (${a} + ${s(b)}) × ${c} − ${d}.`, (a + b) * c - d, 0), num(`Calcule ${bs}${SUP[ex] || '^' + ex}.`, Math.pow(bs, ex), 0), num(`Calcule (−${-ng})${SUP[2]}.`, ng * ng, 0), num(`Calcule √${sq}.`, Math.sqrt(sq), 0),
+        num(`Calcule ${fr(c1, 1)} × 10${SUP[k] || '^' + k}.`, c1 * Math.pow(10, k), 0), num(`Ton compte est à −${X} €. Tu déposes ${dep} € puis tu retires ${ret} €. Quel est le nouveau solde ?`, -X + dep - ret, 0, '€')]; };
+    N.push({ id: 'calc', titre: 'Nombres et calculs', court: 'Calculs, relatifs, priorités', theme: 'caisse et températures',
+      objectifs: ['Calculer avec les quatre opérations, de tête et en posant.', 'Utiliser les nombres relatifs (températures, soldes).', 'Respecter les priorités : parenthèses, × et ÷, puis + et −.', 'Palier 3 : puissances, racines carrées, enchaîner plusieurs étapes.'],
+      erreurs: ['Calculer de gauche à droite : 3 + 4 × 5 donne 35 au lieu de 23.', 'Oublier la règle des signes : (−3) × (−4) = −12.', 'Confondre « − 5 » (soustraire) et « −5 » (nombre négatif).', 'Lire (−3)² comme −9 : il vaut 9.'],
+      mots: 'somme · différence · produit · quotient · opposé · relatif · priorité · parenthèses · carré · racine carrée', modele: '« Dans 3 + 4 × 5, je calcule d’abord 4 × 5 = 20, puis j’ajoute 3 : 23. »',
+      retiens: 'Priorités : parenthèses, puis × et ÷, puis + et −. · Même signe : on additionne et on garde le signe. · Signes différents : on soustrait et on garde le signe du plus grand. · (−) × (−) = (+) ; (−) × (+) = (−).',
+      flash: null,
+      dec: R => { const pool = [['Cahier', [2, 3]], ['Classeur', [4, 5, 6]], ['Lot de stylos', [2, 3, 5]]], L = pool.map(([n, ps]) => ({ n, p: pick(R, ps), q: int(R, 2, 4) })), tot = L.reduce((t, l) => t + l.p * l.q, 0), bil = tot <= 50 ? 50 : 100, a = int(R, 2, 9), b = int(R, 2, 9), c = int(R, 2, 9);
+        return { titre: 'Le ticket de caisse', intro: 'Voici le ticket de caisse d’une papeterie.', table: { head: ['Article', 'Prix unitaire', 'Quantité'], rows: L.map(l => [l.n, l.p + ' €', String(l.q)]) },
+          qs: [num(`Combien coûtent les ${L[1].q} classeurs ?`, L[1].p * L[1].q, 0, '€'), num('Quel est le total du ticket ?', tot, 0, '€'), num(`Tu paies avec un billet de ${bil} €. Combien le vendeur te rend-il ?`, bil - tot, 0, '€'), num(`Calcule ${a} + ${b} × ${c}.`, a + b * c, 0)] }; },
+      ticket: R => { const a = int(R, 2, 9), b = int(R, 2, 9), c = int(R, 3, 9); return num(`Calcule ${a} + ${b} × ${c}, et écris en une phrase ce que tu calcules en premier.`, a + b * c, 0); }, pal });
+    N[0].flash = R => { const a = int(R, 3, 9), b = int(R, 4, 9), q = int(R, 3, 9), dv = int(R, 3, 9), x = pick(R, [25, 35, 45, 65, 75]), y = pick(R, [18, 27, 36, 44]), z = int(R, 21, 79), w = int(R, 13, 48), h = pick(R, [34, 56, 78, 92, 66]); return [num(`${a} × ${b}`, a * b, 0), num(`${q * dv} ÷ ${dv}`, q, 0), num(`${x} + ${y}`, x + y, 0), num(`100 − ${z}`, 100 - z, 0), num(`Le double de ${w}`, 2 * w, 0), num(`La moitié de ${h}`, h / 2, 0)]; }; }
+
+  /* 2 · Fractions */
+  { const pal = T('Les moitiés, les quarts, les tiers : une fraction d’une quantité.', 'Simplifier, passer en décimal, additionner des fractions simples.', 'Additionner, soustraire, multiplier et diviser des fractions.');
+    pal[1].mk = R => { const k = int(R, 5, 20), k2 = int(R, 4, 12), n = pick(R, [20, 24, 30, 40]), m = pick(R, [4, 6, 8, 10, 12]), sp = pick(R, [[6, 8], [4, 10], [9, 12], [10, 15], [12, 16], [15, 20]]), mi = pick(R, [15, 30, 45, 10, 20, 40]);
+      return [num(`1/2 de ${2 * k}`, k, 0), num(`1/4 de ${4 * k2}`, k2, 0), num(`3/4 de ${4 * k}`, 3 * k, 0), frc(`Dans une classe de ${n} élèves, ${m} portent des lunettes. Quelle fraction de la classe est-ce ? (simplifie)`, m, n), frc(`Simplifie ${sp[0]}/${sp[1]}.`, sp[0], sp[1]), frc(`Quelle fraction d’une heure représentent ${mi} minutes ? (simplifie)`, mi, 60)]; };
+    pal[2].mk = R => { const sp = pick(R, [[18, 24], [20, 30], [24, 36], [28, 42], [30, 45]]), dc = pick(R, [[1, 2], [3, 4], [1, 5], [3, 5], [7, 10], [3, 20], [1, 4], [9, 20]]), d = pick(R, [8, 10, 12, 9]), a = int(R, 1, d - 1), b = int(R, 1, d - 1), p = pick(R, [[2, 4, 3], [2, 6, 3], [2, 8, 2], [3, 6, 2]]), f = pick(R, [[2, 3], [3, 5], [2, 5], [3, 8], [5, 6]]), P = pick(R, [30, 45, 60, 90, 120, 150]);
+      const fn = f[1] * int(R, 4, 12), d2 = p[1]; const e = p[0] === 2 ? 2 : 3; const dd = pick(R, e === 2 ? [4, 6, 8] : [6, 9, 12]);
+      return [frc(`Simplifie ${sp[0]}/${sp[1]}.`, sp[0], sp[1]), num(`Écris ${dc[0]}/${dc[1]} en nombre décimal.`, dc[0] / dc[1], 2), frc(`Calcule ${a}/${d} + ${b}/${d}. (simplifie)`, a + b, d), frc(`Calcule 1/${e} + 1/${dd}. (simplifie)`, dd / e + 1, dd), num(`${f[0]}/${f[1]} de ${fn}`, f[0] * fn / f[1], 0), num(`Un article à ${P} € est soldé d’un tiers de son prix. Quelle est la réduction ?`, P / 3, 0, '€')]; };
+    pal[3].mk = R => { const A = pick(R, [[1, 2, 1, 3], [1, 3, 1, 4], [2, 5, 1, 2], [2, 3, 1, 5], [3, 4, 1, 5], [1, 6, 2, 3]]), Bm = pick(R, [[5, 6, 1, 4], [3, 4, 1, 3], [4, 5, 1, 2], [2, 3, 1, 4], [7, 8, 1, 2], [5, 6, 1, 3]]), Pm = pick(R, [[2, 3, 3, 4], [3, 5, 5, 6], [2, 5, 5, 8], [3, 4, 2, 9], [4, 5, 5, 8]]), Dv = pick(R, [[3, 4, 3, 8], [2, 3, 4, 9], [5, 6, 5, 12], [1, 2, 1, 4], [3, 5, 6, 5]]), b = pick(R, [2, 3, 4, 5]), a = int(R, 1, b - 1), x = pick(R, [0.5, 1, 1.5, 2]), S = pick(R, [60, 90, 120, 150, 180]);
+      return [frc(`Calcule ${A[0]}/${A[1]} + ${A[2]}/${A[3]}. (simplifie)`, A[0] * A[3] + A[2] * A[1], A[1] * A[3]), frc(`Calcule ${Bm[0]}/${Bm[1]} − ${Bm[2]}/${Bm[3]}. (simplifie)`, Bm[0] * Bm[3] - Bm[2] * Bm[1], Bm[1] * Bm[3]), frc(`Calcule ${Pm[0]}/${Pm[1]} × ${Pm[2]}/${Pm[3]}. (simplifie)`, Pm[0] * Pm[2], Pm[1] * Pm[3]), frc(`Calcule ${Dv[0]}/${Dv[1]} ÷ ${Dv[2]}/${Dv[3]}. (simplifie)`, Dv[0] * Dv[3], Dv[1] * Dv[2]),
+        num(`Il reste ${a}/${b} d’une bouteille de ${fr(b * x)} L. Combien de litres reste-t-il ?`, a * x, 1, 'L'), num(`Tu dépenses 1/3 de ton budget de ${S} €, puis la moitié du reste. Combien as-tu dépensé en tout ?`, 2 * S / 3, 0, '€')]; };
+    N.push({ id: 'frac', titre: 'Fractions', court: 'Fractions, simplifier, calculer', theme: 'pizzas et recettes',
+      objectifs: ['Lire une fraction comme un partage et comme une division.', 'Calculer une fraction d’une quantité.', 'Simplifier et comparer des fractions.', 'Palier 3 : additionner, soustraire, multiplier et diviser des fractions.'],
+      erreurs: ['Additionner les numérateurs et les dénominateurs : 1/2 + 1/3 ≠ 2/5.', 'Oublier de simplifier jusqu’à la fraction irréductible.', 'Prendre 3/4 de 20 comme 20 ÷ 3.', 'Diviser par une fraction sans retourner la seconde.'],
+      mots: 'numérateur · dénominateur · partage · fraction irréductible · simplifier · inverse · quotient', modele: '« Pour trouver 3/4 de 20, je prends le quart : 20 ÷ 4 = 5, puis je le multiplie par 3 : 15. »',
+      retiens: 'a/b de n : on divise n par b, puis on multiplie par a. · On simplifie en divisant en haut et en bas par le même nombre. · Pour additionner, il faut le même dénominateur. · Diviser par une fraction, c’est multiplier par son inverse.',
+      flash: R => { const k = int(R, 5, 20); const k4 = int(R, 3, 12), k2 = int(R, 6, 30), k5 = int(R, 3, 12), k3 = int(R, 4, 14), k34 = int(R, 3, 12);
+        return [num(`Le tiers de ${3 * k}`, k, 0), num(`Le quart de ${4 * k4}`, k4, 0), num(`La moitié de ${2 * k2}`, k2, 0), num(`Le cinquième de ${5 * k5}`, k5, 0), num(`3/4 de ${4 * k34}`, 3 * k34, 0), num(`2/3 de ${3 * k3}`, 2 * k3, 0)]; },
+      dec: R => { const n = pick(R, [8, 12]), a = int(R, 1, 3), b = int(R, 1, 3);
+        return { titre: 'La pizza partagée', intro: `Une pizza est coupée en ${n} parts égales. Léo en mange ${a} et Inès en mange ${b}.`, table: null,
+          qs: [frc(`Quelle fraction de la pizza Léo a-t-il mangée ? (simplifie)`, a, n), frc(`Quelle fraction de la pizza Inès a-t-elle mangée ? (simplifie)`, b, n), frc(`Quelle fraction de la pizza ont-ils mangée à eux deux ? (simplifie)`, a + b, n), frc(`Quelle fraction de la pizza reste-t-il ? (simplifie)`, n - a - b, n)] }; },
+      ticket: R => { const k = int(R, 4, 12); return num(`Calcule 3/4 de ${4 * k}, et écris en une phrase comment tu as fait.`, 3 * k, 0); }, pal });
+  }
+
+  /* 3 · Pourcentages */
+  { const pal = T('Les moitiés, les quarts, les dixièmes : on calcule de tête.', 'Un pourcentage d’un nombre, un prix soldé, un score en pourcentage.', 'Évolutions successives, retour au prix de départ, pourcentage de pourcentage.');
+    pal[1].mk = R => { const pot = pick(R, [60, 80, 120, 200]), g = pick(R, [[1, 2], [1, 4], [3, 4], [1, 10], [1, 5]]), p = pick(R, [10, 25, 50]), pvv = pick(R, [100, 200, 240, 360]), pr = pick(R, [40, 60, 90, 120]), tir = pick(R, [[2, 8], [5, 20], [10, 40], [3, 12]]), coup = pick(R, [20, 30, 40, 50]);
+      return [num(`Dans un jeu, une potion rend la moitié de tes ${pot} points de vie (PV). Combien de PV rends-tu ?`, pot / 2, 0, 'PV'), num(`Ton équipe a gagné ${g[0]} match${g[0] > 1 ? 's' : ''} sur ${g[1]}. Quel pourcentage de victoires est-ce ?`, g[0] / g[1] * 100, 0, '%'), num(`Calcule ${p} % de ${fr(pvv)}.`, pvv * p / 100, 0), num(`Ta barre de vie compte 100 PV. Un coup enlève ${coup} %. Combien de PV te reste-t-il ?`, 100 - coup, 0, 'PV'), num(`Un joueur tente ${tir[1]} tirs et en cadre ${tir[0]}. Quel pourcentage de tirs cadrés ?`, tir[0] / tir[1] * 100, 0, '%'), num(`Un jeu coûte ${pr} €. Il est à moitié prix. Quel est son prix soldé ?`, pr / 2, 0, '€')]; };
+    pal[2].mk = R => { const p = pick(R, [15, 35, 60, 5, 30]), n = pick(R, [80, 120, 200, 360]), kt = pick(R, [[18, 24], [21, 28], [15, 20], [9, 12], [14, 40]]), pr = pick(R, [45, 60, 80, 120]), r = pick(R, [20, 30, 40, 15]), h = pick(R, [20, 15, 10, 30]), ab = pick(R, [8, 10, 12, 15]), ec = pick(R, [800, 1000, 1200, 2000]), pj = pick(R, [15, 35, 60, 5, 30]), nj = pick(R, [80, 120, 200, 360]);
+      return [num(`Calcule ${p} % de ${fr(n)}.`, n * p / 100, 1), num(`Tu réussis ${kt[0]} défis sur ${kt[1]}. Quel pourcentage de réussite ? (arrondi à l’unité)`, kt[0] / kt[1] * 100, 0, '%'), num(`Un jeu à ${pr} € est soldé à − ${r} %. Quel est son prix soldé ?`, pr * (1 - r / 100), 2, '€'), num(`Une chanson passe de ${fr(ec)} à ${fr(ec * (1 + h / 100))} écoutes. Quel est le pourcentage de hausse ?`, h, 0, '%'), num(`Un abonnement à ${ab} € par mois augmente de ${h} %. Quel est le nouveau prix ?`, ab * (1 + h / 100), 2, '€'), num(`Sur ${nj} joueurs, ${pj} % jouent en équipe. Combien de joueurs jouent en équipe ?`, nj * pj / 100, 0)]; };
+    pal[3].mk = R => { const t1 = pick(R, [20, 10, 25, 30]), t2 = pick(R, [20, 10, 50]), pf = pick(R, [48, 60, 72, 90, 120]), tt = pick(R, [25, 20, 50, 10]), pa = pick(R, [8, 10, 20, 40]), dp = pick(R, [2, 4, 5]), a = pick(R, [40, 50, 60]), b = pick(R, [25, 50]), t3 = pick(R, [10, 20, 25]);
+      return [num(`Un prix augmente de ${t1} % puis baisse de ${t2} %. Quel est le coefficient multiplicateur global ?`, (1 + t1 / 100) * (1 - t2 / 100), 3), num(`Après une hausse de ${tt} %, un jeu coûte ${fr(pf * (1 + tt / 100), 2)} €. Quel était son prix avant la hausse ?`, pf, 2, '€'), num(`Un forfait passe de ${pa} € à ${pa + dp} €. Quel est le pourcentage de hausse ? (arrondi à 0,1)`, dp / pa * 100, 1, '%'), num(`${a} % des joueurs jouent en ligne, et ${b} % d’entre eux jouent en équipe. Quel pourcentage de tous les joueurs cela représente-t-il ?`, a * b / 100, 1, '%'), num(`Un prix baisse de ${t3} % puis augmente de ${t3} %. Quel est le coefficient global ? (arrondi à 0,001)`, (1 - t3 / 100) * (1 + t3 / 100), 3), num(`Une valeur est multipliée par ${fr((1 + t1 / 100) * (1 + t2 / 100), 3)}. Quel est le taux d’évolution global, en % ? (arrondi à 0,1)`, ((1 + t1 / 100) * (1 + t2 / 100) - 1) * 100, 1, '%')]; };
+    N.push({ id: 'pct', titre: 'Pourcentages', court: 'Pourcentages, réductions, hausses', theme: 'jeux vidéo, foot et musique',
+      objectifs: ['Relier fraction, pourcentage et calcul de tête : 1/2, 1/4, 1/10, 3/4.', 'Calculer un pourcentage d’un nombre.', 'Calculer un prix après une réduction ou une hausse.', 'Palier 3 : enchaîner deux évolutions et revenir au point de départ.'],
+      erreurs: ['« 25 % de 80 » traité comme 80 ÷ 25 : le ramener à « le quart ».', 'Une baisse de 30 % lue comme « on enlève 30 € ».', 'Après + 20 % puis − 20 %, croire qu’on retombe sur le prix de départ.', 'Confondre « 3 sur 4 » et « 3 ÷ 4 = 0,75 » : montrer que 0,75 = 75 %.'],
+      mots: 'pourcentage · moitié · quart · dixième · réduction · hausse · prix soldé · « sur » (3 sur 4) · coefficient', modele: '« Pour trouver 25 % de 80, je prends le quart de 80 : 80 ÷ 4 = 20. »',
+      retiens: '100 % = le tout · 50 % = la moitié (÷ 2) · 25 % = le quart (÷ 4) · 10 % = le dixième (÷ 10) · 75 % = trois quarts.',
+      flash: R => { const a = pick(R, [60, 80, 120]), b = pick(R, [200, 350, 500]), c = pick(R, [18, 30, 44]), d = pick(R, [40, 80, 200]), e = pick(R, [90, 40, 120]), f = pick(R, [100, 400]); return [num(`La moitié de ${a}`, a / 2, 0), num(`Le quart de ${d}`, d / 4, 0), num(`10 % de ${b}`, b / 10, 0), num(`50 % de ${c}`, c / 2, 0), num(`25 % de ${f}`, f / 4, 0), num(`Le dixième de ${e}`, e / 10, 0)]; },
+      dec: R => { const pr = pick(R, [40, 60, 80]), J = [{ n: 'Jeu de course', p: pr, r: 25 }, { n: 'Jeu d’aventure', p: pr + 20, r: 50 }, { n: 'Jeu de rythme', p: Math.round(pr / 2), r: 10 }];
+        return { titre: 'Les soldes de la boutique de jeux', intro: 'Premier jour des soldes. Lis le tableau.', table: { head: ['Jeu', 'Prix avant les soldes', 'Réduction'], rows: J.map(j => [j.n, j.p + ' €', '− ' + j.r + ' %']) },
+          qs: [num(`Combien coûte le « ${J[1].n} » soldé ? (− 50 %, la moitié)`, J[1].p / 2, 0, '€'), num(`Quelle est la réduction, en euros, sur le « ${J[0].n} » (− 25 %) ?`, J[0].p / 4, 2, '€'), num(`Combien coûte le « ${J[2].n} » soldé ? (− 10 %)`, J[2].p * 0.9, 2, '€'), num('« Un quart de réduction » : quel pourcentage est-ce ?', 25, 0, '%')] }; },
+      ticket: R => { const k = pick(R, [40, 60, 80, 120]); return num(`Calcule 25 % de ${k}, et écris en une phrase comment tu as fait.`, k / 4, 0); }, pal });
+  }
+
+  /* 4 · Proportionnalité */
+  { const pal = T('Doubler, tripler, trouver le prix d’une unité.', 'Règle de trois, échelle, consommation, salaire.', 'Vitesse, échelle, grandeurs inversement proportionnelles, mélanges.');
+    pal[1].mk = R => { const k = int(R, 3, 8), p = int(R, 2, 9), m = int(R, 2, 12), p5 = pick(R, [3, 4, 5, 6]), h = int(R, 3, 9), pe = pick(R, [8, 9, 10, 12]), x = pick(R, [25, 30, 40, 50]), c = pick(R, [2, 3, 4, 5]), a = int(R, 6, 24);
+      return [num(`${k} billets coûtent ${k * p} €. Combien coûtent ${m === k ? m + 1 : m} billets ?`, (m === k ? m + 1 : m) * p, 0, '€'), num(`5 kg de pommes de terre coûtent ${5 * p5} €. Quel est le prix d’1 kg ?`, p5, 0, '€'), num(`Un salaire de ${pe} € l’heure. Combien gagnes-tu en ${h} heures ?`, pe * h, 0, '€'), num(`Pour un gâteau pour 6 personnes, il faut ${6 * x} g de farine. Combien de farine pour 12 personnes ?`, 12 * x, 0, 'g'), num(`Dans un tableau de proportionnalité, 3 correspond à ${3 * c}. Que correspond à 5 ?`, 5 * c, 0), num(`Une photo large de ${a} cm est agrandie avec un coefficient 2. Quelle est sa nouvelle largeur ?`, 2 * a, 0, 'cm')]; };
+    pal[2].mk = R => { const u = pick(R, [2.5, 3.5, 4.5, 1.2]), a = pick(R, [3, 4, 5, 6]), b = pick(R, [7, 8, 10, 12]), E = pick(R, [50, 100, 200, 500]), cm = pick(R, [4, 6, 8, 12]), cs = pick(R, [5, 6, 7, 8]), dk = pick(R, [150, 250, 350, 450]), t = pick(R, [11.5, 12, 13.5]), h1 = pick(R, [4, 6, 8]), h2 = pick(R, [10, 15, 20]), c = pick(R, [2.5, 3.5, 1.5, 4]), a2 = pick(R, [4, 6, 8]), r = pick(R, [6, 8, 10, 12]), m = pick(R, [5, 10]), tt = pick(R, [15, 20, 30]);
+      return [num(`${a} kg de fruits coûtent ${fr(a * u, 2)} €. Combien coûtent ${b} kg ?`, b * u, 2, '€'), num(`Sur un plan à l’échelle 1/${E}, un mur mesure ${cm} cm. Quelle est sa longueur réelle, en mètres ?`, cm * E / 100, 1, 'm'), num(`Une voiture consomme ${cs} L aux 100 km. Combien de litres pour ${dk} km ?`, cs * dk / 100, 1, 'L'), num(`${h1} h de travail sont payées ${fr(h1 * t, 2)} €. Combien sont payées ${h2} h ?`, h2 * t, 2, '€'), num(`Dans un tableau de proportionnalité, ${a2} correspond à ${fr(a2 * c, 1)}. Quel est le coefficient de proportionnalité ?`, c, 1), num(`Une imprimante imprime ${r * m} pages en ${m} minutes. Combien de pages en ${tt} minutes ?`, r * tt, 0)]; };
+    pal[3].mk = R => { const v = pick(R, [12, 18, 24, 30]), t = pick(R, [30, 45, 90, 150]), v2 = pick(R, [60, 90, 120, 48]), t2 = pick(R, [20, 30, 45, 10]), E = pick(R, [25000, 50000, 100000]), km = pick(R, [2, 4, 5, 10]), TT = pick(R, [24, 36, 48, 60]), dv = [1, 2, 3, 4, 6, 8, 12].filter(x => TT % x === 0), n1 = pick(R, dv), n2 = pick(R, dv.filter(x => x !== n1)), d = pick(R, [8, 12, 15]), h = pick(R, [2, 3]), vv = pick(R, [2, 4, 5, 6, 10]);
+      return [num(`Un cycliste parcourt ${fr(v * t / 60)} km en ${t} min. Quelle est sa vitesse moyenne, en km/h ?`, v, 0, 'km/h'), num(`Un train roule à ${v2} km/h pendant ${t2} min. Quelle distance parcourt-il ?`, v2 * t2 / 60, 1, "km"), num(`Sur une carte à l’échelle 1/${fr(E)}, deux villes sont distantes de ${km} km réels. Quelle est leur distance sur la carte, en cm ?`, km * 100000 / E, 0, 'cm'), num(`${n1} ouvriers terminent un chantier en ${TT / n1} jours. En combien de jours ${n2} ouvriers, au même rythme, le terminent-ils ?`, TT / n2, 0, 'jours'), num(`Un robinet débite ${d} L par minute. Combien de litres en ${h} h ?`, d * 60 * h, 0, 'L'), num(`Une peinture se prépare avec 2 volumes de blanc pour 3 de bleu. Avec ${3 * vv} L de bleu, combien de litres de blanc ?`, 2 * vv, 0, 'L')]; };
+    N.push({ id: 'prop', titre: 'Proportionnalité', court: 'Proportionnalité, règle de trois, échelles', theme: 'recettes, prix et trajets',
+      objectifs: ['Reconnaître une situation de proportionnalité.', 'Trouver un prix, une quantité par le coefficient ou par l’unité.', 'Utiliser une échelle, une vitesse, une consommation.', 'Palier 3 : distinguer proportionnel et inversement proportionnel.'],
+      erreurs: ['Croire que tout est proportionnel (l’âge et la taille ne le sont pas).', 'Additionner au lieu de multiplier : 4 → 12 donc 8 → 16.', 'Se tromper d’unité dans une échelle (cm, m, km).', 'Appliquer la règle de trois quand la situation est inversée (plus d’ouvriers, moins de jours).'],
+      mots: 'proportionnel · coefficient · règle de trois · prix unitaire · échelle · vitesse moyenne · tableau', modele: '« 4 kg coûtent 12 €, donc 1 kg coûte 12 ÷ 4 = 3 €, donc 6 kg coûtent 6 × 3 = 18 €. »',
+      retiens: 'Passer par l’unité : on divise pour avoir 1, puis on multiplie. · Le coefficient de proportionnalité relie les deux lignes du tableau. · Vitesse = distance ÷ durée. · Si l’un double et l’autre est divisé par 2, ce n’est pas proportionnel.',
+      flash: R => { const k = int(R, 2, 6), p = int(R, 2, 9), p2 = int(R, 3, 9), k2 = int(R, 3, 8), x = int(R, 20, 80), v = pick(R, [40, 50, 60, 80]), kk = int(R, 3, 9), cc = pick(R, [2, 3, 4, 5]);
+        return [num(`${k} kg de pommes coûtent ${k * p} €. Combien coûtent ${2 * k} kg ?`, 2 * k * p, 0, '€'), num(`1 kg coûte ${p2} €. Combien coûtent 10 kg ?`, 10 * p2, 0, '€'), num(`${k2} places coûtent ${k2 * p} €. Quel est le prix d’une place ?`, p, 0, '€'), num(`Pour 4 personnes il faut ${4 * x} g de riz. Combien pour 2 personnes ?`, 2 * x, 0, 'g'), num(`Tu parcours ${v} km en 1 h. Combien de km en 3 h ?`, 3 * v, 0, 'km'), num(`Quel est le coefficient de proportionnalité entre ${kk} et ${kk * cc} ?`, cc, 0)]; },
+      dec: R => { const f = pick(R, [200, 250, 300]), su = pick(R, [100, 150]), la = pick(R, [20, 40, 60]);
+        return { titre: 'La recette de crêpes', intro: 'Une recette est écrite pour 4 personnes. On veut l’adapter.', table: { head: ['Ingrédient', 'Pour 4 personnes'], rows: [['Farine', f + ' g'], ['Sucre', su + ' g'], ['Lait', la + ' cL']] },
+          qs: [num('Quelle quantité de farine pour 8 personnes ?', 2 * f, 0, 'g'), num('Quelle quantité de sucre pour 2 personnes ?', su / 2, 0, 'g'), num('Quelle quantité de lait pour 6 personnes ?', la * 1.5, 1, 'cL'), num('Par quel nombre multiplie-t-on la recette pour 12 personnes ?', 3, 0)] }; },
+      ticket: R => { const k = pick(R, [3, 4, 5, 6]), p = pick(R, [3, 4, 5]); return num(`${k} entrées coûtent ${k * p} €. Combien coûtent ${k + 3} entrées ? Écris en une phrase comment tu as fait.`, (k + 3) * p, 0, '€'); }, pal });
+  }
+
+  /* 5 · Unités et conversions */
+  { const pal = T('Longueurs, masses, capacités, durées : les conversions simples.', 'Durées, capacités, conversions en deux temps.', 'Aires, volumes, litres, vitesses : conversions à retenir.');
+    pal[1].mk = R => { const k = pick(R, [2.5, 3.2, 0.8, 1.5]), a = int(R, 2, 6), m = pick(R, [30, 45, 15, 90]), g = pick(R, [250, 750, 1500, 2500]), c = pick(R, [150, 45, 250, 80]), L = pick(R, [1.5, 0.25, 2, 0.75]);
+      return [num(`Convertis ${fr(k)} km en mètres.`, k * 1000, 0, 'm'), num(`Convertis ${a} h en minutes.`, a * 60, 0, 'min'), num(`Convertis ${m} min en heures.`, m / 60, 2, 'h'), num(`Convertis ${fr(g)} g en kilogrammes.`, g / 1000, 2, 'kg'), num(`Convertis ${c} cm en mètres.`, c / 100, 2, 'm'), num(`Convertis ${fr(L)} L en millilitres.`, L * 1000, 0, 'mL')]; };
+    pal[2].mk = R => { const h = int(R, 1, 4), m = pick(R, [15, 20, 35, 45, 50]), x = pick(R, [1.5, 2.25, 3.5, 0.75]), a = pick(R, [0.25, 1.2, 3.5]), c = pick(R, [33, 50, 75, 25]), n = pick(R, [4, 6, 8, 12]), h1 = int(R, 8, 10), m1 = pick(R, [10, 20, 40, 50]), dur = pick(R, [75, 95, 130, 150, 170]), tn = pick(R, [1.5, 2.4, 0.6]);
+      const st = h1 * 60 + m1, en = st + dur;
+      return [num(`Convertis ${h} h ${m} min en minutes.`, h * 60 + m, 0, 'min'), num(`Convertis ${fr(x)} h en minutes.`, x * 60, 0, 'min'), num(`Convertis ${fr(a)} m en millimètres.`, a * 1000, 0, 'mm'), num(`Tu achètes ${n} bouteilles de ${c} cL. Combien de litres cela fait-il ?`, c * n / 100, 2, 'L'), num(`Un trajet commence à ${hm(st)} et finit à ${hm(en)}. Quelle est sa durée, en minutes ?`, dur, 0, 'min'), num(`Convertis ${fr(tn)} t en kilogrammes.`, tn * 1000, 0, 'kg')]; };
+    pal[3].mk = R => { const a = pick(R, [2, 3.5, 0.5, 1.2]), b = pick(R, [2.5, 0.4, 1.2, 3]), c = pick(R, [5000, 25000, 800, 12000]), L = pick(R, [50, 60, 80, 100]), l = pick(R, [30, 40, 50]), h = pick(R, [40, 50]), v = pick(R, [36, 72, 90, 108, 54]), d = pick(R, [3, 6, 9, 12]);
+      return [num(`Convertis ${fr(a)} m² en cm².`, a * 10000, 0, 'cm²'), num(`Convertis ${fr(b)} m³ en litres.`, b * 1000, 0, 'L'), num(`Convertis ${fr(c)} cm² en m².`, c / 10000, 2, 'm²'), num(`Un aquarium mesure ${L} cm de long, ${l} cm de large et ${h} cm de haut. Quelle est sa capacité, en litres ? (1 L = 1 000 cm³)`, L * l * h / 1000, 0, 'L'), num(`Convertis ${v} km/h en mètres par seconde.`, v / 3.6, 0, 'm/s'), num(`Un réservoir se vide de ${d} m³ d’eau par heure. Combien de litres par minute cela fait-il ?`, d * 1000 / 60, 0, 'L/min')]; };
+    N.push({ id: 'unit', titre: 'Unités et conversions', court: 'Longueurs, masses, durées, capacités', theme: 'colis, trajets et recettes',
+      objectifs: ['Convertir longueurs, masses, capacités et durées.', 'Calculer avec des durées (h et min).', 'Choisir l’unité adaptée à la situation.', 'Palier 3 : aires, volumes, litres et vitesses.'],
+      erreurs: ['Écrire 1,5 h = 1 h 50 min : 0,5 h = 30 min.', 'Convertir les aires comme les longueurs (1 m² = 10 000 cm², pas 100).', 'Se tromper de sens : multiplier au lieu de diviser.', 'Mélanger les unités dans un même calcul.'],
+      mots: 'kilo · hecto · déca · déci · centi · milli · conversion · tableau de conversion · durée · capacité', modele: '« 1,5 km : je veux des mètres, l’unité est 1 000 fois plus petite, donc je multiplie par 1 000 : 1 500 m. »',
+      retiens: '1 km = 1 000 m · 1 m = 100 cm = 1 000 mm · 1 kg = 1 000 g · 1 L = 100 cL = 1 000 mL · 1 h = 60 min · 1 m² = 10 000 cm² · 1 m³ = 1 000 L.',
+      flash: R => { const a = int(R, 2, 9), b = int(R, 2, 9), c = int(R, 2, 5), e = int(R, 2, 9), g = int(R, 2, 9), L = int(R, 2, 9);
+        return [num(`${a} m en cm`, a * 100, 0), num(`${b} kg en g`, b * 1000, 0), num(`${c} h en min`, c * 60, 0), num(`${e} km en m`, e * 1000, 0), num(`${g * 100} g en kg`, g / 10, 1), num(`${L} L en cL`, L * 100, 0)]; },
+      dec: R => { const a = pick(R, [250, 350, 450, 550]), c = pick(R, [250, 350, 450]), b = pick(R, [0.5, 1.2, 1.5]), t = pick(R, [3, 4, 5]), tot = a + c + b * 1000;
+        return { titre: 'Le colis de Léa', intro: `Léa prépare un colis avec trois objets : ${a} g, ${fr(b)} kg et ${c} g.`, table: null,
+          qs: [num(`Convertis ${fr(b)} kg en grammes.`, b * 1000, 0, 'g'), num('Quel est le poids total du colis, en grammes ?', tot, 0, 'g'), num('Quel est le poids total du colis, en kilogrammes ?', tot / 1000, 1, 'kg'), num(`La poste facture ${t} € par kilogramme. Combien paie Léa ?`, t * tot / 1000, 2, '€')] }; },
+      ticket: R => { const k = pick(R, [2.5, 3.2, 1.5, 0.8]); return num(`Convertis ${fr(k)} km en mètres, et écris en une phrase comment tu as fait.`, k * 1000, 0, 'm'); }, pal });
+  }
+  if (typeof module !== 'undefined') module.exports = N; else root.MLDS_A = N;
+})(typeof window !== 'undefined' ? window : this);
+
+/* Notions 6 à 10 */
+(function (root) {
+  'use strict';
+  const C = root.MLDSC || require('./core.js');
+  const { pick, int, rnd, fr, num, frc, shuffle, gcd } = C;
+  const T = (a, b, c) => ({ 1: { titre: 'Je reprends', sous: a, mk: null }, 2: { titre: 'Je consolide', sous: b, mk: null }, 3: { titre: 'Je vais plus loin', sous: c, mk: null } });
+  const lst = a => a.join(' ; ');
+  const N = [];
+
+  /* 6 · Périmètres, aires, volumes */
+  { const pal = T('Périmètre et aire des figures simples.', 'Cercle, disque, volumes simples, trapèze (π ≈ 3,14).', 'Pythagore, cylindre, pyramide, figures composées, volumes en litres.');
+    pal[1].mk = R => { const L = int(R, 5, 14), l = int(R, 3, 9), L2 = int(R, 4, 12), l2 = int(R, 3, 8), b = pick(R, [4, 6, 8, 10]), h = int(R, 3, 9), c = int(R, 3, 12), c2 = int(R, 3, 12), pb = int(R, 4, 12), ph = int(R, 3, 9);
+      return [num(`Quel est le périmètre d’un rectangle de ${L} cm sur ${l} cm ?`, 2 * (L + l), 0, 'cm'), num(`Quelle est l’aire d’un rectangle de ${L2} cm sur ${l2} cm ?`, L2 * l2, 0, 'cm²'), num(`Quelle est l’aire d’un triangle de base ${b} cm et de hauteur ${h} cm ?`, b * h / 2, 0, 'cm²'), num(`Quel est le périmètre d’un carré de côté ${c} cm ?`, 4 * c, 0, 'cm'), num(`Quelle est l’aire d’un carré de côté ${c2} cm ?`, c2 * c2, 0, 'cm²'), num(`Quelle est l’aire d’un parallélogramme de base ${pb} cm et de hauteur ${ph} cm ?`, pb * ph, 0, 'cm²')]; };
+    pal[2].mk = R => { const r = pick(R, [2, 5, 10]), r2 = pick(R, [2, 3, 5]), a = int(R, 3, 10), b = int(R, 3, 8), c = int(R, 3, 8), k = int(R, 2, 6), B = pick(R, [8, 10, 12]), bp = pick(R, [4, 6, 2]), hh = int(R, 3, 8), dd = pick(R, [4, 6, 10]);
+      return [num(`Quel est le périmètre d’un cercle de rayon ${r} cm ? (π ≈ 3,14)`, 2 * 3.14 * r, 2, 'cm'), num(`Quelle est l’aire d’un disque de rayon ${r2} cm ? (π ≈ 3,14)`, 3.14 * r2 * r2, 2, 'cm²'), num(`Quel est le volume d’un pavé de ${a} cm sur ${b} cm sur ${c} cm ?`, a * b * c, 0, 'cm³'), num(`Quel est le volume d’un cube d’arête ${k} cm ?`, k * k * k, 0, 'cm³'), num(`Quelle est l’aire d’un trapèze de grande base ${B} cm, de petite base ${bp} cm et de hauteur ${hh} cm ?`, (B + bp) * hh / 2, 0, 'cm²'), num(`Quelle est l’aire d’un disque de diamètre ${dd} cm ? (π ≈ 3,14, arrondi à 0,1)`, 3.14 * (dd / 2) * (dd / 2), 1, 'cm²')]; };
+    pal[3].mk = R => { const tr = pick(R, [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17]]), k = pick(R, [1, 2]), t2 = pick(R, [[3, 4, 5], [5, 12, 13], [6, 8, 10], [8, 15, 17]]), r = pick(R, [2, 3, 5]), h = int(R, 4, 12), c = pick(R, [3, 4, 5, 6]), hp = pick(R, [6, 9, 12]), L = pick(R, [2, 3, 4]), l = pick(R, [1.5, 2, 1]), H = pick(R, [1, 2]), a = pick(R, [4, 6, 8, 10]), b = int(R, 3, 8), ht = int(R, 3, 8);
+      return [num(`Un triangle rectangle a deux côtés de l’angle droit de ${tr[0] * k} cm et ${tr[1] * k} cm. Quelle est la longueur de l’hypoténuse ?`, tr[2] * k, 0, 'cm'), num(`Un triangle rectangle a une hypoténuse de ${t2[2]} cm et un côté de l’angle droit de ${t2[0]} cm. Quelle est la longueur de l’autre côté ?`, t2[1], 0, 'cm'), num(`Quel est le volume d’un cylindre de rayon ${r} cm et de hauteur ${h} cm ? (π ≈ 3,14, arrondi à 0,1)`, 3.14 * r * r * h, 1, 'cm³'), num(`Quel est le volume d’une pyramide à base carrée de côté ${c} cm et de hauteur ${hp} cm ?`, c * c * hp / 3, 0, 'cm³'), num(`Une citerne a la forme d’un pavé de ${L} m de long, ${fr(l)} m de large et ${H} m de haut. Quelle est sa capacité, en litres ?`, L * l * H * 1000, 0, 'L'), num(`Une figure est formée d’un rectangle de ${a} cm sur ${b} cm surmonté d’un triangle de base ${a} cm et de hauteur ${ht} cm. Quelle est son aire totale ?`, a * b + a * ht / 2, 0, 'cm²')]; };
+    N.push({ id: 'geo', titre: 'Périmètres, aires et volumes', court: 'Périmètre, aire, volume, Pythagore', theme: 'chantier, carrelage et piscine',
+      objectifs: ['Calculer périmètre et aire des figures usuelles.', 'Calculer le volume d’un pavé, d’un cube, d’un cylindre.', 'Choisir la bonne formule et la bonne unité.', 'Palier 3 : Pythagore et figures composées.'],
+      erreurs: ['Confondre périmètre (le tour) et aire (la surface).', 'Oublier le « ÷ 2 » de l’aire d’un triangle.', 'Utiliser le diamètre à la place du rayon.', 'Écrire des cm au lieu de cm² ou cm³.'],
+      mots: 'périmètre · aire · volume · rayon · diamètre · hypoténuse · base · hauteur · unité d’aire', modele: '« Aire d’un triangle : base × hauteur ÷ 2. Ici 8 × 5 ÷ 2 = 20 cm². »',
+      retiens: 'Rectangle : aire = L × l ; périmètre = 2 × (L + l). · Triangle : aire = b × h ÷ 2. · Disque : aire = π × r² ; cercle : périmètre = 2 × π × r. · Pavé : V = L × l × h. · Pythagore : hypoténuse² = a² + b².',
+      flash: R => { const c = int(R, 3, 9), c2 = int(R, 3, 9), a = int(R, 3, 9), b = int(R, 3, 9), L = int(R, 4, 12), l = int(R, 3, 8), bb = pick(R, [4, 6, 8, 10]), h = int(R, 3, 9), k = int(R, 2, 5);
+        return [num(`Périmètre d’un carré de côté ${c} cm`, 4 * c, 0), num(`Aire d’un carré de côté ${c2} cm`, c2 * c2, 0), num(`Aire d’un rectangle de ${a} cm sur ${b} cm`, a * b, 0), num(`Périmètre d’un rectangle de ${L} cm sur ${l} cm`, 2 * (L + l), 0), num(`Aire d’un triangle de base ${bb} cm et de hauteur ${h} cm`, bb * h / 2, 0), num(`Volume d’un cube d’arête ${k} cm`, k * k * k, 0)]; },
+      dec: R => { const L = int(R, 4, 6), l = int(R, 3, 4);
+        return { titre: 'Carreler une pièce', intro: `Une pièce rectangulaire mesure ${L} m sur ${l} m. On veut la carreler avec des carreaux carrés de 50 cm de côté.`, table: null,
+          qs: [num('Quelle est l’aire de la pièce ?', L * l, 0, 'm²'), num('Quel est le périmètre de la pièce (pour poser des plinthes) ?', 2 * (L + l), 0, 'm'), num('Un carreau est un carré de 0,5 m de côté. Quelle est son aire ?', 0.25, 2, 'm²'), num('Combien de carreaux faut-il pour couvrir la pièce ?', L * l * 4, 0)] }; },
+      ticket: R => { const b = pick(R, [4, 6, 8, 10]), h = int(R, 3, 9); return num(`Calcule l’aire d’un triangle de base ${b} cm et de hauteur ${h} cm, et écris la formule que tu as utilisée.`, b * h / 2, 0, 'cm²'); }, pal });
+  }
+
+  /* 7 · Calcul littéral et équations */
+  { const pal = T('Remplacer x par un nombre, résoudre une équation très simple.', 'Résoudre ax = b et ax + b = c, calculer avec des parenthèses.', 'Équations avec x des deux côtés, parenthèses, problèmes.');
+    pal[1].mk = R => { const a = int(R, 2, 9), x = int(R, 2, 9), b = int(R, 2, 9), x2 = int(R, 2, 9), a3 = int(R, 2, 6), b3 = int(R, 1, 9), x3 = int(R, 2, 9), a4 = int(R, 3, 7), b4 = int(R, 1, 9), x4 = int(R, 2, 9), b5 = int(R, 2, 12), c5 = int(R, 14, 30), b6 = int(R, 2, 9), c6 = int(R, 3, 15);
+      return [num(`Calcule ${a}x pour x = ${x}.`, a * x, 0), num(`Calcule x + ${b} pour x = ${x2}.`, x2 + b, 0), num(`Calcule ${a3}x + ${b3} pour x = ${x3}.`, a3 * x3 + b3, 0), num(`Calcule ${a4}x − ${b4} pour x = ${x4}.`, a4 * x4 - b4, 0), num(`Résous x + ${b5} = ${c5}.`, c5 - b5, 0), num(`Résous x − ${b6} = ${c6}.`, c6 + b6, 0)]; };
+    pal[2].mk = R => { const a = int(R, 2, 9), x0 = int(R, 2, 12), a2 = int(R, 2, 9), b2 = int(R, 1, 12), x2 = int(R, 1, 10), a3 = int(R, 2, 9), b3 = int(R, 1, 9), x3 = int(R, 3, 10), a4 = int(R, 2, 9), x4 = int(R, 2, 12), a5 = int(R, 2, 6), b5 = int(R, 1, 5), x5 = int(R, 2, 9), b6 = int(R, 2, 5), x6 = int(R, 2, 6);
+      return [num(`Résous ${a}x = ${a * x0}.`, x0, 0), num(`Résous ${a2}x + ${b2} = ${a2 * x2 + b2}.`, x2, 0), num(`Résous ${a3}x − ${b3} = ${a3 * x3 - b3}.`, x3, 0), num(`Résous x/${a4} = ${x4}.`, a4 * x4, 0), num(`Calcule ${a5}(x + ${b5}) pour x = ${x5}.`, a5 * (x5 + b5), 0), num(`Calcule x² + ${b6}x pour x = ${x6}.`, x6 * x6 + b6 * x6, 0)]; };
+    pal[3].mk = R => { const a = int(R, 4, 9), c = int(R, 1, a - 1), x0 = int(R, 1, 9), b = int(R, 1, 12), d = (a - c) * x0 + b;
+      const a2 = int(R, 3, 6), c2 = int(R, 1, a2 - 1), k2 = int(R, 1, 4), x2 = int(R, 1, 9), d2 = (a2 - c2) * x2 + a2 * k2;
+      let a3, c3, k3, x3, d3; do { a3 = int(R, 3, 7); c3 = int(R, 1, a3 - 2); k3 = int(R, 1, 4); x3 = int(R, 6, 12); d3 = (a3 - c3) * x3 - a3 * k3; } while (d3 <= 0);
+      const a4 = int(R, 2, 5), c4 = int(R, a4 + 1, a4 + 4), x4 = int(R, 2, 10), b4 = (c4 - a4) * x4, sq = int(R, 3, 12), t = int(R, 2, 5), bb = int(R, 1, 9), xx = int(R, 2, 12);
+      const b4v = b4;
+      return [num(`Résous ${a}x + ${b} = ${c}x + ${d}.`, x0, 0), num(`Résous ${a2}(x + ${k2}) = ${c2}x + ${d2}.`, x2, 0), num(`Résous ${a3}(x − ${k3}) = ${c3}x + ${d3}.`, x3, 0), num(`Deux forfaits : A coûte ${b4v} + ${a4}x et B coûte ${c4}x, où x est le nombre de séances. Pour quelle valeur de x les deux prix sont-ils égaux ?`, x4, 0), num(`Résous x² = ${sq * sq} (donne la solution positive).`, sq, 0), num(`Je pense à un nombre x. Je le multiplie par ${t}, puis j’ajoute ${bb} et j’obtiens ${t * xx + bb}. Quel est x ?`, xx, 0)]; };
+    N.push({ id: 'alg', titre: 'Calcul littéral et équations', court: 'Expressions, équations, problèmes', theme: 'forfaits, locations et tarifs',
+      objectifs: ['Remplacer une lettre par un nombre et calculer.', 'Résoudre une équation simple en défaisant les opérations.', 'Traduire un problème par une équation.', 'Palier 3 : équations avec x des deux côtés.'],
+      erreurs: ['Lire 3x comme 3 + x ou comme « 3 et x ».', 'Changer un côté de l’équation sans faire la même chose de l’autre.', 'Oublier la priorité de la multiplication : 2 + 3x avec x = 4 vaut 14, pas 20.', 'Ne pas vérifier la solution en remplaçant x.'],
+      mots: 'inconnue · expression · équation · solution · valeur · remplacer · vérifier', modele: '« 3x + 5 = 20. J’enlève 5 des deux côtés : 3x = 15. Je divise par 3 : x = 5. »',
+      retiens: '3x signifie 3 × x. · Pour résoudre : on défait les opérations dans l’ordre inverse, des deux côtés. · On vérifie en remplaçant x par la solution. · Avec x des deux côtés : on regroupe les x d’un côté.',
+      flash: R => { const a = int(R, 2, 9), x = int(R, 2, 9), b = int(R, 2, 9), x2 = int(R, 2, 9), a3 = int(R, 2, 6), b3 = int(R, 1, 9), x3 = int(R, 2, 8), x4 = int(R, 3, 9), b5 = int(R, 5, 15), x5 = int(R, 2, 8), a6 = int(R, 2, 5), x6 = int(R, 2, 8), b6 = int(R, 1, 9);
+        return [num(`Calcule ${a}x pour x = ${x}`, a * x, 0), num(`Calcule x + ${b} pour x = ${x2}`, x2 + b, 0), num(`Calcule ${a3}x + ${b3} pour x = ${x3}`, a3 * x3 + b3, 0), num(`Calcule x² pour x = ${x4}`, x4 * x4, 0), num(`Calcule ${b5} − x pour x = ${Math.min(x5, b5 - 1)}`, b5 - Math.min(x5, b5 - 1), 0), num(`Calcule ${a6}(x + ${b6}) pour x = ${x6}`, a6 * (x6 + b6), 0)]; },
+      dec: R => { const b = pick(R, [4, 5, 6, 8]), r = pick(R, [2, 3, 4]), h1 = int(R, 2, 4), h2 = int(R, 5, 8), h3 = int(R, 6, 10);
+        return { titre: 'La location de vélo', intro: `Une location de vélo coûte ${b} € au départ, plus ${r} € par heure. Pour x heures, le prix est ${b} + ${r}x.`, table: { head: ['Heures (x)', '1', '2', '3'], rows: [['Prix (€)', fr(b + r), fr(b + 2 * r), fr(b + 3 * r)]] },
+          qs: [num(`Quel est le prix pour ${h1} heures ?`, b + r * h1, 0, '€'), num(`Quel est le prix pour ${h2} heures ?`, b + r * h2, 0, '€'), num(`Quel est le prix pour 0 heure ?`, b, 0, '€'), num(`Léa a payé ${b + r * h3} €. Combien d’heures a-t-elle loué le vélo ?`, h3, 0, 'h')] }; },
+      ticket: R => { const a = int(R, 2, 6), x = int(R, 2, 9), b = int(R, 1, 9); return num(`Résous ${a}x + ${b} = ${a * x + b}, et écris en une phrase ta première étape.`, x, 0); }, pal });
+  }
+
+  /* 8 · Fonctions et graphiques */
+  { const pal = T('Images, antécédents et tableaux avec des fonctions simples.', 'Fonctions affines : image, antécédent, coefficient, ordonnée à l’origine.', 'Coefficient directeur par deux points, intersections, fonctions du second degré.');
+    pal[1].mk = R => { const a = int(R, 2, 9), x = int(R, 2, 9), b = int(R, 2, 9), x2 = int(R, 2, 9), c = int(R, 2, 6), a3 = int(R, 2, 9), x3 = int(R, 2, 9), p = pick(R, [2, 3, 4]), n = int(R, 3, 9), a6 = int(R, 2, 9), x6 = int(R, 2, 9);
+      return [num(`Soit f(x) = ${a}x. Calcule f(${x}).`, a * x, 0), num(`Soit f(x) = x + ${b}. Calcule f(${x2}).`, x2 + b, 0), num(`Dans un tableau, les valeurs de x sont 2 ; 4 ; 6 et celles de y sont ${2 * c} ; ${4 * c} ; ${6 * c}. Quel est le coefficient de proportionnalité ?`, c, 0), num(`Soit f(x) = ${a3}x. Quel nombre a pour image ${a3 * x3} ?`, x3, 0), num(`Un ticket de bus coûte ${p} €. Le prix de x tickets est f(x) = ${p}x. Combien coûtent ${n} tickets ?`, p * n, 0, '€'), num(`On a y = ${a6}x. Calcule y pour x = ${x6}.`, a6 * x6, 0)]; };
+    pal[2].mk = R => { const a = int(R, 2, 6), b = int(R, 1, 9), x = int(R, 2, 9), a2 = int(R, 2, 6), b2 = int(R, 5, 15), x2 = int(R, 1, 4), a3 = int(R, 2, 6), b3 = int(R, 1, 9), x3 = int(R, 2, 10), a4 = int(R, 2, 9), b4 = int(R, 1, 9), a5 = int(R, 2, 5), b5 = int(R, 1, 9), b6 = int(R, 1, 9), x6 = int(R, 2, 5);
+      return [num(`Soit f(x) = ${a}x − ${b}. Calcule f(${x}).`, a * x - b, 0), num(`Soit f(x) = −${a2}x + ${b2}. Calcule f(${x2}).`, -a2 * x2 + b2, 0), num(`Soit f(x) = ${a3}x + ${b3}. Quel est l’antécédent de ${a3 * x3 + b3} ?`, x3, 0), num(`Quelle est l’ordonnée à l’origine de la droite d’équation y = ${a4}x + ${b4} ?`, b4, 0), num(`Quel est le coefficient directeur de la droite d’équation y = −${a5}x + ${b5} ?`, -a5, 0), num(`Soit f(x) = x² − ${b6}. Calcule f(−${x6}).`, x6 * x6 - b6, 0)]; };
+    pal[3].mk = R => { let m, b, x1, x2; do { m = int(R, -4, 5); } while (m === 0); b = int(R, -6, 9); x1 = int(R, 1, 3); x2 = x1 + int(R, 2, 5);
+      const y1 = m * x1 + b, y2 = m * x2 + b, m2 = pick(R, [2, 3, 4, 5]), b2 = int(R, 1, 9), x0 = int(R, 2, 9), a = pick(R, [2, 3, 4, 5]), k = a * int(R, 2, 6), a5 = int(R, 3, 6), c5 = int(R, 1, a5 - 1), x5 = int(R, 1, 9), b5 = int(R, 1, 9), d5 = (a5 - c5) * x5 + b5, b6 = int(R, 2, 8), x6 = int(R, 1, 5);
+      return [num(`Une droite passe par A(${x1} ; ${y1}) et B(${x2} ; ${y2}). Quel est son coefficient directeur ?`, m, 0), num(`f est une fonction affine telle que f(${x1}) = ${y1} et f(${x2}) = ${y2}. Calcule f(0).`, b, 0), num(`Soit f(x) = ${m2}x + ${b2}. Quel est l’antécédent de ${m2 * x0 + b2} ?`, x0, 0), num(`Pour quelle valeur de x a-t-on ${a}x − ${k} = 0 ?`, k / a, 0), num(`Les droites y = ${a5}x + ${b5} et y = ${c5}x + ${d5} se coupent en un point. Quelle est son abscisse ?`, x5, 0), num(`Soit g(x) = −x² + ${b6}x. Calcule g(${x6}).`, -x6 * x6 + b6 * x6, 0)]; };
+    N.push({ id: 'fonc', titre: 'Fonctions et graphiques', court: 'Fonctions, droites, tableaux', theme: 'abonnements et tarifs',
+      objectifs: ['Calculer l’image d’un nombre par une fonction.', 'Chercher un antécédent.', 'Lire un tableau et un coefficient.', 'Palier 3 : coefficient directeur et ordonnée à l’origine d’une droite.'],
+      erreurs: ['Confondre image et antécédent.', 'Oublier le signe moins : f(x) = −2x + 7, f(4) = −1.', 'Prendre l’ordonnée à l’origine pour le coefficient directeur.', 'Calculer (y2 − y1) ÷ (x1 − x2) : il faut le même ordre au numérateur et au dénominateur.'],
+      mots: 'fonction · image · antécédent · coefficient directeur · ordonnée à l’origine · affine · tableau de valeurs', modele: '« L’image de 4 par f est f(4) : je remplace x par 4 et je calcule. »',
+      retiens: 'f(a) est l’image de a : on remplace x par a. · L’antécédent de y : on résout f(x) = y. · Droite y = mx + p : m est le coefficient directeur, p l’ordonnée à l’origine. · m = (y₂ − y₁) ÷ (x₂ − x₁).',
+      flash: R => { const a = int(R, 2, 9), x = int(R, 2, 9), b = int(R, 2, 9), x2 = int(R, 2, 9), a3 = int(R, 2, 6), x3 = int(R, 2, 8), a4 = int(R, 2, 9), x4 = int(R, 2, 9), x5 = int(R, 2, 9), a6 = int(R, 2, 9), x6 = int(R, 2, 9);
+        return [num(`f(x) = ${a}x. Calcule f(${x})`, a * x, 0), num(`f(x) = x + ${b}. Calcule f(${x2})`, x2 + b, 0), num(`f(x) = 2x + 1. Calcule f(${x3})`, 2 * x3 + 1, 0), num(`f(x) = ${a4}x. Quel nombre a pour image ${a4 * x4} ?`, x4, 0), num(`g(x) = x². Calcule g(${x5})`, x5 * x5, 0), num(`y = ${a6}x. Calcule y pour x = ${x6}`, a6 * x6, 0)]; },
+      dec: R => { const b = pick(R, [10, 15, 20, 25]), m = pick(R, [4, 5, 6, 8]), X = [0, 2, 4, 6];
+        return { titre: 'L’abonnement à la salle de sport', intro: `Le prix payé dépend du nombre de séances x : ${b} € d’inscription, plus ${m} € par séance.`, table: { head: ['Séances (x)', ...X.map(String)], rows: [['Prix (€)', ...X.map(x => fr(b + m * x))]] },
+          qs: [num('Quel est le prix pour 0 séance (l’inscription seule) ?', b, 0, '€'), num('De combien le prix augmente-t-il pour 1 séance de plus ?', m, 0, '€'), num('Quel est le prix pour 10 séances ?', b + 10 * m, 0, '€'), num(`Un adhérent a payé ${b + 8 * m} €. Combien de séances a-t-il faites ?`, 8, 0)] }; },
+      ticket: R => { const a = int(R, 2, 6), b = int(R, 1, 9), x = int(R, 2, 9); return num(`Soit f(x) = ${a}x + ${b}. Calcule f(${x}), et écris en une phrase ce que signifie « l’image de ${x} ».`, a * x + b, 0); }, pal });
+  }
+
+  /* 9 · Statistiques */
+  { const pal = T('Moyenne, étendue, médiane sur de petites séries.', 'Moyenne, médiane, fréquence en pourcentage, moyenne pondérée simple.', 'Moyenne pondérée, deux groupes, quartiles, médiane d’un tableau.');
+    const evenPair = R => { const a = int(R, 4, 18); let b = int(R, 4, 18); if ((a + b) % 2) b += b < 18 ? 1 : -1; return [a, b]; };
+    const sumDiv = (R, n, lo, hi) => { let v; do { v = Array.from({ length: n }, () => int(R, lo, hi)); const r = v.reduce((a, b) => a + b, 0) % n; if (r) { const j = n - 1, nv = v[j] + (n - r); v[j] = nv <= hi ? nv : v[j] - r; } } while (v.reduce((a, b) => a + b, 0) % n); return v; };
+    const pl = e => `${e} élève${e > 1 ? 's' : ''}`;
+    const med = a => { const s = a.slice().sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+    pal[1].mk = R => { const [a, b] = evenPair(R), v4 = shuffle(R, Array.from({ length: 4 }, () => int(R, 3, 19))), v5 = shuffle(R, Array.from({ length: 5 }, () => int(R, 3, 19))), v3 = sumDiv(R, 3, 6, 18), e = [int(R, 4, 9), int(R, 5, 10), int(R, 3, 8)], mn = int(R, 3, 9), mx = int(R, 12, 19);
+      return [num(`Calcule la moyenne de ${a} et ${b}.`, (a + b) / 2, 0), num(`Calcule l’étendue de la série : ${lst(v4)}.`, Math.max(...v4) - Math.min(...v4), 0), num(`Quelle est la médiane de la série : ${lst(v5)} ?`, med(v5), 1), num(`Trois notes : ${lst(v3)}. Quelle est la moyenne ?`, v3.reduce((x, y) => x + y, 0) / 3, 0), num(`Une classe compte ${e[0]} élèves en groupe A, ${e[1]} en groupe B et ${e[2]} en groupe C. Combien d’élèves en tout ?`, e[0] + e[1] + e[2], 0), num(`La plus petite note est ${mn} et la plus grande est ${mx}. Quelle est l’étendue ?`, mx - mn, 0)]; };
+    pal[2].mk = R => { const v5 = sumDiv(R, 5, 6, 18), v6 = shuffle(R, Array.from({ length: 6 }, () => int(R, 4, 19))), n = pick(R, [20, 25, 40, 50]), k = int(R, 3, 12), ef = pick(R, [[2, 5, 3], [3, 4, 3], [4, 2, 4], [1, 6, 3]]), nt = shuffle(R, [int(R, 5, 9), int(R, 10, 13), int(R, 14, 18)]).slice(0, 3);
+      let m, a, b, c, q; do { m = int(R, 11, 14); a = int(R, 9, 16); b = int(R, 9, 16); c = int(R, 9, 16); q = 4 * m - (a + b + c); } while (q < 4 || q > 20);
+      const v6b = shuffle(R, Array.from({ length: 6 }, () => int(R, 3, 19)));
+      return [num(`Calcule la moyenne de la série : ${lst(v5)}.`, v5.reduce((x, y) => x + y, 0) / 5, 0), num(`Quelle est la médiane de la série : ${lst(v6)} ?`, med(v6), 1), num(`${k} élèves sur ${n} ont eu plus de 12. Quel pourcentage d’élèves cela représente-t-il ?`, k / n * 100, 1, '%'), num(`Notes d’une classe : ${nt[0]} (${pl(ef[0])}), ${nt[1]} (${pl(ef[1])}), ${nt[2]} (${pl(ef[2])}). Quelle est la moyenne de la classe ?`, (nt[0] * ef[0] + nt[1] * ef[1] + nt[2] * ef[2]) / 10, 1), num(`Pour avoir une moyenne de ${m} sur 4 devoirs, avec déjà ${a}, ${b} et ${c}, quelle note faut-il au 4ᵉ devoir ?`, q, 0), num(`Calcule l’étendue de la série : ${lst(v6b)}.`, Math.max(...v6b) - Math.min(...v6b), 0)]; };
+    pal[3].mk = R => { const a = int(R, 8, 17), b = int(R, 8, 17), c = int(R, 8, 17), n1 = int(R, 8, 16), m1 = int(R, 8, 12), n2 = int(R, 6, 14), m2 = int(R, 12, 16), v8 = shuffle(R, Array.from({ length: 8 }, () => int(R, 2, 19))).sort((x, y) => x - y), mm = int(R, 10, 14);
+      let v; const cand = []; for (let x = 0; x <= 20; x++) if ((4 * mm + x) % 5 === 0) cand.push(x); v = pick(R, cand);
+      const vs = pick(R, [[6, 9, 14], [8, 10, 12], [7, 11, 15]]), es = pick(R, [[3, 5, 3], [4, 3, 4], [2, 6, 3], [5, 3, 3]]); const ex = []; vs.forEach((x, i) => { for (let j = 0; j < es[i]; j++) ex.push(x); });
+      return [num(`Maths : ${a} (coefficient 3), français : ${b} (coefficient 2), histoire : ${c} (coefficient 1). Quelle est la moyenne ? (arrondi à 0,01)`, (3 * a + 2 * b + c) / 6, 2), num(`${n1} élèves ont une moyenne de ${m1} et ${n2} élèves ont une moyenne de ${m2}. Quelle est la moyenne des ${n1 + n2} élèves ? (arrondi à 0,1)`, (n1 * m1 + n2 * m2) / (n1 + n2), 1), num(`Série de 8 valeurs rangées : ${lst(v8)}. Le premier quartile est la valeur de rang 2. Quel est-il ?`, v8[1], 0), num(`Même série : ${lst(v8)}. Le troisième quartile est la valeur de rang 6. Quel est l’écart interquartile (Q3 − Q1) ?`, v8[5] - v8[1], 0), num(`La moyenne de 4 valeurs est ${mm}. On ajoute la valeur ${v}. Quelle est la nouvelle moyenne ?`, (4 * mm + v) / 5, 0), num(`Notes : ${vs[0]} (${pl(es[0])}), ${vs[1]} (${pl(es[1])}), ${vs[2]} (${pl(es[2])}). Quelle est la médiane ?`, med(ex), 1)]; };
+    N.push({ id: 'stat', titre: 'Statistiques', court: 'Moyenne, médiane, étendue, quartiles', theme: 'notes, sport et sondages',
+      objectifs: ['Calculer une moyenne, une étendue, une médiane.', 'Lire un tableau d’effectifs.', 'Calculer une fréquence en pourcentage.', 'Palier 3 : moyenne pondérée, quartiles.'],
+      erreurs: ['Oublier de ranger la série avant de chercher la médiane.', 'Confondre moyenne et médiane.', 'Diviser par le nombre de lignes du tableau au lieu de l’effectif total.', 'Calculer l’étendue avec la somme au lieu de la différence.'],
+      mots: 'moyenne · médiane · étendue · effectif · fréquence · quartile · série · valeur', modele: '« Je range la série par ordre croissant. La médiane est la valeur du milieu. »',
+      retiens: 'Moyenne = somme des valeurs ÷ nombre de valeurs. · Étendue = plus grande valeur − plus petite. · Médiane : on range, on prend la valeur du milieu (ou la moyenne des deux du milieu). · Fréquence = effectif ÷ effectif total.',
+      flash: R => { const [a, b] = evenPair(R), v4 = shuffle(R, Array.from({ length: 4 }, () => int(R, 3, 19))), v5 = shuffle(R, Array.from({ length: 5 }, () => int(R, 3, 19))), v4b = sumDiv(R, 4, 6, 18), x = int(R, 3, 9), y = int(R, 4, 12), z = int(R, 3, 9), mo = int(R, 3, 9), o = int(R, 1, 4);
+        return [num(`Moyenne de ${a} et ${b}`, (a + b) / 2, 0), num(`Étendue de ${lst(v4)}`, Math.max(...v4) - Math.min(...v4), 0), num(`Médiane de ${lst(v5)}`, med(v5), 1), num(`Moyenne de ${lst(v4b)}`, v4b.reduce((p, q) => p + q, 0) / 4, 0), num(`Dans ${lst([mo, mo + 2, mo, mo + 5, mo])}, quelle valeur apparaît le plus souvent ?`, mo, 0), num(`Total : ${x} + ${y} + ${z} élèves`, x + y + z, 0)]; },
+      dec: R => { const v = sumDiv(R, 6, 6, 17); const s = v.slice().sort((a, b) => a - b);
+        return { titre: 'Les notes de Maya', intro: `Maya a obtenu ces six notes ce trimestre : ${lst(v)}.`, table: null,
+          qs: [num('Quelle est sa moyenne ?', v.reduce((a, b) => a + b, 0) / 6, 0), num('Quelle est l’étendue de ses notes ?', s[5] - s[0], 0), num('Quelle est la médiane de ses notes ?', med(v), 1), num('Combien de notes sont supérieures ou égales à 10 ?', v.filter(x => x >= 10).length, 0)] }; },
+      ticket: R => { const v = sumDiv(R, 4, 6, 17); return num(`Calcule la moyenne de ${lst(v)}, et écris en une phrase comment tu as fait.`, v.reduce((a, b) => a + b, 0) / 4, 0); }, pal });
+  }
+
+  /* 10 · Probabilités */
+  { const pal = T('Cas favorables, cas possibles : les chances en fractions.', 'Événement contraire, pourcentages, fréquences.', 'Deux tirages, deux dés, gain moyen.');
+    const rbv = R => pick(R, [[3, 2, 5], [2, 3, 5], [4, 6, 10], [5, 5, 10], [6, 4, 10], [3, 7, 10]]);
+    pal[1].mk = R => { const ev = pick(R, [['un nombre pair', 3], ['un nombre supérieur à 4', 2], ['un multiple de 3', 2], ['un nombre inférieur à 3', 2]]), r = int(R, 2, 8), b = int(R, 2, 8), n = pick(R, [8, 10, 12]), g = pick(R, [2, 3, 4, 6]), r2 = int(R, 3, 9), b2 = int(R, 2, 8), nn = pick(R, [10, 20]);
+      return [frc(`On lance un dé à 6 faces. Quelle est la probabilité d’obtenir ${ev[0]} ? (fraction irréductible)`, ev[1], 6), frc(`Une urne contient ${r} boules rouges et ${b} boules bleues. Quelle est la probabilité de tirer une boule rouge ? (fraction irréductible)`, r, r + b), frc(`Une roue est partagée en ${n} secteurs égaux dont ${g} sont gagnants. Quelle est la probabilité de gagner ? (fraction irréductible)`, g, n), num(`Une urne contient ${r2} boules rouges et ${b2} boules bleues. Combien de cas sont favorables pour « tirer une boule bleue » ?`, b2, 0), frc(`On tire une carte dans un jeu de 32 cartes. Quelle est la probabilité d’obtenir un cœur ? (fraction irréductible)`, 8, 32), frc(`Un sac contient ${nn} jetons numérotés de 1 à ${nn}. Quelle est la probabilité de tirer un multiple de 5 ? (fraction irréductible)`, nn / 5, nn)]; };
+    pal[2].mk = R => { const p = pick(R, [0.15, 0.4, 0.65, 0.8]), f = pick(R, [[1, 4], [2, 5], [3, 8], [5, 12], [7, 10]]), n = pick(R, [200, 250, 400, 500]), k = pick(R, [5, 10, 2]), n2 = pick(R, [50, 40, 20, 25]), a = int(R, 3, 18), cardEv = pick(R, [['un as', 4], ['un roi ou une dame', 8], ['une figure (valet, dame, roi)', 12]]), [r, v, b] = [int(R, 2, 6), int(R, 2, 6), int(R, 2, 6)];
+      const a2 = Math.min(a, n2 - 1);
+      return [num(`La probabilité d’un événement est ${fr(p)}. Quelle est la probabilité de l’événement contraire ?`, 1 - p, 2), frc(`La probabilité d’un événement est ${f[0]}/${f[1]}. Quelle est la probabilité de l’événement contraire ? (fraction irréductible)`, f[1] - f[0], f[1]), num(`Tombola : ${n} billets sont vendus et tu en as ${k}. Quelle est ta probabilité de gagner, en pourcentage ?`, k / n * 100, 2, "%"), num(`Sur ${n2} lancers, une pièce est tombée ${a2} fois sur pile. Quelle est la fréquence de pile, en pourcentage ?`, a2 / n2 * 100, 1, '%'), frc(`On tire une carte dans un jeu de 32 cartes. Quelle est la probabilité d’obtenir ${cardEv[0]} ? (fraction irréductible)`, cardEv[1], 32), frc(`Une urne contient ${r} boules rouges, ${v} vertes et ${b} bleues. Quelle est la probabilité de tirer une boule rouge ou verte ? (fraction irréductible)`, r + v, r + v + b)]; };
+    pal[3].mk = R => { const n = pick(R, [4, 5, 10]), r = int(R, 1, n - 1), n3 = pick(R, [5, 6, 8, 10]), r3 = int(R, 2, n3 - 1), s = pick(R, [7, 6, 8, 9, 10, 11]); let cnt = 0; for (let i = 1; i <= 6; i++) for (let j = 1; j <= 6; j++) if (i + j === s) cnt++;
+      const nl = pick(R, [2, 3]), kk = pick(R, [2, 4, 5, 10]), w = pick(R, [2, 3, 4, 5]), m = pick(R, [1, 2, 3]), p = pick(R, [40, 60, 75]), nt = pick(R, [20, 40, 100]);
+      return [frc(`Une urne contient ${r} boules rouges sur ${n}. On tire une boule, on la remet, puis on en tire une seconde. Quelle est la probabilité d’obtenir deux boules rouges ? (fraction irréductible)`, r * r, n * n), frc(`Une urne contient ${r3} boules rouges sur ${n3}. On tire deux boules sans remise. Quelle est la probabilité d’obtenir deux boules rouges ? (fraction irréductible)`, r3 * (r3 - 1), n3 * (n3 - 1)), frc(`On lance deux dés à 6 faces. Quelle est la probabilité que la somme soit égale à ${s} ? (fraction irréductible)`, cnt, 36), frc(`On lance ${nl} fois une pièce. Quelle est la probabilité d’obtenir au moins une fois pile ? (fraction irréductible)`, Math.pow(2, nl) - 1, Math.pow(2, nl)), num(`Un jeu coûte ${m} € la partie. Avec une probabilité de 1/${kk}, on gagne ${kk * w} €. Quel est le gain moyen par partie (gain moyen − mise) ?`, w - m, 2, '€'), num(`Un joueur réussit ${p} % de ses tirs. Sur ${nt} tirs, combien en réussit-il en moyenne ?`, p * nt / 100, 0)]; };
+    N.push({ id: 'proba', titre: 'Probabilités', court: 'Probabilités, chances, fréquences', theme: 'jeux de hasard et loteries',
+      objectifs: ['Calculer une probabilité : cas favorables ÷ cas possibles.', 'Utiliser l’événement contraire.', 'Passer d’une fraction à un pourcentage.', 'Palier 3 : deux épreuves successives, gain moyen.'],
+      erreurs: ['Écrire « une chance sur deux » pour tout événement à deux issues.', 'Oublier de compter tous les cas possibles (deux dés : 36 cas, pas 12).', 'Oublier de simplifier la fraction.', 'Croire qu’après trois piles, face est « plus probable ».'],
+      mots: 'expérience aléatoire · issue · événement · probabilité · cas favorables · événement contraire · fréquence', modele: '« Il y a 6 issues possibles et 3 nombres pairs : la probabilité est 3/6 = 1/2. »',
+      retiens: 'Probabilité = cas favorables ÷ cas possibles, toujours entre 0 et 1. · P(contraire) = 1 − P(A). · Avec remise, on multiplie les probabilités de chaque tirage. · Fréquence = nombre de fois ÷ nombre d’essais.',
+      flash: R => { const r = int(R, 2, 9), b = int(R, 2, 9), n = pick(R, [10, 12, 20]), rr = int(R, 2, n - 3), p = pick(R, [0.2, 0.3, 0.35, 0.6, 0.75]), f = pick(R, [[1, 2, 50], [1, 4, 25], [1, 5, 20], [1, 10, 10], [3, 4, 75]]), k = pick(R, [2, 3, 4]);
+        return [num(`Un sac contient ${r} billes rouges et ${b} billes bleues. Combien de billes au total ?`, r + b, 0), num(`Un sac contient ${n} billes dont ${rr} rouges. Combien ne sont pas rouges ?`, n - rr, 0), num(`La probabilité d’un événement est ${fr(p)}. Probabilité de l’événement contraire ?`, 1 - p, 2), num(`Écris ${f[0]}/${f[1]} en pourcentage`, f[2], 0, '%'), num(`Dé à 6 faces : combien de faces portent un nombre supérieur à ${k} ?`, 6 - k, 0), num('Pile ou face : probabilité d’obtenir pile, en nombre décimal', 0.5, 1)]; },
+      dec: R => { const [r, v, b] = rbv(R), n = r + v + b;
+        return { titre: 'Le sac de billes', intro: `Un sac contient ${r} billes rouges, ${v} billes vertes et ${b} billes bleues. On tire une bille au hasard.`, table: null,
+          qs: [num('Combien y a-t-il de billes dans le sac ?', n, 0), frc('Quelle est la probabilité de tirer une bille rouge ? (fraction irréductible)', r, n), frc('Quelle est la probabilité de ne pas tirer une bille rouge ? (fraction irréductible)', n - r, n), num('Quelle est la probabilité de tirer une bille verte, en pourcentage ?', v / n * 100, 0, '%')] }; },
+      ticket: R => { const r = int(R, 2, 7), b = int(R, 2, 7); return frc(`Une urne contient ${r} boules rouges et ${b} boules bleues. Probabilité de tirer une rouge ? Explique en une phrase. (fraction irréductible)`, r, r + b); }, pal });
+  }
+  if (typeof module !== 'undefined') module.exports = N; else root.MLDS_B = N;
+})(typeof window !== 'undefined' ? window : this);
+
+/* MLDS · programme complet : index des notions et API commune (fiche PDF et appli). */
+(function (root) {
+  'use strict';
+  const C = root.MLDSC || require('./core.js');
+  const A = root.MLDS_A || require('./nA.js'), B = root.MLDS_B || require('./nB.js');
+  const ALL = A.concat(B);
+  ALL.forEach((n, i) => { n.n = i + 1; });
+  const get = id => ALL.find(n => n.id === id);
+  const api = { ALL, get, C,
+    mk: (id, p, seed) => get(id).pal[p].mk(C.rng(seed)),
+    FLASH: (id, seed) => get(id).flash(C.rng(seed)),
+    DEC: (id, seed) => get(id).dec(C.rng(seed)),
+    TICKET: (id, seed) => get(id).ticket(C.rng(seed)),
+    POS: seed => ALL.map((n, i) => { const it = n.pal[2].mk(C.rng(seed + i * 101))[i % 6]; return { id: n.id, titre: n.titre, it }; }) };
   if (typeof module !== 'undefined') module.exports = api; else root.MLDS = api;
 })(typeof window !== 'undefined' ? window : this);
 
+</script>
+<script>
 (function(){'use strict';
-var PFX='mlds-pct:',TABS=[{id:'f',t:'⚡ Flash'},{id:'1',t:'Palier 1',c:'--c1'},{id:'2',t:'Palier 2',c:'--c2'},{id:'3',t:'Palier 3',c:'--c3'}];
-var mem={};function ld(k,d){try{var v=localStorage.getItem(PFX+k);return v?JSON.parse(v):d}catch(e){return k in mem?mem[k]:d}}
+var PFX='mlds-prog-v1:',PED=JSON.parse(document.getElementById('data-pedago').textContent),mem={};
+function ld(k,d){try{var v=localStorage.getItem(PFX+k);return v?JSON.parse(v):d}catch(e){return k in mem?mem[k]:d}}
 function sv(k,v){mem[k]=v;try{localStorage.setItem(PFX+k,JSON.stringify(v))}catch(e){}}
-var st=ld('st',{runs:[]}),cur='f',items=[],done=[],seed=0;
-if(matchMedia('(prefers-color-scheme:dark)').matches)document.documentElement.setAttribute('data-d','');
+var st=ld('st',{runs:[],best:{}});if(!st.best)st.best={};var view='home',tab='f',items=[],done=[],seed=0,posItems=[];
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-function parse(s){s=String(s).replace(/[\s  ]/g,'').replace(/[€%a-zA-Z]/g,'').replace(',','.').replace('−','-');if(!/^-?\d+(\.\d+)?$/.test(s))return NaN;return parseFloat(s)}
-function decs(s){var m=String(s).replace(',','.').match(/\.(\d+)/);return m?m[1].length:0}
-function newSet(){seed=(Math.random()*4294967295)>>>0;items=cur==='f'?MLDS.FLASH(seed):MLDS.mk(+cur,seed);done=items.map(function(){return null});}
-function tabs(){var n=$('tabs');n.innerHTML='';TABS.forEach(function(t){var b=document.createElement('button');b.setAttribute('role','tab');b.setAttribute('aria-selected',t.id===cur);b.textContent=t.t;b.onclick=function(){cur=t.id;newSet();tabs();draw()};n.appendChild(b)})}
+function ped(id){for(var i=0;i<PED.length;i++)if(PED[i].id===id)return PED[i]}
+function best(id,p){var v=st.best[id+'|'+p];return typeof v==='number'?v:-1}
+function bump(id,p,s){var k=id+'|'+p;if(!(st.best[k]>=s))st.best[k]=s}
+function parse(s){s=String(s).replace(/[\s  ]/g,'').replace(/[€%a-zA-Z²³°\/]/g,function(c){return c==='/'?'/':''}).replace('−','-').replace(',','.');return s}
+function num(s){var t=parse(s);if(!/^-?\d+(\.\d+)?$/.test(t))return NaN;return parseFloat(t)}
+function decs(t){t=String(t).replace(/[\s  ]/g,'').replace(',','.');var m=t.match(/\.(\d*?)0*$/);return m?m[1].length:0}
+function judge(it,raw){
+ if(it.k==='f'){var t=String(raw).replace(/[\s  ]/g,''),m=t.match(/^(-?\d+)\/(\d+)$/),n,d;
+  if(m){n=+m[1];d=+m[2];if(d===0)return{r:'err',m:'Le dénominateur ne peut pas être 0.'}}
+  else if(/^-?\d+$/.test(t)){n=+t;d=1}else return{r:'err',m:'Écris une fraction (par exemple 3/4)'+(it.d===1?' ou un nombre entier.':'.')};
+  if(n*it.d!==it.n*d)return{r:'ko'};
+  var g=function(a,b){a=Math.abs(a);b=Math.abs(b);while(b){var x=a%b;a=b;b=x}return a};
+  if(g(n,d)!==1)return{r:'err',m:'Cette fraction est juste, mais pas irréductible : simplifie-la.'};
+  return{r:'ok'}}
+ var v=num(raw);if(isNaN(v))return{r:'err',m:'Écris un nombre (par exemple 12,5).'};
+ if(Math.abs(v-it.v)>it.tol)return{r:'ko'};
+ if(decs(raw)>it.d)return{r:'err',m:it.d===0?'Le résultat est bon, mais écris-le sans virgule (arrondi à l’unité).':'Le résultat est bon, mais écris-le avec '+it.d+' décimale'+(it.d>1?'s':'')+' au plus.'};
+ return{r:'ok'}}
+function newSet(){seed=(Math.random()*4294967295)>>>0;if(view==='home'){items=[];done=[];return}
+ if(view==='pos'){posItems=MLDS.POS(seed);items=posItems.map(function(p){return p.it})}
+ else if(tab==='f')items=MLDS.FLASH(view,seed);else if(tab==='d')items=MLDS.DEC(view,seed).qs;else items=MLDS.mk(view,+tab,seed);
+ done=items.map(function(){return null})}
+function go(v,t){view=v;tab=t||'f';newSet();draw();window.scrollTo(0,0)}
+function home(){var h='<div class="card"><h2>Par où commencer ?</h2><p>Dix questions, une par thème, pour savoir où démarrer. Ce n’est pas une note.</p><button class="p" id="gp">Faire le test de positionnement</button></div><div class="grid">';
+ PED.forEach(function(n){var dots='';[1,2,3].forEach(function(p){dots+='<i class="'+(best(n.id,String(p))>=5?'on':'')+'" title="Palier '+p+'"></i>'});
+  h+='<button class="nc" data-id="'+n.id+'"><span class="n">'+n.n+'</span><span><b>'+esc(n.titre)+'</b><small>'+esc(n.court)+'</small><span class="dots" aria-label="Paliers réussis">'+dots+'</span></span></button>'});
+ $('main').innerHTML=h+'</div><p class="u">Les ronds pleins indiquent les paliers réussis (5 sur 6 ou plus).</p>';
+ $('gp').onclick=function(){go('pos')};$('main').querySelectorAll('.nc').forEach(function(b){b.onclick=function(){go(b.dataset.id,'f')}})}
+function tabsHtml(){var T=[['f','⚡ Flash'],['d','🔎 Découverte'],['1','Palier 1'],['2','Palier 2'],['3','Palier 3']],h='<nav role="tablist" aria-label="Activités">';T.forEach(function(t){h+='<button role="tab" data-t="'+t[0]+'" aria-selected="'+(t[0]===tab)+'">'+t[1]+'</button>'});return h+'</nav>'}
+function draw(){if(view==='home'){home();stats();return}
+ var L='abcdefghij',h='<button class="s" id="bk">← Tous les thèmes</button>',title,sous='',extra='',n=ped(view);
+ if(view==='pos'){title='Test de positionnement';sous='Une question par thème. Réponds au mieux ; si tu ne sais pas, passe.'}
+ else{h+='<h2 style="margin-top:10px">'+n.n+'. '+esc(n.titre)+'</h2>'+tabsHtml();
+  var P=null;if(tab==='f'){title='Flash';sous='6 calculs de tête, sans calculatrice. Ton score te donne ton palier de départ.'}
+  else if(tab==='d'){var D=MLDS.DEC(view,seed);title=D.titre;sous=D.intro;if(D.table){extra='<table class="tdec"><tr>'+D.table.head.map(function(x){return'<th>'+esc(x)+'</th>'}).join('')+'</tr>'+D.table.rows.map(function(r){return'<tr>'+r.map(function(c){return'<td>'+esc(c)+'</td>'}).join('')+'</tr>'}).join('')+'</table>'}}
+  else{title='Palier '+tab+' · '+n.pal[tab].titre;sous=n.pal[tab].sous}
+  extra+= '<details><summary>Je retiens</summary><p class="tip">'+esc(n.retiens)+'</p></details>'}
+ h+='<div class="card"><h2>'+esc(title)+'</h2><p class="u">'+esc(sous)+'</p>'+(view==='pos'?'':extra)+'<div class="bar" aria-hidden="true"><i id="pb"></i></div><p><span class="pill" id="sc"></span></p>';
+ items.forEach(function(it,k){var lbl=view==='pos'?'<b>'+(k+1)+'. '+esc(posItems[k].titre)+'</b><br>':'<b>'+L[k]+'.</b> ';
+  h+='<div class="q"><label for="a'+k+'">'+lbl+esc(it.t)+'</label><div class="row"><input type="text" id="a'+k+'" inputmode="'+(it.k==='f'?'text':'decimal')+'" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="f'+k+'">'+(it.u?'<span class="u">'+esc(it.u)+'</span>':'')+'<button class="p" data-k="'+k+'">Vérifier</button></div><div class="fb" id="f'+k+'" role="status"></div></div>'});
+ h+='<div class="row"><button class="s" id="nw">Nouvelle série</button></div><div id="end"></div></div>';$('main').innerHTML=h;
+ $('bk').onclick=function(){go('home')};
+ $('main').querySelectorAll('nav button').forEach(function(b){b.onclick=function(){tab=b.dataset.t;newSet();draw()}});
+ $('main').querySelectorAll('button.p').forEach(function(b){b.onclick=function(){chk(+b.dataset.k)}});
+ items.forEach(function(_,k){$('a'+k).addEventListener('keydown',function(e){if(e.key==='Enter')chk(k)})});
+ $('nw').onclick=function(){newSet();draw()};upd();stats()}
+function chk(k){var it=items[k],f=$('f'+k),raw=$('a'+k).value;if(!raw.trim()){f.className='fb ko';f.textContent='Écris ta réponse d’abord.';return}
+ var j=judge(it,raw);if(j.r==='err'){f.className='fb ko';f.textContent=j.m;return}
+ var ok=j.r==='ok';if(done[k]===null)done[k]=ok;f.className='fb '+(ok?'ok':'ko');f.textContent=ok?'Juste.':'Pas tout à fait. Réponse attendue : '+it.a+'.';upd()}
 function score(){return done.filter(function(x){return x===true}).length}
-function draw(){var L='abcdef',T=cur==='f'?{titre:'Flash',sous:'6 calculs de tête, sans calculatrice. Ton score te donne ton palier de départ.'}:MLDS.LV[cur],h='<div class="card"><h2>'+esc(T.titre)+'</h2><p class="u">'+esc(T.sous)+'</p><div class="bar" aria-hidden="true"><i id="pb"></i></div><p><span class="pill" id="sc"></span></p>';
-items.forEach(function(it,k){h+='<div class="q"><label for="a'+k+'"><b>'+L[k]+'.</b> '+esc(it.t)+'</label><div class="row"><input type="text" id="a'+k+'" inputmode="decimal" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="f'+k+'">'+(it.u?'<span class="u">'+esc(it.u)+'</span>':'')+'<button class="p" data-k="'+k+'">Vérifier</button></div><div class="fb" id="f'+k+'" role="status"></div></div>'});
-h+='<div class="row"><button class="s" id="nw">Nouvelle série</button></div><div id="end"></div></div>';$('main').innerHTML=h;
-$('main').querySelectorAll('button.p').forEach(function(b){b.onclick=function(){chk(+b.dataset.k)}});
-items.forEach(function(_,k){$('a'+k).addEventListener('keydown',function(e){if(e.key==='Enter')chk(k)})});
-$('nw').onclick=function(){newSet();draw()};upd()}
-function chk(k){var it=items[k],i=$('a'+k),f=$('f'+k),raw=i.value;if(!raw.trim()){f.className='fb ko';f.textContent='Écris ta réponse d’abord.';return}
-var v=parse(raw);if(isNaN(v)){f.className='fb ko';f.textContent='Écris un nombre (par exemple 12,5).';return}
-var tol=it.tol,ok=Math.abs(v-it.v)<=tol,form=decs(raw)<=it.d+0;
-if(ok&&!form&&it.d<3&&decs(raw)>it.d){f.className='fb ko';f.textContent='Le résultat est bon, mais arrondis-le comme demandé ('+(it.d===0?'à l’unité':it.d+' décimale'+(it.d>1?'s':''))+').';return}
-if(done[k]===null)done[k]=ok;f.className='fb '+(ok?'ok':'ko');f.textContent=ok?'Juste.':'Pas tout à fait. Réponse attendue : '+it.a+'.';upd()}
 function upd(){var s=score(),n=items.length,d=done.filter(function(x){return x!==null}).length;$('sc').textContent='Score : '+s+' / '+n;$('pb').style.width=(d/n*100)+'%';
-if(d===n){var m=cur==='f'?(s<=2?'Commence au palier 1.':s<=4?'Commence au palier 2.':'Commence au palier 3.'):(s>=5?(cur==='3'?'Bravo : tu maîtrises le palier 3.':'5 sur 6 ou plus : tu peux passer au palier '+(+cur+1)+'.'):'Refais une série pour progresser.');
-$('end').innerHTML='<p class="tip"><b>Série terminée.</b> '+esc(m)+'</p>';if(!$('end').dataset.s||$('end').dataset.s!==String(seed)){$('end').dataset.s=String(seed);st.runs.push({d:new Date().toISOString().slice(0,10),p:cur,s:s,n:n});st.runs=st.runs.slice(-200);sv('st',st);stats()}}else $('end').innerHTML=''}
-function stats(){var r=st.runs,h='';if(!r.length){$('stats').innerHTML='<p class="u">Aucune série terminée pour l’instant.</p>';return}
-var by={};r.forEach(function(x){(by[x.p]=by[x.p]||[]).push(x)});h='<table><tr><th>Activité</th><th>Séries</th><th>Meilleur score</th></tr>';
-['f','1','2','3'].forEach(function(p){if(by[p])h+='<tr><td>'+(p==='f'?'Flash':'Palier '+p)+'</td><td>'+by[p].length+'</td><td>'+Math.max.apply(null,by[p].map(function(x){return x.s}))+' / 6</td></tr>'});$('stats').innerHTML=h+'</table>'}
+ if(d===n){var m;
+  if(view==='pos'){m='<b>Série terminée.</b> Départ conseillé :<ul>'+posItems.map(function(p,i){return'<li>'+esc(p.titre)+' : palier '+(done[i]?2:1)+'</li>'}).join('')+'</ul>'}
+  else if(tab==='f')m='<b>Série terminée.</b> '+(s<=2?'Commence au palier 1.':s<=4?'Commence au palier 2.':'Commence au palier 3.');
+  else if(tab==='d')m='<b>Série terminée.</b> '+(s===4?'Bravo, tu as tout compris.':'Relis « Je retiens », puis passe à l’entraînement.');
+  else m='<b>Série terminée.</b> '+(s>=5?(tab==='3'?'Bravo : tu maîtrises le palier 3.':'5 sur 6 ou plus : tu peux passer au palier '+(+tab+1)+'.'):'Refais une série pour progresser.');
+  $('end').innerHTML='<p class="tip">'+m+'</p>';
+  if($('end').dataset.s!==String(seed)){$('end').dataset.s=String(seed);var mm=view==='pos'?'pos':view,pp=view==='pos'?'p':tab;st.runs.push({d:new Date().toISOString().slice(0,10),m:mm,p:pp,s:s,n:n});st.runs=st.runs.slice(-200);st.total=(st.total||0)+1;bump(mm,pp,s);sv('st',st);stats()}}else $('end').innerHTML=''}
+function stats(){var r=st.runs,tot=Math.max(st.total||0,r.length);if(!tot){$('stats').innerHTML='<p class="u">Aucune série terminée pour l’instant.</p>';return}
+ var h='<table><tr><th>Thème</th><th>Palier 1</th><th>Palier 2</th><th>Palier 3</th></tr>',any=false;
+ PED.forEach(function(n){var c=[1,2,3].map(function(p){var b=best(n.id,String(p));return b<0?'–':b+' / 6'});if(c.some(function(x){return x!=='–'})){any=true;h+='<tr><td>'+esc(n.titre)+'</td><td>'+c.join('</td><td>')+'</td></tr>'}});
+ $('stats').innerHTML=any?'<div class="tw">'+h+'</table></div><p class="u">Meilleur score par palier. '+tot+' série'+(tot>1?'s':'')+' terminée'+(tot>1?'s':'')+'.</p>':'<p class="u">'+tot+' série'+(tot>1?'s':'')+' terminée'+(tot>1?'s':'')+' (flash, découverte ou test).</p>'}
 function msg(t){$('msg').textContent=t}
-$('exp').onclick=function(){var b=new Blob([JSON.stringify({app:'mlds-pourcentages',v:1,st:st},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mes-resultats-pourcentages.json';document.body.appendChild(a);a.click();a.remove();msg('Fichier exporté.')};
+$('exp').onclick=function(){var b=new Blob([JSON.stringify({app:'mlds-programme',v:1,st:st},null,1)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='mes-resultats-maths.json';document.body.appendChild(a);a.click();a.remove();msg('Fichier exporté.')};
 $('imp').onclick=function(){$('file').click()};
-$('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||o.app!=='mlds-pourcentages'||!o.st||!Array.isArray(o.st.runs))throw 0;st={runs:o.st.runs.filter(function(x){return x&&typeof x.s==='number'&&typeof x.n==='number'&&/^[f123]$/.test(x.p)}).map(function(x){return{d:String(x.d).slice(0,10),p:x.p,s:x.s,n:x.n}}).slice(-200)};sv('st',st);stats();msg('Résultats importés.')}catch(_){msg('Ce fichier n’est pas valide.')}};r.readAsText(f)};
-$('clr').onclick=function(){if(!st.runs.length){msg('Rien à effacer.');return}if(confirm('Effacer tous tes résultats sur cet appareil ?')){st={runs:[]};sv('st',st);stats();msg('Résultats effacés.')}};
-/* installation */
+$('file').onchange=function(e){var f=e.target.files[0];if(!f)return;var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||o.app!=='mlds-programme'||!o.st||!Array.isArray(o.st.runs))throw 0;
+ var ids=PED.map(function(n){return n.id}).concat(['pos']);
+ var bs={};if(o.st.best&&typeof o.st.best==='object')Object.keys(o.st.best).forEach(function(k){var v=o.st.best[k],q=k.split('|');if(q.length===2&&ids.indexOf(q[0])>=0&&/^[fd123p]$/.test(q[1])&&typeof v==='number'&&v>=0&&v<=10)bs[k]=v});
+ st={best:bs,total:typeof o.st.total==='number'?Math.min(o.st.total,100000):0,runs:o.st.runs.filter(function(x){return x&&typeof x.s==='number'&&typeof x.n==='number'&&ids.indexOf(x.m)>=0&&/^[fd123p]$/.test(x.p)}).map(function(x){return{d:String(x.d).slice(0,10),m:x.m,p:x.p,s:x.s,n:x.n}}).slice(-200)};st.runs.forEach(function(x){bump(x.m,x.p,x.s)});st.total=Math.max(st.total,st.runs.length);sv('st',st);stats();if(view==='home')home();msg('Résultats importés.')}catch(_){msg('Ce fichier n’est pas valide.')}};r.readAsText(f)};
+$('clr').onclick=function(){if(!st.runs.length&&!st.total){msg('Rien à effacer.');return}if(confirm('Effacer tous tes résultats sur cet appareil ?')){st={runs:[],best:{},total:0};sv('st',st);stats();if(view==='home')home();msg('Résultats effacés.')}};
 var dp=null,ios=/iphone|ipad|ipod/i.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1),standalone=matchMedia('(display-mode: standalone)').matches||navigator.standalone;
 function inst(){if(standalone)return;var b=$('instbody');$('inst').hidden=false;
-if(dp){b.innerHTML='<p>Ajoute l’appli à ton écran d’accueil pour la retrouver en un geste.</p><button class="p" id="ib">Installer</button>';$('ib').onclick=function(){dp.prompt();dp=null;$('inst').hidden=true}}
-else if(ios)b.innerHTML='<ol><li>Ouvre cette page dans <b>Safari</b>.</li><li>Touche le bouton <b>Partager</b> (le carré avec une flèche).</li><li>Choisis <b>Sur l’écran d’accueil</b>, puis <b>Ajouter</b>.</li></ol>';
-else b.innerHTML='<p>Dans le menu de ton navigateur (⋮ ou ⋯), choisis <b>Ajouter à l’écran d’accueil</b> ou <b>Installer l’application</b>. Si tu n’as pas ce choix, garde simplement la page dans tes favoris.</p>'}
+ if(dp){b.innerHTML='<p>Ajoute l’appli à ton écran d’accueil pour la retrouver en un geste.</p><button class="p" id="ib">Installer</button>';$('ib').onclick=function(){dp.prompt();dp=null;$('inst').hidden=true}}
+ else if(ios)b.innerHTML='<ol><li>Ouvre cette page dans <b>Safari</b>.</li><li>Touche le bouton <b>Partager</b> (le carré avec une flèche).</li><li>Choisis <b>Sur l’écran d’accueil</b>, puis <b>Ajouter</b>.</li></ol>';
+ else b.innerHTML='<p>Dans le menu de ton navigateur (⋮ ou ⋯), choisis <b>Ajouter à l’écran d’accueil</b> ou <b>Installer l’application</b>. Si tu n’as pas ce choix, garde simplement la page dans tes favoris.</p>'}
 addEventListener('beforeinstallprompt',function(e){e.preventDefault();dp=e;inst()});
 try{if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
-tabs();newSet();draw();stats();inst();
-window.__t={items:function(){return items},chk:chk,st:function(){return st}};
+newSet();draw();inst();
+window.__t={items:function(){return items},st:function(){return st},go:go,seed:function(){return seed}};
 })();
 </script></body></html>
