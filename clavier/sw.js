@@ -2,7 +2,7 @@
    Auteur : Tom Rougeaud · Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
    À chaque mise à jour du jeu : changer le numéro de VERSION ci-dessous
    (sinon les anciens fichiers restent servis). */
-const VERSION = "clavier-v1.1";
+const VERSION = "clavier-v1.2";
 const FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./icon-maskable-512.png"];
 
 // Installation : on met les fichiers en cache (sans activer tout de suite : le jeu propose « Recharger »)

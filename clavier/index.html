@@ -3,7 +3,7 @@
   Clavier en jeu — entraînement à la frappe au clavier (classique + allophone)
   Auteur : Tom Rougeaud
   Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
-  Licence : CC BY-NC 4.0 — version 1.1
+  Licence : CC BY-NC 4.0 — version 1.2
   Un seul fichier, sans CDN, sans traceur : tout reste sur l’appareil.
 -->
 <html lang="fr">
@@ -77,6 +77,7 @@ input.txt{min-height:44px;border:2px solid var(--line);border-radius:14px;paddin
 .zone{background:#fff;border:3px solid var(--ink);border-radius:var(--r);padding:1.2rem 1rem;position:relative}
 .emoji{font-size:clamp(3rem,9vw,5rem);text-align:center;line-height:1}
 .phrase{font:700 clamp(1.6rem,3.6vw,2.6rem)/1.9 Consolas,"Courier New",monospace;white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;text-align:center;margin:.3rem 0;user-select:none}
+.phrase.para{font-size:clamp(1rem,2.1vw,1.45rem);line-height:1.75;text-align:left}
 .phrase span{border-radius:6px;padding:0 .02em}
 .phrase .w{white-space:nowrap}
 .phrase .todo{color:#6D7390}
@@ -98,7 +99,10 @@ input.txt{min-height:44px;border:2px solid var(--line);border-radius:14px;paddin
 .krow{display:flex;gap:.3rem}
 .key{flex:var(--w,1) 1 0;min-width:0;height:clamp(2.4rem,4.4vw,3.5rem);border-radius:.7rem;background:#fff;border:2px solid var(--line);border-bottom-width:5px;display:grid;place-items:center;position:relative;font-weight:800;font-size:clamp(1.1rem,2.6vw,2rem);color:var(--ink)}
 .key.sp{border-color:transparent;background:transparent}
-.key.mod{font-size:clamp(.7rem,1.4vw,1rem);background:#EDF1F9}
+.key.mod{font-size:clamp(.7rem,1.4vw,1rem);background:#EDF1F9;gap:0;align-content:center;line-height:1}
+.key.mod b{font-size:1.5em;font-weight:800}
+.key.mod small{font-size:.62em;font-weight:700;color:var(--soft)}
+.key.mod small:empty{display:none}
 .key .s{position:absolute;top:2px;left:6px;font-size:.45em;color:var(--soft)}
 .key .a{position:absolute;bottom:0;right:6px;font-size:.45em;color:var(--teal-d)}
 .key.hl{background:var(--amber);border-color:var(--amber-d);transform:translateY(3px);border-bottom-width:2px}
@@ -141,7 +145,7 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
 </div></header>
 <main class="wrap" id="app" tabindex="-1"></main>
 <div class="wrap" id="maj-zone" aria-live="polite"></div>
-<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.1 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
+<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.2 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <div id="dlg-zone"></div>
 
@@ -149,7 +153,7 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
   Chaque phrase est tapée telle quelle : l’apostrophe est droite (') car c’est celle du clavier. -->
 <script type="application/json" id="donnees">
 {
- "version": 2,
+ "version": 3,
  "niveauxClassique": [
   {
    "nom": "Lettres et majuscules",
@@ -2306,16 +2310,21 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "fixes": []
   }
  ],
+ "paragraphes": [
+  "Salut Léa ! Le 12/03/2026 à 14:30 : 3 sujets (budget, planning & sécurité) - rien d'urgent. Écris à lea.martin@exemple.fr ou sur #Projet_42 avant 18 h ; dossier C:\\Équipe\\Notes.docx prêt. Facture n° 79 : 4 x 25 = 100 €, +15 % ; 10 * 2 / 4. Réponse : [OK] ou {NON} | note <A+> à 20°. Où est Zoé ? Elle dit \"merci\", près de la forêt, à l'hôtel. Ça dépend du maïs et de Noël. À bientôt ! Portez ce vieux whisky au juge blond qui fume, leçon et dîner de pâtes sûrs.",
+  "Zoé & Fils : offre n° 79, 2 cahiers + 1 stylo = 8,50 € (-20 % jusqu'au 31/12/2026). Écris à contact@exemple.org ou sur #Promo_43 avant 18 h ; \"pas après 19:30\". Réponse : [OUI] ou {NON} | code <B7> à 5° ! Où ranger les pâtes, le maïs et le kiwi ? Dans C:\\Stock\\Prix.xlsx, près de la forêt, après la leçon et le dîner ; c'est sûr. Ça fait 10 * 4 / 2 = 20 €. À bientôt, Noël approche : à l'hôtel, le juge zappe un cigare, whisky blond.",
+  "Aujourd'hui en classe : dictée du lundi 9 mars 2026, note sur 20 (+4 points !). Écris-moi à prof.maths@exemple.com ou sur #Classe_31 avant 17:45 ; fichier C:\\Cours\\Devoir.pdf prêt (3 pages). Calcul : 8 x 5 = 40 ; 40 / 2 * 1 = 20 | résultat [exact] ou {faux} <ça dépend> à 7°. Où est Éloïse ? À l'hôtel, près de la forêt, dîner de pâtes et maïs. Ça fait 12 € & 50 %, \"merci\". Noël arrive, c'est sûr : portez ce vieux whisky au juge blond qui fume."
+ ],
  "tutos": [
   {
    "id": "maj",
    "titre": "Les majuscules",
    "texte": [
-    "Maintiens la touche Maj (la flèche vers le haut) et tape une lettre.",
-    "Relâche Maj, puis continue en minuscule."
+    "Maintiens la touche ⇧ Maj (la flèche vers le haut) et tape une lettre.",
+    "Relâche ⇧ Maj, puis continue en minuscule."
    ],
    "touches": [
-    "Maj",
+    "⇧ Maj",
     "+",
     "B"
    ],
@@ -2326,11 +2335,11 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "titre": "Les chiffres",
    "texte": [
     "Sur un clavier d’ordinateur, les chiffres sont en haut du clavier.",
-    "Maintiens Maj et tape le chiffre : Maj + 2 donne 2.",
-    "Sans Maj, tu obtiens é, è, à… et pas le chiffre."
+    "Maintiens ⇧ Maj et tape le chiffre : ⇧ Maj + 2 donne 2.",
+    "Sans ⇧ Maj, tu obtiens é, è, à… et pas le chiffre."
    ],
    "touches": [
-    "Maj",
+    "⇧ Maj",
     "+",
     "2"
    ],
@@ -2356,10 +2365,10 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "titre": "Écrire une adresse e-mail",
    "texte": [
     "Une adresse e-mail a trois parties : le nom, le @ et le site, par exemple lea.martin@exemple.fr.",
-    "Le point est Maj + point-virgule. Le @ est AltGr + à. Le tiret bas _ est la touche 8, sans Maj."
+    "Le point est ⇧ Maj + point-virgule. Le @ est AltGr + à. Le tiret bas _ est la touche 8, sans ⇧ Maj."
    ],
    "touches": [
-    "Maj + ;",
+    "⇧ Maj + ;",
     "AltGr + à",
     "8"
    ],
@@ -2400,11 +2409,11 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "id": "trema",
    "titre": "Le tréma : ë ï ü",
    "texte": [
-    "Maintiens Maj et tape ^ : cela fait ¨ (rien ne s’affiche encore).",
+    "Maintiens ⇧ Maj et tape ^ : cela fait ¨ (rien ne s’affiche encore).",
     "Tape ensuite la voyelle : ¨ puis e donne ë."
    ],
    "touches": [
-    "Maj + ^",
+    "⇧ Maj + ^",
     "puis",
     "e"
    ],
@@ -2414,13 +2423,13 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "id": "capaccent",
    "titre": "Les majuscules avec accent : É À È Ç",
    "texte": [
-    "Active Verr. Maj (le cadenas, à gauche).",
+    "Active ⇪ Verr. Maj (touche ⇪, à gauche du clavier).",
     "Tape é, à, è ou ç : tu obtiens É, À, È, Ç.",
-    "Désactive Verr. Maj ensuite.",
+    "Désactive ⇪ Verr. Maj ensuite.",
     "Autre méthode (Windows, pavé numérique) : Alt + 0201 donne É, Alt + 0192 donne À, Alt + 0199 donne Ç."
    ],
    "touches": [
-    "Verr. Maj",
+    "⇪ Verr. Maj",
     "puis",
     "é"
    ],
@@ -2444,9 +2453,9 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "id": "signes",
    "titre": "Parenthèses, tiret, guillemets, apostrophe",
    "texte": [
-    "Ces signes sont en haut du clavier, sans Maj.",
+    "Ces signes sont en haut du clavier, sans ⇧ Maj.",
     "( = touche 5 · ) = touche à droite du 0 · - = touche 6 · ' = touche 4 · \" = touche 3 · _ = touche 8.",
-    "% = Maj + ù · + = Maj + = · = = touche = · & = touche 1 · * = à droite de ù."
+    "% = ⇧ Maj + ù · + = ⇧ Maj + = · = = touche = · & = touche 1 · * = à droite de ù."
    ],
    "touches": [
     "(",
@@ -2459,11 +2468,11 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
    "titre": "La ponctuation en français",
    "texte": [
     "En français, on met une espace avant ? ! : ; mais pas avant la virgule et le point.",
-    "? = Maj + virgule · . = Maj + point-virgule · / = Maj + deux-points.",
+    "? = ⇧ Maj + virgule · . = ⇧ Maj + point-virgule · / = ⇧ Maj + deux-points.",
     "! , ; : ont leur touche en bas à droite."
    ],
    "touches": [
-    "Maj",
+    "⇧ Maj",
     "+",
     ","
    ],
@@ -2540,19 +2549,19 @@ const Moteur=(function(){
     if(ch===" ") steps=[{keys:["space"],txt:"Barre d’espace"}];
     else if(MAP[ch]){
       const loc=MAP[ch]; const lab=etiquette(loc.id); let txt;
-      if(loc.mod==="shift") txt="Maj + "+(/[a-z]/i.test(ch)?ch:lab);
+      if(loc.mod==="shift") txt="⇧ Maj + "+(/[a-z]/i.test(ch)?ch:lab);
       else if(loc.mod==="altgr") txt="AltGr + "+lab+((ch==="^"||ch==="`"||ch==="~")?", puis Espace":"");
       else txt="Touche "+lab+(+/^k0-/.test(loc.id)?" (sans Maj)":"");
       steps=[{keys:modKeys(loc).concat([loc.id]),txt:txt}];
     } else if(CIRC[ch]||TREMA[ch]){
       const voy=CIRC[ch]||TREMA[ch]; const v=MAP[voy]; const tr=!!TREMA[ch];
       steps=[
-        {keys:tr?["shiftL",DEADKEY]:[DEADKEY],txt:tr?"Maj + ^ (fait ¨)":"^"},
-        {keys:modKeys(v).concat([v.id]),txt:(v.mod==="shift"?"Maj + ":"")+voy.toLowerCase()}
+        {keys:tr?["shiftL",DEADKEY]:[DEADKEY],txt:tr?"⇧ Maj + ^ (fait ¨)":"^"},
+        {keys:modKeys(v).concat([v.id]),txt:(v.mod==="shift"?"⇧ Maj + ":"")+voy.toLowerCase()}
       ];
     } else if(CAPACC[ch]){
       const loc=MAP[CAPACC[ch]];
-      steps=[{keys:["caps"],txt:"Verr. Maj"},{keys:[loc.id],txt:CAPACC[ch]}];
+      steps=[{keys:["caps"],txt:"⇪ Verr. Maj"},{keys:[loc.id],txt:CAPACC[ch]}];
     }
     if(!steps) return null;
     return {steps:steps,text:steps.map(function(s){return s.txt;}).join("  puis  ")};
@@ -2607,6 +2616,16 @@ const Moteur=(function(){
   }
   // Temps accordé par phrase en défi chrono (plus large pour les niveaux 8 à 10 : caractères rares)
   function limiteSec(len,allo,niv){return Math.ceil(len*(allo?1.6:((niv||0)>=8?1.4:1.0)))+8;}
+  // Temps du défi paragraphe : coût de chaque caractère (en secondes) + 15 s pour lire.
+  //  0,6 s lettre minuscule, espace ou signe direct · 1,0 s avec Maj (majuscule, chiffre, ? . / …)
+  //  1,6 s avec AltGr (@ # { } [ ] | \ €) · 1,8 s en deux temps (ê ë … ou majuscule accentuée)
+  function coutCar(c){
+    if(c===" ") return 0.6; const h=howTo(c); if(!h) return 1.0;
+    if(h.steps.length>1) return 1.8;
+    const k=h.steps[0].keys; if(k.indexOf("altgr")>=0) return 1.6;
+    return (k.indexOf("shiftL")>=0||k.indexOf("shiftR")>=0)?1.0:0.6;
+  }
+  function limitePara(t){let s=15;for(let i=0;i<t.length;i++)s+=coutCar(t[i]);return Math.ceil(s);}
   function pickSerie(len,n,rnd){ // un exercice tiré au hasard dans chaque tranche, ordre croissant
     const out=[]; if(n>=len){for(let i=0;i<len;i++)out.push(i);return out;}
     for(let k=0;k<n;k++){const a=Math.floor(k*len/n),b=Math.floor((k+1)*len/n);out.push(a+Math.floor(rnd()*(b-a)));}
@@ -2630,11 +2649,13 @@ const Moteur=(function(){
     const lim=o.allo?3000:2000;
     const flu=times.length?times.filter(function(t){return t.ms<=lim;}).length/times.length:0;
     const cpm=ms>0?ok/(ms/60000):0;
-    const vit=borne(cpm/(o.allo?90:150));
-    const fin=res.length?faits/res.length:0;
+    const vit=borne(cpm/(o.para?100:(o.allo?90:150)));
+    const fin=o.para?borne(ok/Math.max(1,L)):(res.length?faits/res.length:0);
     const parts=o.chrono
-      ?[{k:"Précision",v:Math.round(45*prec),max:45},{k:"Fluidité",v:Math.round(20*flu),max:20},{k:"Vitesse",v:Math.round(25*vit),max:25},{k:"Exercices finis",v:Math.round(10*fin),max:10}]
+      ?[{k:"Précision",v:Math.round(45*prec),max:45},{k:"Fluidité",v:Math.round(20*flu),max:20},{k:"Vitesse",v:Math.round(25*vit),max:25},{k:o.para?"Paragraphe recopié":"Exercices finis",v:Math.round(10*fin),max:10}]
       :[{k:"Précision",v:Math.round(65*prec),max:65},{k:"Fluidité",v:Math.round(35*flu),max:35}];
+    // Paragraphe non fini : précision, fluidité et vitesse sont proportionnelles à la part recopiée
+    if(o.para) parts.forEach(function(p,i){if(i<3)p.v=Math.round(p.v*fin);});
     const score=parts.reduce(function(s,p){return s+p.v;},0);
     // statistiques par caractère attendu
     const pc={};
@@ -2647,7 +2668,7 @@ const Moteur=(function(){
       x.moy=moy; x.diff=x.err*3+(lent?1+(moy-base)/1000:0); return x;
     }).filter(function(x){return x.diff>0 && x.c!==" " && x.c!=="⌫" || (x.diff>0 && x.c===" " && x.err>0);})
       .sort(function(a,b){return b.diff-a.diff;}).slice(0,5);
-    return {L:L,err:err,dels:dels,ms:ms,faits:faits,total:res.length,cpm:Math.round(cpm),score:score,parts:parts,rang:rang(score),dur:dur,base:base};
+    return {ok:ok,L:L,err:err,dels:dels,ms:ms,faits:faits,total:res.length,cpm:Math.round(cpm),score:score,parts:parts,rang:rang(score),dur:dur,base:base};
   }
   /* --- Fabrique de phrases : modèles à trous + tirage au hasard --- */
   const PRENOMS=["lea","hugo","nina","tom","sofia","karim","lina","theo","zoe","noe","ines","amina","omar","jade","louis","maya"];
@@ -2707,7 +2728,7 @@ const Moteur=(function(){
     }
     return out;
   }
-  return {GEN:GEN,fabriquer:fabriquer,tirerPhrase:tirerPhrase,fabriquerSerie:fabriquerSerie,LAYOUT:LAYOUT,MAP:MAP,howTo:howTo,nom:nom,tutoPour:tutoPour,premiereFaute:premiereFaute,nouvelExo:nouvelExo,traiter:traiter,terminer:terminer,limiteSec:limiteSec,pickSerie:pickSerie,bilan:bilan,norm:norm,rang:rang};
+  return {GEN:GEN,fabriquer:fabriquer,tirerPhrase:tirerPhrase,fabriquerSerie:fabriquerSerie,LAYOUT:LAYOUT,MAP:MAP,howTo:howTo,nom:nom,tutoPour:tutoPour,premiereFaute:premiereFaute,nouvelExo:nouvelExo,traiter:traiter,terminer:terminer,limiteSec:limiteSec,limitePara:limitePara,coutCar:coutCar,pickSerie:pickSerie,bilan:bilan,norm:norm,rang:rang};
 })();
 // MOTEUR-FIN
 
@@ -2756,7 +2777,7 @@ const PREFS_DEF={mode:"classique",n:10,niveau:0,chrono:false,pseudo:"",aide:true
 // Valide des réglages (sauvegarde ou import) : valeurs bornées, champs connus seulement
 function nettoyerPrefs(p){
   const o=Object.assign({},PREFS_DEF); if(!p||typeof p!=="object") return o;
-  if(p.mode==="classique"||p.mode==="allophone") o.mode=p.mode;
+  if(p.mode==="classique"||p.mode==="allophone") o.mode=p.mode; // le mode paragraphe a son propre bouton
   if([10,25,50].indexOf(p.n)>=0) o.n=p.n;
   if(Number.isInteger(p.niveau)&&p.niveau>=0&&p.niveau<=10) o.niveau=p.niveau;
   o.chrono=p.chrono===true; o.aide=p.aide!==false;
@@ -2769,22 +2790,25 @@ function nettoyerHist(a){
   return a.slice(-50).map(function(x){
     if(!x||typeof x!=="object") return null;
     const n=function(v,mx){v=Number(v);return isFinite(v)?Math.max(0,Math.min(mx,Math.round(v))):0;};
-    return {d:/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:"0000-00-00",mode:x.mode==="allophone"?"allophone":"classique",
-      n:[10,25,50].indexOf(x.n)>=0?x.n:10,niv:n(x.niv,10),chrono:x.chrono===true,score:n(x.score,100),err:n(x.err,9999),dels:n(x.dels,9999),ms:n(x.ms,36000000),
+    return {d:/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:"0000-00-00",mode:x.mode==="allophone"?"allophone":(x.mode==="paragraphe"?"paragraphe":"classique"),
+      n:[1,10,25,50].indexOf(x.n)>=0?x.n:10,niv:n(x.niv,10),chrono:x.chrono===true,score:n(x.score,100),err:n(x.err,9999),dels:n(x.dels,9999),ms:n(x.ms,36000000),
       hard:Array.isArray(x.hard)?x.hard.slice(0,3).map(function(c){return String(c).slice(0,1);}):[]};
   }).filter(Boolean);
 }
 function nettoyerBests(b){
   const o={}; if(!b||typeof b!=="object") return o;
   Object.keys(b).forEach(function(k){
-    if(/^(classique|allophone)-(10|25|50)-(libre|chrono)(-p|-n(10|[1-9]))?$/.test(k)&&b[k]&&typeof b[k].score==="number")
+    if(/^((classique|allophone)-(10|25|50)-(libre|chrono)(-p|-n(10|[1-9]))?|paragraphe-1-chrono-p)$/.test(k)&&b[k]&&typeof b[k].score==="number")
       o[k]={score:Math.max(0,Math.min(100,Math.round(b[k].score))),d:/^\d{4}-\d{2}-\d{2}$/.test(b[k].d)?b[k].d:"0000-00-00"};
   });
   return o;
 }
-const S={prefs:nettoyerPrefs(Stock.getJ("prefs",null)),hist:nettoyerHist(Stock.getJ("hist",[])),bests:nettoyerBests(Stock.getJ("bests",{})),
+// Progression pour débloquer le mode paragraphe : phrases finies sans aucune erreur (cumul)
+const BONNES_REQUIS=20;
+function nettoyerProg(x){const n=x&&typeof x==="object"?Number(x.bonnes):0;return {bonnes:isFinite(n)?Math.max(0,Math.min(100000,Math.round(n))):0};}
+const S={prog:nettoyerProg(Stock.getJ("prog",null)),prefs:nettoyerPrefs(Stock.getJ("prefs",null)),hist:nettoyerHist(Stock.getJ("hist",[])),bests:nettoyerBests(Stock.getJ("bests",{})),
   ecran:"accueil",sess:null,tLoad:Date.now(),touched:false,propose:false,dlg:null};
-function sauver(){Stock.setJ("prefs",S.prefs);Stock.setJ("hist",S.hist);Stock.setJ("bests",S.bests);}
+function sauver(){Stock.setJ("prefs",S.prefs);Stock.setJ("hist",S.hist);Stock.setJ("bests",S.bests);Stock.setJ("prog",S.prog);}
 function appliquerTaille(){document.documentElement.style.setProperty("--fs",S.prefs.fs);}
 
 /* ===== D. ÉCRANS ET NAVIGATION ===== */
@@ -2825,6 +2849,17 @@ function groupe(nom,options,courant,onchange){
     return h("label",{},inp,h("span",{text:o.l}));
   }));
 }
+// Carte du mode paragraphe : verrouillée tant qu’il n’y a pas 20 phrases sans erreur
+function carteParagraphe(){
+  const b=Math.min(S.prog.bonnes,BONNES_REQUIS), ouvert=S.prog.bonnes>=BONNES_REQUIS;
+  const t0=DATA.paragraphes.reduce(function(m,t){return Math.min(m,Moteur.limitePara(t));},1e9);
+  return h("div",{class:"card"},h("h2",{text:ouvert?"📄 Défi paragraphe":"🔒 Défi paragraphe"}),
+    ouvert
+      ?h("p",{text:"Recopie un long texte avec tous les caractères : accents, majuscules, chiffres, @ # { } [ ] | € … Le compte à rebours part à ta première touche (environ "+Math.floor(t0/60)+" min 30 s au total)."})
+      :h("p",{text:"Se débloque après "+BONNES_REQUIS+" phrases tapées sans aucune erreur. Tu en as "+b+" / "+BONNES_REQUIS+"."}),
+    h("div",{class:"bar","aria-hidden":"true"},h("i",{style:"width:"+Math.round(b/BONNES_REQUIS*100)+"%"})),
+    h("p",{style:"text-align:center"},h("button",{class:"btn big",type:"button",text:ouvert?"▶ Lancer le défi paragraphe":"🔒 Verrouillé ("+b+" / "+BONNES_REQUIS+")",disabled:!ouvert,onclick:function(){lancer(true);}})));
+}
 ECRANS.accueil=function(){
   const P=S.prefs, allo=P.mode==="allophone";
   const desc=h("p",{class:"note",id:"desc-mode"});
@@ -2861,7 +2896,8 @@ ECRANS.accueil=function(){
       h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:P.aide,onchange:function(e){P.aide=e.target.checked;sauver();}})," Montrer la touche à taper sur le clavier"),
       h("p",{},h("label",{for:"pseudo",text:"Pseudo (facultatif, pas ton vrai nom) : "}),pseudo),
       h("p",{class:"note",id:"pseudo-note",text:"Le pseudo reste sur cet appareil. Il apparaît seulement sur ton résultat."}),
-      h("p",{style:"text-align:center"},h("button",{class:"btn big",type:"button",text:"▶ Jouer",onclick:lancer}))),
+      h("p",{style:"text-align:center"},h("button",{class:"btn big",type:"button",text:"▶ Jouer",onclick:function(){lancer(false);}}))),
+    carteParagraphe(),
     h("div",{class:"grid2"},
       h("div",{class:"card"},h("h3",{text:"📘 Tutos"}),h("p",{text:"@, accents, tréma, majuscules avec accent : comment les taper."}),h("button",{class:"btn ghost",type:"button",text:"Voir les tutos",onclick:function(){montrer("tuto");}})),
       h("div",{class:"card"},h("h3",{text:"🏅 Records"}),h("p",{text:"Tes meilleurs scores et tes dernières parties."}),h("button",{class:"btn ghost",type:"button",text:"Voir mes records",onclick:function(){montrer("records");}}))));
@@ -2886,7 +2922,7 @@ ECRANS.tuto=function(opt){
 ECRANS.apropos=function(){
   return h("section",{},h("h1",{text:"À propos"}),
     h("div",{class:"card"},
-      h("p",{text:"Clavier en jeu, version 1.1. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
+      h("p",{text:"Clavier en jeu, version 1.2. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
       h("h2",{text:"Comment est calculé le score /100 ?"}),
       h("ul",{},
         h("li",{text:"Précision : moins d’erreurs, plus de points. Une série de fautes d’affilée compte pour une seule erreur."}),
@@ -2894,6 +2930,17 @@ ECRANS.apropos=function(){
         h("li",{text:"Défi chrono seulement : vitesse (signes par minute) et nombre d’exercices finis dans le temps."}),
         h("li",{text:"Sans chrono : seulement précision (65) et fluidité (35). Le temps total est affiché, mais ne compte pas."}),
         h("li",{text:"Le score ne tient pas compte du niveau : compare seulement des parties de même difficulté. Les niveaux 7 à 10 (e-mails, symboles rares) sont volontairement plus durs."})),
+      h("h2",{text:"Comment est calculé le temps du défi chrono ?"}),
+      h("ul",{},
+        h("li",{text:"Par phrase : 1 seconde par caractère + 8 secondes de marge (soit environ 60 signes par minute). Niveaux 8 à 10 : 1,4 s par caractère. Mode allophone : 1,6 s par caractère."}),
+        h("li",{text:"Le compte à rebours démarre à ta première touche, pas à l’affichage de la phrase. Il s’arrête pendant la pause."}),
+        h("li",{text:"Ces durées sont des estimations prudentes, pas des mesures faites sur de vrais élèves : elles pourront être ajustées."})),
+      h("h2",{text:"Le défi paragraphe"}),
+      h("ul",{},
+        h("li",{text:"Il se débloque après 20 phrases finies sans aucune erreur (le total s’additionne d’une partie à l’autre)."}),
+        h("li",{text:"Chaque paragraphe contient tous les caractères du jeu : lettres, accents, majuscules accentuées, chiffres, @ # { } [ ] | \\ € et les autres signes."}),
+        h("li",{text:"Temps accordé : 15 secondes pour lire, puis un coût par caractère : 0,6 s pour une lettre minuscule ou l’espace, 1 s avec ⇧ Maj (majuscule, chiffre, ? . /), 1,6 s avec AltGr (@ # { } [ ] | \\ €), 1,8 s pour un accent en deux temps (ê, ë, majuscule accentuée). Cela donne environ 5 min 30 s, soit 80 signes par minute."}),
+        h("li",{text:"Score : précision 45, fluidité 20, vitesse 25 (objectif 100 signes/min) et part du paragraphe recopiée 10. Si le temps est écoulé avant la fin, précision, fluidité et vitesse sont multipliées par la part recopiée (la moitié recopiée donne environ la moitié des points)."})),
       h("h2",{text:"Les niveaux et le tirage au hasard"}),
       h("p",{text:"Classique : 10 niveaux (lettres, accents, chiffres, ponctuation, tréma, parenthèses et %, e-mails et @, calculs et fichiers, phrases mixtes, défi expert). Allophone : 8 niveaux. Les phrases sont fabriquées à partir de modèles à trous remplis au hasard, avec des mots qui vont ensemble. Les adresses e-mail, sites et mots de passe sont inventés : ils n’existent pas."}),
       h("h2",{text:"Limites connues"}),
@@ -2917,7 +2964,7 @@ ECRANS.confid=function(){
 };
 ECRANS.records=function(){
   const cles=Object.keys(S.bests).sort();
-  const nomCle=function(k){const p=k.split("-");const d=p[3]==="p"?"progressive":(p[3]?"niveau "+p[3].slice(1):"progressive");return (p[0]==="allophone"?"Allophone":"Classique")+" · "+p[1]+" exercices · "+(p[2]==="chrono"?"chrono":"sans chrono")+" · "+d;};
+  const nomCle=function(k){if(k.indexOf("paragraphe")===0)return "📄 Défi paragraphe · chrono";const p=k.split("-");const d=p[3]==="p"?"progressive":(p[3]?"niveau "+p[3].slice(1):"progressive");return (p[0]==="allophone"?"Allophone":"Classique")+" · "+p[1]+" exercices · "+(p[2]==="chrono"?"chrono":"sans chrono")+" · "+d;};
   const fich=h("input",{type:"file",accept:".json,application/json",hidden:true,"aria-label":"Choisir un fichier à importer",onchange:function(e){importer(e.target.files[0]);e.target.value="";}});
   return h("section",{},h("h1",{text:"🏅 Records"}),
     h("div",{class:"card"},h("h2",{text:"Meilleurs scores"}),
@@ -2926,7 +2973,7 @@ ECRANS.records=function(){
       :h("p",{text:"Pas encore de partie. Joue pour faire apparaître tes records !"})),
     h("div",{class:"card"},h("h2",{text:"Dernières parties"}),
       S.hist.length?h("table",{},h("thead",{},h("tr",{},["Date","Mode","Score","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
-        h("tbody",{},S.hist.slice(-10).reverse().map(function(x){return h("tr",{},[x.d,(x.mode==="allophone"?"Allo":"Classique")+" "+x.n+(x.chrono?" ⏱":"")+(x.niv?" niv."+x.niv:" prog."),x.score+"/100",x.err,x.dels,dureeTxt(x.ms)].map(function(c){return h("td",{text:String(c)});}));})))
+        h("tbody",{},S.hist.slice(-10).reverse().map(function(x){return h("tr",{},[x.d,x.mode==="paragraphe"?"📄 Paragraphe ⏱":(x.mode==="allophone"?"Allo":"Classique")+" "+x.n+(x.chrono?" ⏱":"")+(x.niv?" niv."+x.niv:" prog."),x.score+"/100",x.err,x.dels,dureeTxt(x.ms)].map(function(c){return h("td",{text:String(c)});}));})))
       :h("p",{text:"Rien pour le moment."})),
     h("div",{class:"card"},h("h2",{text:"Mes données"}),
       h("p",{class:"note",text:"Tout reste sur cet appareil. Exporte pour garder une copie ou changer d’appareil."}),
@@ -2935,11 +2982,11 @@ ECRANS.records=function(){
         h("button",{class:"btn ghost",type:"button",text:"Importer",onclick:function(){fich.click();}}),fich,
         h("button",{class:"btn danger",type:"button",text:"Effacer mes données",onclick:function(){
           dialogue({titre:"Effacer toutes tes données ?",texte:["Les scores, les parties et les réglages seront supprimés sur cet appareil."],boutons:[
-            {l:"Annuler",ghost:true},{l:"Tout effacer",danger:true,fn:function(){["prefs","hist","bests"].forEach(Stock.del);S.prefs=nettoyerPrefs(null);S.hist=[];S.bests={};appliquerTaille();toast("Données effacées.");montrer("records");}}]});}}))));
+            {l:"Annuler",ghost:true},{l:"Tout effacer",danger:true,fn:function(){["prefs","hist","bests","prog"].forEach(Stock.del);S.prefs=nettoyerPrefs(null);S.hist=[];S.bests={};S.prog=nettoyerProg(null);appliquerTaille();toast("Données effacées.");montrer("records");}}]});}}))));
 };
 function exporter(){
   try{
-    const blob=new Blob([JSON.stringify({app:"clavier",version:1,prefs:S.prefs,hist:S.hist,bests:S.bests},null,1)],{type:"application/json"});
+    const blob=new Blob([JSON.stringify({app:"clavier",version:1,prefs:S.prefs,hist:S.hist,bests:S.bests,prog:S.prog},null,1)],{type:"application/json"});
     const a=h("a",{href:URL.createObjectURL(blob),download:"clavier-en-jeu-donnees.json"});
     document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
   }catch(e){toast("Export impossible sur ce navigateur.");}
@@ -2951,9 +2998,9 @@ function importer(f){
   rd.onload=function(){
     let o=null; try{o=JSON.parse(String(rd.result));}catch(e){}
     if(!o||o.app!=="clavier"||o.version!==1){toast("Fichier non reconnu : rien n’a été changé.");return;}
-    const p=nettoyerPrefs(o.prefs), hi=nettoyerHist(o.hist), be=nettoyerBests(o.bests);
+    const p=nettoyerPrefs(o.prefs), hi=nettoyerHist(o.hist), be=nettoyerBests(o.bests), pr=nettoyerProg(o.prog);
     dialogue({titre:"Importer ce fichier ?",texte:["Tes données actuelles seront remplacées par celles du fichier ("+hi.length+" parties)."],boutons:[
-      {l:"Annuler",ghost:true},{l:"Importer",fn:function(){S.prefs=p;S.hist=hi;S.bests=be;appliquerTaille();sauver();toast("Import terminé.");montrer("records");}}]});
+      {l:"Annuler",ghost:true},{l:"Importer",fn:function(){S.prefs=p;S.hist=hi;S.bests=be;S.prog=pr;appliquerTaille();sauver();toast("Import terminé.");montrer("records");}}]});
   };
   rd.onerror=function(){toast("Lecture du fichier impossible.");};
   rd.readAsText(f);
@@ -2980,7 +3027,13 @@ function dialogue(o){
 
 /* ===== E. JEU ===== */
 let T={iv:0,to:0,clavier:null}; // minuteurs et touches du clavier visuel
-function lancer(){
+function lancer(para){
+  if(para===true){ // défi paragraphe : un seul long texte, toujours chronométré
+    if(S.prog.bonnes<BONNES_REQUIS) return;
+    const t=DATA.paragraphes[Math.floor(Math.random()*DATA.paragraphes.length)];
+    S.sess={items:[{t:t,niv:"P",e:""}],niveaux:[],niveau:0,i:0,res:[],times:[],errs:[],ex:null,mode:"classique",chrono:true,n:1,para:true,serie:0,serieMax:0,pause:false,verrou:false,debut:performance.now()};
+    montrer("jeu",{force:true}); return;
+  }
   const P=S.prefs, nv=niveauxDe(P.mode), nf=Math.min(P.niveau,nv.length);
   const items=Moteur.fabriquerSerie(nv,P.n,nf,Math.random);
   S.sess={items:items,niveaux:nv,niveau:nf,i:0,res:[],times:[],errs:[],ex:null,mode:P.mode,chrono:P.chrono,n:P.n,serie:0,serieMax:0,pause:false,verrou:false,debut:performance.now()};
@@ -2991,7 +3044,8 @@ function arreterJeu(){clearInterval(T.iv);clearTimeout(T.to);S.sess=null;}
 function construireClavier(){
   const map={}; const kb=h("div",{class:"kb","aria-hidden":"true"});
   const spacer=function(w){return h("div",{class:"key sp",style:"--w:"+w});};
-  const mod=function(id,l,w){const e=h("div",{class:"key mod",style:"--w:"+w,text:l});map[id]=e;return e;};
+  // Touche spéciale : grand symbole + petit nom ; id=null → touche décorative (non utilisée dans le jeu)
+  const mod=function(id,sym,nom,w){const e=h("div",{class:"key mod",style:"--w:"+w},h("b",{text:sym}),h("small",{text:nom}));if(id)map[id]=e;return e;};
   const touche=function(r,c){
     const k=Moteur.LAYOUT[r][c]; const e=h("div",{class:"key"},h("span",{text:/^[a-z]$/.test(k[0])?k[0].toUpperCase():k[0]}));
     if(k[1]&&!/^[a-z]$/.test(k[0])) e.appendChild(h("span",{class:"s",text:k[1]}));
@@ -2999,11 +3053,11 @@ function construireClavier(){
     map["k"+r+"-"+c]=e;return e;
   };
   const rangee=function(){return h("div",{class:"krow"},[].slice.call(arguments));};
-  const r0=[];for(let c=0;c<13;c++)r0.push(touche(0,c));r0.push(mod("back","⌫ Effacer",2));
-  const r1=[spacer(1.5)];for(let c=0;c<12;c++)r1.push(touche(1,c));r1.push(spacer(1.5));
-  const r2=[mod("caps","Verr. Maj",1.8)];for(let c=0;c<12;c++)r2.push(touche(2,c));r2.push(spacer(1.2));
-  const r3=[mod("shiftL","⇧ Maj",1.4)];for(let c=0;c<11;c++)r3.push(touche(3,c));r3.push(mod("shiftR","⇧ Maj",2.6));
-  const r4=[spacer(3.5),mod("space","Espace",7),mod("altgr","AltGr",1.5),spacer(3)];
+  const r0=[];for(let c=0;c<13;c++)r0.push(touche(0,c));r0.push(mod("back","⌫","Effacer",2));
+  const r1=[mod(null,"⇥","Tab",1.5)];for(let c=0;c<12;c++)r1.push(touche(1,c));r1.push(mod(null,"↵","Entrée",1.5));
+  const r2=[mod("caps","⇪","Verr. Maj",1.8)];for(let c=0;c<12;c++)r2.push(touche(2,c));r2.push(spacer(1.2));
+  const r3=[mod("shiftL","⇧","Maj",1.4)];for(let c=0;c<11;c++)r3.push(touche(3,c));r3.push(mod("shiftR","⇧","Maj",2.6));
+  const r4=[mod(null,"Ctrl","",1.5),mod(null,"⊞","",1.2),mod(null,"Alt","",1.2),mod("space","␣","Espace",6),mod("altgr","Alt Gr","",1.2),mod(null,"⊞","",1.2),mod(null,"☰","",1.2),mod(null,"Ctrl","",1.5)];
   [r0,r1,r2,r3,r4].forEach(function(r){kb.appendChild(rangee.apply(null,r));});
   return {kb:kb,map:map};
 }
@@ -3017,7 +3071,7 @@ ECRANS.jeu=function(){
   return h("section",{},
     h("div",{class:"hud"},
       h("span",{class:"chip",id:"c-niv"}),h("span",{class:"chip",id:"c-num"}),h("span",{class:"chip",id:"c-temps"}),h("span",{class:"chip",id:"c-serie",title:"Phrases sans erreur d’affilée"}),
-      h("span",{class:"chip",id:"c-caps",hidden:true,text:"🔒 Verr. Maj activée"}),
+      h("span",{class:"chip",id:"c-caps",hidden:true,text:"⇪ Verr. Maj activée"}),
       h("button",{class:"btn ghost",type:"button",text:"⏸ Pause",onclick:function(){pause(true);}}),
       h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:S.prefs.aide,onchange:function(e){S.prefs.aide=e.target.checked;sauver();majClavier();}})," Aide clavier")),
     h("div",{class:"bar"},h("i",{id:"progres"})),
@@ -3058,12 +3112,13 @@ function prochainExo(){
   const s=S.sess; if(!s) return;
   if(s.i>=s.items.length){finDePartie();return;}
   const it=s.items[s.i]; s.ex=Moteur.nouvelExo(it.t); s.verrou=false;
-  s.limite=Moteur.limiteSec(it.t.length,s.mode==="allophone",it.niv);
-  $("#c-niv").textContent="Niveau "+it.niv+" : "+s.niveaux[it.niv-1].nom;
+  s.limite=s.para?Moteur.limitePara(it.t):Moteur.limiteSec(it.t.length,s.mode==="allophone",it.niv);
+  $("#phrase").classList.toggle("para",!!s.para);
+  $("#c-niv").textContent=s.para?"📄 Défi paragraphe":"Niveau "+it.niv+" : "+s.niveaux[it.niv-1].nom;
   const saisie=$("#saisie"); saisie.value=""; saisie.disabled=false;
   $("#emoji").textContent=it.e||""; $("#emoji").hidden=!it.e;
   $("#msg").textContent="";$("#msg").className="msg";
-  $("#c-num").textContent="Exercice "+(s.i+1)+" / "+s.items.length;
+  $("#c-num").textContent=s.para?it.t.length+" signes":"Exercice "+(s.i+1)+" / "+s.items.length;
   $("#progres").style.width=Math.round(s.i/s.items.length*100)+"%";
   majSerieChip(); dessiner(); majClavier(); majTemps();
   clearInterval(T.iv); T.iv=setInterval(majTemps,150);
@@ -3075,7 +3130,7 @@ function majTemps(){
   if(!s.chrono){c.textContent="Sans chrono";c.classList.remove("warn");return;}
   const el=s.ex.started&&!s.ex.done?(performance.now()-s.ex.tFirst)/1000:0;
   const reste=Math.max(0,Math.ceil(s.limite-el));
-  c.textContent="⏱ "+reste+" s"; c.classList.toggle("warn",reste<=5);
+  c.textContent="⏱ "+(s.para?Math.floor(reste/60)+":"+String(reste%60).padStart(2,"0"):reste+" s"); c.classList.toggle("warn",reste<=(s.para?30:5));
   if(s.ex.started&&!s.ex.done&&!s.verrou&&el>=s.limite) finirExo(true);
 }
 // Affiche la phrase : mots insécables, caractères justes en vert, faux en rouge
@@ -3107,6 +3162,7 @@ function surSaisie(){
   const v=Moteur.traiter(s.ex,saisie.value,performance.now());
   if(saisie.value!==v) saisie.value=v;
   dessiner(); majClavier();
+  if(s.para&&!s.ex.done)$("#progres").style.width=Math.round(Math.min(s.ex.okLen,s.ex.target.length)/s.ex.target.length*100)+"%";
   const fw=Moteur.premiereFaute(s.ex.target,v);
   const m=$("#msg"); m.textContent=fw!==-1?"Efface avec ⌫ puis recommence.":""; m.className="msg"+(fw!==-1?" ko":"");
   if(s.ex.done) finirExo(false);
@@ -3115,13 +3171,17 @@ function finirExo(tempsEcoule){
   const s=S.sess; if(!s||s.verrou) return; s.verrou=true; clearInterval(T.iv);
   const r=Moteur.terminer(s.ex,performance.now()); r.niv=s.items[s.i].niv; s.res.push(r);
   s.times=s.times.concat(s.ex.times); s.errs=s.errs.concat(s.ex.errList);
+  if(!s.para&&r.done&&r.errors===0){ // phrase sans erreur : compte pour débloquer le paragraphe
+    const avant=S.prog.bonnes; S.prog.bonnes=Math.min(100000,avant+1); sauver();
+    if(avant<BONNES_REQUIS&&S.prog.bonnes>=BONNES_REQUIS) toast("📄 Défi paragraphe débloqué ! Retrouve-le sur l’accueil.");
+  }
   s.serie=(r.done&&r.errors===0)?s.serie+1:0; s.serieMax=Math.max(s.serieMax,s.serie); majSerieChip();
   $("#saisie").disabled=true;
   const m=$("#msg"); m.className="msg "+(r.done?"ok":"ko");
   m.textContent="";
   if(r.done){m.appendChild(document.createTextNode((r.errors===0?"✔ Parfait ! ":"✔ Terminé. ")));m.appendChild(h("span",{class:"stars pop",text:"★".repeat(r.stars)+"☆".repeat(3-r.stars)}));}
-  else m.textContent="⏱ Temps écoulé. On passe à la suite.";
-  s.i++; T.to=setTimeout(prochainExo,r.done?1000:1500);
+  else m.textContent=s.para?"⏱ Temps écoulé !":"⏱ Temps écoulé. On passe à la suite.";
+  s.i++; T.to=setTimeout(prochainExo,s.para?1200:(r.done?1000:1500));
 }
 function pause(on){
   const s=S.sess; if(!s||!s.ex||s.verrou||S.ecran!=="jeu") return;
@@ -3139,26 +3199,26 @@ document.addEventListener("visibilitychange",function(){if(document.hidden&&S.ec
 /* ===== F. FIN DE PARTIE ===== */
 function finDePartie(){
   const s=S.sess; clearInterval(T.iv);
-  const b=Moteur.bilan(s.res,s.times,s.errs,{chrono:s.chrono,allo:s.mode==="allophone"});
-  const cle=s.mode+"-"+s.n+"-"+(s.chrono?"chrono":"libre")+(s.niveau?"-n"+s.niveau:"-p"), ancien=S.bests[cle];
+  const b=Moteur.bilan(s.res,s.times,s.errs,{chrono:s.chrono,allo:s.mode==="allophone",para:!!s.para});
+  const cle=s.para?"paragraphe-1-chrono-p":s.mode+"-"+s.n+"-"+(s.chrono?"chrono":"libre")+(s.niveau?"-n"+s.niveau:"-p"), ancien=S.bests[cle];
   const record=!ancien||b.score>ancien.score;
   if(record) S.bests[cle]={score:b.score,d:jourLocal()};
-  S.hist.push({d:jourLocal(),mode:s.mode,n:s.n,niv:s.niveau,chrono:s.chrono,score:b.score,err:b.err,dels:b.dels,ms:Math.round(b.ms),hard:b.dur.slice(0,3).map(function(x){return x.c;})});
+  S.hist.push({d:jourLocal(),mode:s.para?"paragraphe":s.mode,n:s.n,niv:s.niveau,chrono:s.chrono,score:b.score,err:b.err,dels:b.dels,ms:Math.round(b.ms),hard:b.dur.slice(0,3).map(function(x){return x.c;})});
   S.hist=S.hist.slice(-50); sauver();
-  S.dernier={b:b,res:s.res,mode:s.mode,n:s.n,niveau:s.niveau,chrono:s.chrono,serieMax:s.serieMax,record:record,premier:!ancien};
+  S.dernier={b:b,res:s.res,mode:s.mode,para:!!s.para,limite:s.limite,n:s.n,niveau:s.niveau,chrono:s.chrono,serieMax:s.serieMax,record:record,premier:!ancien};
   montrer("fin",{force:true});
 }
 function texteResultat(d){
   const b=d.b, pseudo=S.prefs.pseudo?(S.prefs.pseudo+" — "):"";
   return pseudo+"Clavier en jeu : "+b.score+" / 100 ("+b.rang.t+")\n"
-    +(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.niveau?"niveau "+d.niveau:"difficulté progressive")+", "+(d.chrono?"défi chrono":"sans chrono")+"\n"
+    +(d.para?"Défi paragraphe, temps accordé "+dureeTxt(d.limite*1000):(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.niveau?"niveau "+d.niveau:"difficulté progressive")+", "+(d.chrono?"défi chrono":"sans chrono"))+"\n"
     +"Erreurs : "+b.err+" · Effacements : "+b.dels+" · Temps : "+dureeTxt(b.ms)+" · Vitesse : "+b.cpm+" signes/min\n"
     +(b.dur.length?"Touches à travailler : "+b.dur.map(function(x){return x.c===" "?"espace":x.c;}).join(" "):"Aucune touche difficile");
 }
 ECRANS.fin=function(){
   const d=S.dernier; if(!d) return h("p",{text:"Pas de résultat."});
   const b=d.b;
-  const tuiles=[["⏱",dureeTxt(b.ms),"Temps de frappe"],["✖",b.err,"Erreurs"],["⌫",b.dels,"Effacements"],["⚡",b.cpm,"Signes par minute"],["✔",b.faits+" / "+b.total,"Phrases finies"],["🔥",d.serieMax,"Meilleure série sans erreur"]];
+  const tuiles=[["⏱",dureeTxt(b.ms),d.para?"Temps utilisé (sur "+dureeTxt(d.limite*1000)+")":"Temps de frappe"],["✖",b.err,"Erreurs"],["⌫",b.dels,"Effacements"],["⚡",b.cpm,"Signes par minute"],d.para?["✔",Math.round(b.ok/b.L*100)+" %","Du paragraphe recopié"]:["✔",b.faits+" / "+b.total,"Phrases finies"],["🔥",d.serieMax,"Meilleure série sans erreur"]];
   const dur=b.dur.length?h("table",{},h("thead",{},h("tr",{},["Touche","Nom","Erreurs","Temps moyen","Comment la taper",""].map(function(t){return h("th",{text:t});}))),
     h("tbody",{},b.dur.map(function(x){
       const hw=Moteur.howTo(x.c), tu=Moteur.tutoPour(x.c);
@@ -3176,13 +3236,13 @@ ECRANS.fin=function(){
       h("p",{style:"font-size:1.6rem;font-weight:800",text:b.rang.e+" "+b.rang.t}),
       d.record?h("p",{class:"pill",text:d.premier?"Premier score enregistré !":"Nouveau record !"}):null),
     h("div",{class:"card"},h("h2",{text:"Ton bilan"}),h("div",{class:"stats"},tuiles.map(function(t){return h("div",{class:"stat"},h("span",{"aria-hidden":"true",text:t[0]}),h("b",{text:String(t[1])}),h("span",{text:t[2]}));})),
-      h("p",{class:"note"},b.parts.map(function(p){return p.k+" : "+p.v+" / "+p.max;}).join(" · ")+(d.chrono?"":" · Le temps ne compte pas dans le score (sans chrono).")),
+      h("p",{class:"note"},b.parts.map(function(p){return p.k+" : "+p.v+" / "+p.max;}).join(" · ")+(d.chrono?"":" · Le temps ne compte pas dans le score (sans chrono).")+(d.para&&b.ok<b.L?" · Temps écoulé : le score tient compte de la partie recopiée.":"")),
       ),
     h("div",{class:"card"},h("h2",{text:"Les touches difficiles"}),
       h("p",{class:"note",text:"Touches où tu as fait des erreurs ou mis plus de temps que d’habitude."}),dur),
     h("div",{class:"card"},phrases),
     h("div",{class:"choix"},
-      h("button",{class:"btn big",type:"button",text:"↻ Rejouer",onclick:lancer}),
+      h("button",{class:"btn big",type:"button",text:"↻ Rejouer",onclick:function(){lancer(!!d.para);}}),
       h("button",{class:"btn ghost",type:"button",text:"Accueil",onclick:function(){montrer("accueil");}}),
       h("button",{class:"btn ghost",type:"button",text:"Copier mon résultat",onclick:function(){copier(texteResultat(d));}}),
       h("button",{class:"btn ghost",type:"button",text:"Imprimer",onclick:function(){try{window.print();}catch(e){}}})));
