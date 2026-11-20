@@ -3,7 +3,7 @@
   Exercices Clavier — entraînement à la frappe au clavier (classique + allophone)
   Auteur : Tom Rougeaud
   Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
-  Licence : CC BY-NC 4.0 — version 1.4
+  Licence : CC BY-NC 4.0 — version 1.5
   Un seul fichier, sans CDN, sans traceur : tout reste sur l’appareil.
 -->
 <html lang="fr">
@@ -145,7 +145,7 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
 </div></header>
 <main class="wrap" id="app" tabindex="-1"></main>
 <div class="wrap" id="maj-zone" aria-live="polite"></div>
-<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.4 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
+<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.5 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <div id="dlg-zone"></div>
 
@@ -2853,7 +2853,7 @@ function groupe(nom,options,courant,onchange){
 function carteParagraphe(){
   const t0=DATA.paragraphes.reduce(function(m,t){return Math.min(m,Moteur.limitePara(t));},1e9);
   return h("div",{class:"card"},h("h2",{text:"📄 Défi paragraphe"}),
-    h("p",{text:"Recopie un long texte avec tous les caractères : accents, majuscules, chiffres, @ # { } [ ] | € … Le compte à rebours part à ta première touche (environ "+Math.floor(t0/60)+" min 30 s au total)."}),
+    h("p",{text:"Recopie un long texte avec tous les caractères : accents, majuscules, chiffres, @ # { } [ ] | € … Le compte à rebours part dès que le texte s’affiche (environ "+Math.floor(t0/60)+" min 30 s au total)."}),
     h("p",{style:"text-align:center"},h("button",{class:"btn big",type:"button",text:"▶ Lancer le défi paragraphe",onclick:function(){lancer(true);}})));
 }
 ECRANS.accueil=function(){
@@ -2918,7 +2918,7 @@ ECRANS.tuto=function(opt){
 ECRANS.apropos=function(){
   return h("section",{},h("h1",{text:"À propos"}),
     h("div",{class:"card"},
-      h("p",{text:"Exercices Clavier, version 1.4. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
+      h("p",{text:"Exercices Clavier, version 1.5. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
       h("h2",{text:"Comment est calculé le score /100 ?"}),
       h("ul",{},
         h("li",{text:"Précision : moins d’erreurs, plus de points. Une série de fautes d’affilée compte pour une seule erreur."}),
@@ -2929,7 +2929,7 @@ ECRANS.apropos=function(){
       h("h2",{text:"Comment est calculé le temps du défi chrono ?"}),
       h("ul",{},
         h("li",{text:"Par phrase : 1 seconde par caractère + 8 secondes de marge (soit environ 60 signes par minute). Niveaux 8 à 10 : 1,4 s par caractère. Mode allophone : 1,6 s par caractère."}),
-        h("li",{text:"Le compte à rebours démarre à ta première touche, pas à l’affichage de la phrase. Il s’arrête pendant la pause."}),
+        h("li",{text:"Le compte à rebours démarre dès l’affichage de la phrase (le temps de lecture est compris). Il s’arrête pendant la pause."}),
         h("li",{text:"Ces durées sont des estimations prudentes, pas des mesures faites sur de vrais élèves : elles pourront être ajustées."})),
       h("h2",{text:"Le défi paragraphe"}),
       h("ul",{},
@@ -3106,7 +3106,7 @@ function majCaps(e){
 function prochainExo(){
   const s=S.sess; if(!s) return;
   if(s.i>=s.items.length){finDePartie();return;}
-  const it=s.items[s.i]; s.ex=Moteur.nouvelExo(it.t); s.verrou=false;
+  const it=s.items[s.i]; s.ex=Moteur.nouvelExo(it.t); s.verrou=false; s.exDebut=performance.now(); // le décompte part dès l’affichage du texte
   s.limite=s.para?Moteur.limitePara(it.t):Moteur.limiteSec(it.t.length,s.mode==="allophone",it.niv);
   $("#phrase").classList.toggle("para",!!s.para);
   $("#c-niv").textContent=s.para?"📄 Défi paragraphe":"Niveau "+it.niv+" : "+s.niveaux[it.niv-1].nom;
@@ -3120,13 +3120,20 @@ function prochainExo(){
   saisie.focus({preventScroll:true});
 }
 function majSerieChip(){const s=S.sess;$("#c-serie").textContent="🔥 Série : "+s.serie;}
+// Format du temps : secondes seules, ou m:ss pour le paragraphe
+function fmtTemps(sec,para){sec=Math.max(0,Math.round(sec));return para?Math.floor(sec/60)+":"+String(sec%60).padStart(2,"0"):sec+" s";}
 function majTemps(){
   const s=S.sess; if(!s||!s.ex||s.pause) return; const c=$("#c-temps"); if(!c) return;
-  if(!s.chrono){c.textContent="Sans chrono";c.classList.remove("warn");return;}
-  const el=s.ex.started&&!s.ex.done?(performance.now()-s.ex.tFirst)/1000:0;
+  const now=performance.now();
+  if(!s.chrono){ // sans chrono : temps écoulé affiché à titre indicatif, sans limite
+    const t=s.ex.started&&!s.ex.done?(now-s.ex.tFirst)/1000:0;
+    c.textContent="⏱ "+fmtTemps(t,true)+" · sans limite"; c.classList.remove("warn"); return;
+  }
+  // défi chrono : compte à rebours depuis l’affichage du texte (le temps de lecture est compris dans la durée)
+  const el=s.ex.done?0:(now-s.exDebut)/1000;
   const reste=Math.max(0,Math.ceil(s.limite-el));
-  c.textContent="⏱ "+(s.para?Math.floor(reste/60)+":"+String(reste%60).padStart(2,"0"):reste+" s"); c.classList.toggle("warn",reste<=(s.para?30:5));
-  if(s.ex.started&&!s.ex.done&&!s.verrou&&el>=s.limite) finirExo(true);
+  c.textContent="⏱ "+fmtTemps(reste,s.para); c.classList.toggle("warn",reste<=(s.para?30:5));
+  if(!s.ex.done&&!s.verrou&&el>=s.limite) finirExo(true);
 }
 // Affiche la phrase : mots insécables, caractères justes en vert, faux en rouge
 function dessiner(){
@@ -3183,7 +3190,7 @@ function pause(on){
     s.pause=true; s.pauseDebut=performance.now(); clearInterval(T.iv); $("#saisie").disabled=true;
     dialogue({titre:"⏸ Pause",texte:["Le temps est arrêté."],esc:function(){pause(false);},boutons:[{l:"▶ Reprendre",fn:function(){pause(false);}},{l:"Quitter la partie",danger:true,fn:function(){montrer("accueil",{force:true});}}]});
   } else if(!on&&s.pause){
-    const d=performance.now()-s.pauseDebut; s.ex.tFirst+=d; s.ex.lastOk+=d; s.pause=false;
+    const d=performance.now()-s.pauseDebut; s.ex.tFirst+=d; s.ex.lastOk+=d; s.exDebut+=d; s.pause=false;
     const saisie=$("#saisie"); saisie.disabled=false; saisie.focus({preventScroll:true});
     clearInterval(T.iv); T.iv=setInterval(majTemps,150);
   }
