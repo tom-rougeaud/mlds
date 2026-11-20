@@ -1,4 +1,4 @@
-# Clavier en jeu
+# Exercices Clavier
 
 Jeu d’entraînement à la frappe au clavier : 10 niveaux progressifs en mode Classique (jusqu’aux e-mails et symboles rares), 8 niveaux très simples en mode Allophone, phrases tirées au hasard à partir de modèles à trous, score sur 100, temps, erreurs, effacements et touches difficiles. Tutos pour @, accents, tréma, majuscules accentuées. Clavier à l’écran avec symboles (⇧, ⇪, ⌫…). Défi paragraphe chronométré, accessible dès l’accueil.
 

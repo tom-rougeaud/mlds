@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <!--
-  Clavier en jeu — entraînement à la frappe au clavier (classique + allophone)
+  Exercices Clavier — entraînement à la frappe au clavier (classique + allophone)
   Auteur : Tom Rougeaud
   Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
-  Licence : CC BY-NC 4.0 — version 1.3
+  Licence : CC BY-NC 4.0 — version 1.4
   Un seul fichier, sans CDN, sans traceur : tout reste sur l’appareil.
 -->
 <html lang="fr">
@@ -12,7 +12,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
 <meta name="theme-color" content="#1D2240">
-<title>Clavier en jeu — s’entraîner à taper</title>
+<title>Exercices Clavier — s’entraîner à taper</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -140,12 +140,12 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
 <body>
 <!-- ===== STRUCTURE DE LA PAGE : les écrans sont construits par le script ===== -->
 <header class="top"><div class="in">
-  <button class="logo" id="logo" type="button" aria-label="Retour à l’accueil"><span class="ic" aria-hidden="true">⌨</span> Clavier en jeu</button>
+  <button class="logo" id="logo" type="button" aria-label="Retour à l’accueil"><span class="ic" aria-hidden="true">⌨</span> Exercices Clavier</button>
   <nav class="menu" aria-label="Menu principal" id="menu"></nav>
 </div></header>
 <main class="wrap" id="app" tabindex="-1"></main>
 <div class="wrap" id="maj-zone" aria-live="polite"></div>
-<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.3 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
+<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.4 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <div id="dlg-zone"></div>
 
@@ -2496,7 +2496,7 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
 </script>
 <script>
 /* =====================================================================
-   CLAVIER EN JEU — script principal
+   EXERCICES CLAVIER — script principal
    Auteur : Tom Rougeaud · Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
    Sections : A. Moteur (fonctions pures) · B. Outils · C. Stockage · D. Écrans · E. Jeu ·
               F. Fin de partie · G. Installation / plein écran / mise à jour · H. Démarrage
@@ -2875,7 +2875,7 @@ ECRANS.accueil=function(){
   const pseudo=h("input",{class:"txt",id:"pseudo",type:"text",maxlength:"20",autocomplete:"off",value:P.pseudo,"aria-describedby":"pseudo-note",
     oninput:function(e){P.pseudo=nettoyerPrefs({pseudo:e.target.value}).pseudo;sauver();}});
   return h("section",{},
-    h("div",{class:"hero card"},h("h1",{text:"⌨ Clavier en jeu"}),
+    h("div",{class:"hero card"},h("h1",{text:"⌨ Exercices Clavier"}),
       h("p",{text:"Recopie les phrases le plus juste possible. Gagne des étoiles. Vise 100 / 100 !"})),
     h("div",{class:"card"},
       h("h2",{text:"1. Quel mode ?"}),
@@ -2918,7 +2918,7 @@ ECRANS.tuto=function(opt){
 ECRANS.apropos=function(){
   return h("section",{},h("h1",{text:"À propos"}),
     h("div",{class:"card"},
-      h("p",{text:"Clavier en jeu, version 1.3. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
+      h("p",{text:"Exercices Clavier, version 1.4. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
       h("h2",{text:"Comment est calculé le score /100 ?"}),
       h("ul",{},
         h("li",{text:"Précision : moins d’erreurs, plus de points. Une série de fautes d’affilée compte pour une seule erreur."}),
@@ -3204,7 +3204,7 @@ function finDePartie(){
 }
 function texteResultat(d){
   const b=d.b, pseudo=S.prefs.pseudo?(S.prefs.pseudo+" — "):"";
-  return pseudo+"Clavier en jeu : "+b.score+" / 100 ("+b.rang.t+")\n"
+  return pseudo+"Exercices Clavier : "+b.score+" / 100 ("+b.rang.t+")\n"
     +(d.para?"Défi paragraphe, temps accordé "+dureeTxt(d.limite*1000):(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.niveau?"niveau "+d.niveau:"difficulté progressive")+", "+(d.chrono?"défi chrono":"sans chrono"))+"\n"
     +"Erreurs : "+b.err+" · Effacements : "+b.dels+" · Temps : "+dureeTxt(b.ms)+" · Vitesse : "+b.cpm+" signes/min\n"
     +(b.dur.length?"Touches à travailler : "+b.dur.map(function(x){return x.c===" "?"espace":x.c;}).join(" "):"Aucune touche difficile");
@@ -3278,7 +3278,7 @@ function ouvrirInstall(manuel){
   const note="Rien n’est envoyé à un tiers : l’appli reste sur ton appareil et marche sans Internet.";
   if(estInstallee()){dialogue({titre:"Appli déjà installée",texte:["Tu utilises déjà l’appli installée."],boutons:[{l:"Fermer"}]});return;}
   if(promptInstall){
-    dialogue({titre:"Installer l’appli ?",texte:["Ajoute « Clavier en jeu » à ton écran d’accueil pour jouer plus vite, même sans Internet.",note],esc:plusTard,boutons:[
+    dialogue({titre:"Installer l’appli ?",texte:["Ajoute « Exercices Clavier » à ton écran d’accueil pour jouer plus vite, même sans Internet.",note],esc:plusTard,boutons:[
       {l:"Installer l’appli",fn:function(){try{promptInstall.prompt();promptInstall.userChoice.then(function(c){if(c.outcome!=="accepted")plusTard();promptInstall=null;});}catch(e){toast("Installation impossible ici.");}}},
       {l:"Plus tard",ghost:true,fn:plusTard},{l:"Ne plus proposer",ghost:true,fn:function(){Stock.set("install","never");}}]});
   } else if(estIOS()){
