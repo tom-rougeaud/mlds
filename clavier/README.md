@@ -1,6 +1,6 @@
 # Clavier en jeu
 
-Jeu d’entraînement à la frappe au clavier : 50 phrases en mode Classique (majuscules, chiffres, accents, caractères spéciaux), 50 phrases très simples en mode Allophone, score sur 100, temps, erreurs, effacements et touches difficiles. Tutos pour @, accents, tréma, majuscules accentuées.
+Jeu d’entraînement à la frappe au clavier : 10 niveaux progressifs en mode Classique (jusqu’aux e-mails et symboles rares), 8 niveaux très simples en mode Allophone, phrases tirées au hasard à partir de modèles à trous, score sur 100, temps, erreurs, effacements et touches difficiles. Tutos pour @, accents, tréma, majuscules accentuées.
 
 Un seul fichier `index.html` (sans CDN, sans traceur), installable (PWA), fonctionne hors ligne. Les scores restent sur l’appareil.
 

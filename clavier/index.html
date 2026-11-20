@@ -3,7 +3,7 @@
   Clavier en jeu — entraînement à la frappe au clavier (classique + allophone)
   Auteur : Tom Rougeaud
   Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
-  Licence : CC BY-NC 4.0 — version 1.0
+  Licence : CC BY-NC 4.0 — version 1.1
   Un seul fichier, sans CDN, sans traceur : tout reste sur l’appareil.
 -->
 <html lang="fr">
@@ -33,6 +33,7 @@ button,input,select{font:inherit;color:inherit}
 .wrap{max-width:1100px;margin:0 auto;padding:1rem}
 #app:focus{outline:none}
 [hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
 /* ===== 2. EN-TÊTE ET NAVIGATION ===== */
 header.top{background:linear-gradient(135deg,var(--ink),var(--navy2));color:#fff;border-radius:0 0 28px 28px;padding:.8rem 1rem 1rem}
@@ -64,6 +65,7 @@ nav.menu{display:flex;flex-wrap:wrap;gap:.4rem}
 .hero h1{font-size:clamp(2rem,6vw,3.2rem)}
 .pill{display:inline-block;background:var(--amber);color:var(--ink);border-radius:999px;padding:.1rem .8rem;font-weight:800}
 .note{color:var(--soft);font-size:.95rem}
+select.sel{min-height:48px;border:2px solid var(--line);border-radius:999px;padding:.3rem 1rem;background:#fff;font-weight:700;max-width:100%}
 input.txt{min-height:44px;border:2px solid var(--line);border-radius:14px;padding:.3rem .8rem;width:100%;max-width:300px;background:#fff}
 
 /* ===== 4. ÉCRAN DE JEU ===== */
@@ -139,7 +141,7 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
 </div></header>
 <main class="wrap" id="app" tabindex="-1"></main>
 <div class="wrap" id="maj-zone" aria-live="polite"></div>
-<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.0 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
+<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.1 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 <div id="dlg-zone"></div>
 
@@ -147,123 +149,2339 @@ footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.9
   Chaque phrase est tapée telle quelle : l’apostrophe est droite (') car c’est celle du clavier. -->
 <script type="application/json" id="donnees">
 {
- "version": 1,
- "classique": [
-  "Le chat dort sur le canapé.",
-  "Mon frère joue au foot avec Paul.",
-  "Il fait beau ce matin.",
-  "Nous mangeons une pizza ce soir.",
-  "Lina lit un livre dans sa chambre.",
-  "Le bus arrive devant le lycée.",
-  "Karim et Sofia travaillent ensemble.",
-  "La classe commence à huit heures.",
-  "Nous partons en vacances à Paris.",
-  "Tom regarde la télé avec sa mère.",
-  "Il y a 28 élèves dans la classe.",
-  "Mon numéro de salle est le 14.",
-  "Le cours commence à 8 h 30.",
-  "J'ai acheté 3 cahiers et 2 stylos.",
-  "Il reste 15 minutes avant la pause.",
-  "Mon anniversaire est le 27 mars.",
-  "Le train part à 17 h 45 du quai 6.",
-  "La baguette coûte 1,20 euro.",
-  "En 2024, la ville comptait 12 500 habitants.",
-  "Appelle le 112 en cas d'urgence.",
-  "Salut ! Comment vas-tu aujourd'hui ?",
-  "Il y a du pain, du fromage et du jambon.",
-  "Attention : le sol est mouillé !",
-  "Tu viens avec nous ce soir ? Oui, avec plaisir.",
-  "C'est l'heure de la récré ; on y va !",
-  "Peut-être qu'il pleuvra demain, mais je garde espoir.",
-  "Quel est ton plat préféré ? Moi, j'adore les pâtes.",
-  "Pourquoi pas ? Allons-y tous ensemble !",
-  "Demain : maths, français, anglais et sport.",
-  "Qu'est-ce que tu fais ce week-end ?",
-  "Noël est une fête que j'aime beaucoup.",
-  "Où as-tu mis ma veste à capuche ?",
-  "Ça fait longtemps que je ne t'ai pas vu.",
-  "À demain, je t'attends devant l'école.",
-  "Élodie a préparé une très belle présentation.",
-  "La forêt est calme, l'hôtel est tout près.",
-  "Il a oublié son âge ; quelle étourderie !",
-  "Le maïs est cuit et le héros est ému.",
-  "Été comme hiver, j'aime écouter de la musique.",
-  "Mathéo a déjà fini l'exercice ; il est très rapide.",
-  "Écris-moi à prof.maths@exemple.fr pour toute question.",
-  "Le prix est de 12,50 € (taxes comprises).",
-  "Remise de 20 % sur tous les cahiers (offre limitée).",
-  "Mon pseudo : #Champion2025 (sans espace).",
-  "2 + 3 = 5 et 10 / 2 = 5 : le calcul est juste !",
-  "Elle a dit : \"Je serai là à 18 h\" et elle est venue.",
-  "Le groupe #lycée a reçu 45 messages (dont 3 importants).",
-  "Total : 3 x 4 = 12 ; puis 12 + 8 = 20 (réponse exacte).",
-  "Fichier : devoir_maths_2.docx (3 Mo) à envoyer avant 17 h.",
-  "Bravo ! Score final : 100 % (excellent) [A+] & bien joué."
+ "version": 2,
+ "niveauxClassique": [
+  {
+   "nom": "Lettres et majuscules",
+   "modeles": [
+    {
+     "t": "{0} {1} dans le jardin.",
+     "o": [
+      [
+       "Le chien",
+       "dort"
+      ],
+      [
+       "Le chat",
+       "joue"
+      ],
+      [
+       "Mon cousin",
+       "court"
+      ],
+      [
+       "Ma cousine",
+       "chante"
+      ],
+      [
+       "Paul",
+       "lit un livre"
+      ],
+      [
+       "Nina",
+       "mange une pomme"
+      ],
+      [
+       "Les enfants",
+       "jouent"
+      ]
+     ]
+    },
+    {
+     "t": "{0} aime {1}.",
+     "o": [
+      [
+       "Lina",
+       "la musique"
+      ],
+      [
+       "Karim",
+       "le sport"
+      ],
+      [
+       "Tom",
+       "le chocolat"
+      ],
+      [
+       "Sofia",
+       "les chats"
+      ],
+      [
+       "Hugo",
+       "la pizza"
+      ],
+      [
+       "Nina",
+       "les films"
+      ],
+      [
+       "Paul",
+       "les jeux"
+      ]
+     ]
+    },
+    {
+     "t": "Nous allons {0} avec {1}.",
+     "o": [
+      [
+       "au parc",
+       "Paul"
+      ],
+      [
+       "au stade",
+       "Karim"
+      ],
+      [
+       "en ville",
+       "Lina"
+      ],
+      [
+       "au lac",
+       "Hugo"
+      ],
+      [
+       "au club",
+       "nos amis"
+      ]
+     ]
+    },
+    {
+     "t": "{0} lit un livre {1}.",
+     "o": [
+      [
+       "Marie",
+       "le soir"
+      ],
+      [
+       "Tom",
+       "le matin"
+      ],
+      [
+       "Hugo",
+       "dans sa chambre"
+      ],
+      [
+       "Nina",
+       "sur le banc"
+      ],
+      [
+       "Karim",
+       "dans le bus"
+      ]
+     ]
+    },
+    {
+     "t": "Mon voisin a un {0} {1}.",
+     "o": [
+      [
+       "chat",
+       "noir"
+      ],
+      [
+       "chien",
+       "gris"
+      ],
+      [
+       "ballon",
+       "rouge"
+      ],
+      [
+       "sac",
+       "bleu"
+      ],
+      [
+       "chapeau",
+       "blanc"
+      ],
+      [
+       "livre",
+       "vert"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "Il fait beau ce matin.",
+    "Nous mangeons une pizza ce soir.",
+    "Lina lit un livre dans sa chambre.",
+    "Karim et Sofia travaillent ensemble."
+   ]
+  },
+  {
+   "nom": "Accents é è à ù ç",
+   "modeles": [
+    {
+     "t": "{0} préfère {1}, mais {2} adore {3}.",
+     "o": [
+      [
+       "Théo",
+       "le fromage",
+       "Zoé",
+       "le dessert"
+      ],
+      [
+       "Léa",
+       "le thé",
+       "Hugo",
+       "le café"
+      ],
+      [
+       "Noé",
+       "la viande",
+       "Inès",
+       "les légumes"
+      ],
+      [
+       "Mélanie",
+       "le poisson",
+       "Sofia",
+       "le poulet"
+      ]
+     ]
+    },
+    {
+     "t": "Le soir, {0} {1}.",
+     "o": [
+      [
+       "Léa",
+       "révise ses leçons"
+      ],
+      [
+       "Théo",
+       "prépare le repas"
+      ],
+      [
+       "Mathéo",
+       "écoute de la musique"
+      ],
+      [
+       "Zoé",
+       "regarde une série"
+      ],
+      [
+       "Noé",
+       "va à la bibliothèque"
+      ],
+      [
+       "Inès",
+       "fait ses devoirs"
+      ]
+     ]
+    },
+    {
+     "t": "Nous mangeons {0}, {1} et {2} ce soir.",
+     "o": [
+      [
+       "du pain",
+       "du fromage",
+       "des légumes"
+      ],
+      [
+       "des spaghettis",
+       "de la salade",
+       "un dessert"
+      ],
+      [
+       "du riz",
+       "du poulet",
+       "des fruits"
+      ],
+      [
+       "une pizza",
+       "des frites",
+       "une glace"
+      ]
+     ]
+    },
+    {
+     "t": "{0} a acheté {1} à la boulangerie.",
+     "o": [
+      [
+       "Léa",
+       "une baguette"
+      ],
+      [
+       "Théo",
+       "deux croissants"
+      ],
+      [
+       "Zoé",
+       "un pain au chocolat"
+      ],
+      [
+       "Noé",
+       "une tarte"
+      ]
+     ]
+    },
+    {
+     "t": "Ce {0} est très {1}.",
+     "o": [
+      [
+       "café",
+       "chaud"
+      ],
+      [
+       "thé",
+       "léger"
+      ],
+      [
+       "fromage",
+       "délicieux"
+      ],
+      [
+       "pain",
+       "frais"
+      ],
+      [
+       "légume",
+       "vert"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "Le chat dort sur le canapé.",
+    "Mon frère joue au foot avec Paul.",
+    "Le bus arrive devant le lycée.",
+    "La classe commence à huit heures.",
+    "Nous partons en vacances à Paris.",
+    "Tom regarde la télé avec sa mère.",
+    "Il y a du pain, du fromage et du jambon."
+   ]
+  },
+  {
+   "nom": "Chiffres et apostrophes",
+   "modeles": [
+    {
+     "t": "Il y a {n:12:34} élèves dans la classe de {0}.",
+     "o": [
+      [
+       "Mme Durand"
+      ],
+      [
+       "M. Martin"
+      ],
+      [
+       "Mme Petit"
+      ],
+      [
+       "M. Bernard"
+      ]
+     ]
+    },
+    {
+     "t": "Le cours commence à {n:7:10} h {0}.",
+     "o": [
+      [
+       "00"
+      ],
+      [
+       "15"
+      ],
+      [
+       "30"
+      ],
+      [
+       "45"
+      ]
+     ]
+    },
+    {
+     "t": "J'ai acheté {0} pour {1} euros.",
+     "o": [
+      [
+       "3 cahiers",
+       "6"
+      ],
+      [
+       "2 stylos",
+       "3"
+      ],
+      [
+       "5 classeurs",
+       "20"
+      ],
+      [
+       "4 gommes",
+       "2"
+      ],
+      [
+       "10 crayons",
+       "8"
+      ]
+     ]
+    },
+    {
+     "t": "Mon anniversaire est le {n:1:28} {0}.",
+     "o": [
+      [
+       "janvier"
+      ],
+      [
+       "février"
+      ],
+      [
+       "mars"
+      ],
+      [
+       "avril"
+      ],
+      [
+       "mai"
+      ],
+      [
+       "juin"
+      ],
+      [
+       "juillet"
+      ],
+      [
+       "septembre"
+      ],
+      [
+       "octobre"
+      ],
+      [
+       "novembre"
+      ],
+      [
+       "décembre"
+      ]
+     ]
+    },
+    {
+     "t": "L'autobus numéro {n:2:99} passe devant l'école à {n:6:9} h {0}.",
+     "o": [
+      [
+       "10"
+      ],
+      [
+       "20"
+      ],
+      [
+       "35"
+      ],
+      [
+       "50"
+      ]
+     ]
+    },
+    {
+     "t": "Il reste {n:5:55} minutes avant la {0}.",
+     "o": [
+      [
+       "pause"
+      ],
+      [
+       "récré"
+      ],
+      [
+       "sonnerie"
+      ],
+      [
+       "fin du cours"
+      ]
+     ]
+    },
+    {
+     "t": "En {n:2015:2025}, l'école comptait {n:300:900} élèves."
+    },
+    {
+     "t": "Appelle le {0} en cas d'urgence.",
+     "o": [
+      [
+       "15"
+      ],
+      [
+       "17"
+      ],
+      [
+       "18"
+      ],
+      [
+       "112"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "Il y a 28 élèves dans la classe.",
+    "Mon numéro de salle est le 14.",
+    "Le cours commence à 8 h 30.",
+    "J'ai acheté 3 cahiers et 2 stylos.",
+    "Il reste 15 minutes avant la pause.",
+    "Mon anniversaire est le 27 mars.",
+    "Le train part à 17 h 45 du quai 6.",
+    "En 2024, la ville comptait 12 500 habitants.",
+    "Appelle le 112 en cas d'urgence."
+   ]
+  },
+  {
+   "nom": "Ponctuation ? ! : ; -",
+   "modeles": [
+    {
+     "t": "{0}-tu {1} ? {2}",
+     "o": [
+      [
+       "Veux",
+       "venir au cinéma",
+       "Oui, avec plaisir !"
+      ],
+      [
+       "Peux",
+       "m'aider",
+       "Avec plaisir !"
+      ],
+      [
+       "Sais",
+       "nager",
+       "Oui, très bien !"
+      ],
+      [
+       "Aimes",
+       "les maths",
+       "Un peu, oui !"
+      ],
+      [
+       "Viens",
+       "avec nous",
+       "D'accord !"
+      ]
+     ]
+    },
+    {
+     "t": "Attention : {0} !",
+     "o": [
+      [
+       "le sol est mouillé"
+      ],
+      [
+       "le café est chaud"
+      ],
+      [
+       "la porte est ouverte"
+      ],
+      [
+       "le feu est rouge"
+      ],
+      [
+       "le chien est là"
+      ]
+     ]
+    },
+    {
+     "t": "{0} : {1}, {2} et {3}.",
+     "o": [
+      [
+       "Pour la tarte",
+       "des pommes",
+       "du sucre",
+       "de la farine"
+      ],
+      [
+       "Dans mon sac",
+       "un cahier",
+       "une trousse",
+       "une règle"
+      ],
+      [
+       "Au menu",
+       "une soupe",
+       "du poulet",
+       "une glace"
+      ],
+      [
+       "Demain",
+       "maths",
+       "français",
+       "sport"
+      ],
+      [
+       "Pour le pique-nique",
+       "du pain",
+       "du jambon",
+       "des fruits"
+      ]
+     ]
+    },
+    {
+     "t": "Qu'est-ce que tu fais {0} ?",
+     "o": [
+      [
+       "ce week-end"
+      ],
+      [
+       "demain soir"
+      ],
+      [
+       "pendant les vacances"
+      ],
+      [
+       "mercredi après-midi"
+      ]
+     ]
+    },
+    {
+     "t": "{0} ; {1}.",
+     "o": [
+      [
+       "Il est tard",
+       "il fait nuit"
+      ],
+      [
+       "Le ciel est gris",
+       "il va pleuvoir"
+      ],
+      [
+       "J'ai faim",
+       "allons manger"
+      ],
+      [
+       "La sonnerie retentit",
+       "la classe commence"
+      ]
+     ]
+    },
+    {
+     "t": "Est-ce que {0} ? Non, {1}.",
+     "o": [
+      [
+       "tu as fini",
+       "il me reste deux lignes"
+      ],
+      [
+       "Paul est là",
+       "il arrive à huit heures"
+      ],
+      [
+       "le bus est passé",
+       "il est en retard"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "Salut ! Comment vas-tu aujourd'hui ?",
+    "Attention : le sol est mouillé !",
+    "Tu viens avec nous ce soir ? Oui, avec plaisir.",
+    "C'est l'heure de la récré ; on y va !",
+    "Pourquoi pas ? Allons-y tous ensemble !",
+    "Demain : maths, français, anglais et sport.",
+    "Qu'est-ce que tu fais ce week-end ?",
+    "Où as-tu mis ma veste à capuche ?",
+    "Mathéo a déjà fini l'exercice ; il est très rapide."
+   ]
+  },
+  {
+   "nom": "Circonflexe, tréma, majuscules accentuées",
+   "modeles": [
+    {
+     "t": "À {0}, nous {1}.",
+     "o": [
+      [
+       "Noël",
+       "fêtons ensemble"
+      ],
+      [
+       "la fête",
+       "dansons toute la nuit"
+      ],
+      [
+       "l'hôtel",
+       "dînons au restaurant"
+      ],
+      [
+       "la maison",
+       "fêtons son anniversaire"
+      ]
+     ]
+    },
+    {
+     "t": "Élodie {0} {1}.",
+     "o": [
+      [
+       "a préparé",
+       "une belle présentation"
+      ],
+      [
+       "est arrivée",
+       "la première"
+      ],
+      [
+       "a fêté",
+       "ses seize ans"
+      ],
+      [
+       "rêve",
+       "d'un grand voyage"
+      ]
+     ]
+    },
+    {
+     "t": "{0} est très {1} cet été.",
+     "o": [
+      [
+       "La forêt",
+       "calme"
+      ],
+      [
+       "La plage",
+       "tranquille"
+      ],
+      [
+       "Le jardin",
+       "fleuri"
+      ],
+      [
+       "Le maïs",
+       "mûr"
+      ],
+      [
+       "La rivière",
+       "froide"
+      ]
+     ]
+    },
+    {
+     "t": "Ça fait {n:2:12} ans que {0}.",
+     "o": [
+      [
+       "j'habite ici"
+      ],
+      [
+       "je joue du piano"
+      ],
+      [
+       "nous sommes amis"
+      ],
+      [
+       "il travaille à Paris"
+      ]
+     ]
+    },
+    {
+     "t": "Ça fait du bien de {0} après {1}.",
+     "o": [
+      [
+       "dormir",
+       "une longue journée"
+      ],
+      [
+       "marcher",
+       "le dîner"
+      ],
+      [
+       "se reposer",
+       "un match"
+      ],
+      [
+       "écouter de la musique",
+       "les cours"
+      ]
+     ]
+    },
+    {
+     "t": "Héloïse est {0}.",
+     "o": [
+      [
+       "très curieuse"
+      ],
+      [
+       "en retard"
+      ],
+      [
+       "ma meilleure amie"
+      ],
+      [
+       "à la bibliothèque"
+      ]
+     ]
+    },
+    {
+     "t": "Noël et Maëlle sont {0}.",
+     "o": [
+      [
+       "amis d'enfance"
+      ],
+      [
+       "très heureux"
+      ],
+      [
+       "en vacances"
+      ]
+     ]
+    },
+    {
+     "t": "Où es-tu ? À {0} !",
+     "o": [
+      [
+       "la maison"
+      ],
+      [
+       "l'école"
+      ],
+      [
+       "la gare"
+      ],
+      [
+       "la piscine"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "La baguette coûte 1,20 euro.",
+    "Peut-être qu'il pleuvra demain, mais je garde espoir.",
+    "Quel est ton plat préféré ? Moi, j'adore les pâtes.",
+    "Noël est une fête que j'aime beaucoup.",
+    "Ça fait longtemps que je ne t'ai pas vu.",
+    "À demain, je t'attends devant l'école.",
+    "Élodie a préparé une très belle présentation.",
+    "La forêt est calme, l'hôtel est tout près.",
+    "Il a oublié son âge ; quelle étourderie !",
+    "Le maïs est cuit et le héros est ému.",
+    "Été comme hiver, j'aime écouter de la musique."
+   ]
+  },
+  {
+   "nom": "Parenthèses, guillemets, % et €",
+   "modeles": [
+    {
+     "t": "Le prix est de {prix} (taxes comprises)."
+    },
+    {
+     "t": "Remise de {n:5:50} % sur {0} (offre limitée).",
+     "o": [
+      [
+       "tous les cahiers"
+      ],
+      [
+       "les stylos"
+      ],
+      [
+       "les sacs à dos"
+      ],
+      [
+       "les calculatrices"
+      ]
+     ]
+    },
+    {
+     "t": "Elle a dit : \"{0}\" et {1}.",
+     "o": [
+      [
+       "Je serai là à 18 h",
+       "elle est venue"
+      ],
+      [
+       "Je suis prête",
+       "elle est partie"
+      ],
+      [
+       "Attendez-moi",
+       "tout le monde a attendu"
+      ],
+      [
+       "C'est fini",
+       "la classe a applaudi"
+      ]
+     ]
+    },
+    {
+     "t": "{0} coûte {prix} (soit {n:10:90} % de moins).",
+     "o": [
+      [
+       "Ce manteau"
+      ],
+      [
+       "Ce livre"
+      ],
+      [
+       "Ce sac"
+      ],
+      [
+       "Cette veste"
+      ]
+     ]
+    },
+    {
+     "t": "Total à payer : {prix} (dont {n:2:15} € de livraison)."
+    },
+    {
+     "t": "La classe ({0}) compte {n:18:32} élèves.",
+     "o": [
+      [
+       "3e Prépa-Métiers"
+      ],
+      [
+       "2de pro"
+      ],
+      [
+       "CAP"
+      ],
+      [
+       "Terminale"
+      ]
+     ]
+    },
+    {
+     "t": "Il a répondu \"{0}\" à la question {n:1:20}.",
+     "o": [
+      [
+       "oui"
+      ],
+      [
+       "non"
+      ],
+      [
+       "peut-être"
+      ],
+      [
+       "je ne sais pas"
+      ]
+     ]
+    },
+    {
+     "t": "{0} (environ {n:50:95} %) ont réussi l'exercice.",
+     "o": [
+      [
+       "Beaucoup d'élèves"
+      ],
+      [
+       "La plupart des élèves"
+      ],
+      [
+       "Les élèves de CAP"
+      ]
+     ]
+    }
+   ],
+   "fixes": [
+    "Le prix est de 12,50 € (taxes comprises).",
+    "Remise de 20 % sur tous les cahiers (offre limitée).",
+    "Elle a dit : \"Je serai là à 18 h\" et elle est venue."
+   ]
+  },
+  {
+   "nom": "Adresses e-mail, @ et #",
+   "modeles": [
+    {
+     "t": "Écris-moi à {mail} pour toute question."
+    },
+    {
+     "t": "Mon adresse e-mail : {mail} (sans espace)."
+    },
+    {
+     "t": "Envoie le devoir à {mail} avant {n:17:22} h."
+    },
+    {
+     "t": "Le site de la classe : {site} (ouvert à tous)."
+    },
+    {
+     "t": "Rejoins le groupe {tag} et écris à {mail}."
+    },
+    {
+     "t": "Pseudo : {tag} (pas de vrai nom !)."
+    },
+    {
+     "t": "Contact : {mail} ou {mail}."
+    }
+   ],
+   "fixes": [
+    "Écris-moi à prof.maths@exemple.fr pour toute question.",
+    "Mon pseudo : #Champion2025 (sans espace).",
+    "Le groupe #lycée a reçu 45 messages (dont 3 importants)."
+   ]
+  },
+  {
+   "nom": "Calculs, dates, fichiers",
+   "modeles": [
+    {
+     "t": "Le calcul est juste : {calc} !"
+    },
+    {
+     "t": "Vérifie : {calc} puis {calc}."
+    },
+    {
+     "t": "Enregistre le fichier {fichier} dans le dossier {0}.",
+     "o": [
+      [
+       "Documents"
+      ],
+      [
+       "Devoirs"
+      ],
+      [
+       "Maths"
+      ],
+      [
+       "Cours"
+      ]
+     ]
+    },
+    {
+     "t": "Rendez-vous à {heure} {0} devant l'entrée.",
+     "o": [
+      [
+       "pour la sortie"
+      ],
+      [
+       "pour le cours"
+      ],
+      [
+       "pour le contrôle"
+      ],
+      [
+       "pour le départ"
+      ]
+     ]
+    },
+    {
+     "t": "Le {date} : {0}.",
+     "o": [
+      [
+       "contrôle de maths"
+      ],
+      [
+       "sortie scolaire"
+      ],
+      [
+       "réunion parents-profs"
+      ],
+      [
+       "fin du trimestre"
+      ]
+     ]
+    },
+    {
+     "t": "Question {n:1:20} : {calc}"
+    },
+    {
+     "t": "Mon pseudo : {tag}_{n:10:99} (sans espace)."
+    },
+    {
+     "t": "Rends le fichier {fichier} avant le {date}."
+    },
+    {
+     "t": "Mon site : {url}"
+    }
+   ],
+   "fixes": [
+    "2 + 3 = 5 et 10 / 2 = 5 : le calcul est juste !",
+    "Total : 3 x 4 = 12 ; puis 12 + 8 = 20 (réponse exacte).",
+    "Fichier : devoir_maths_2.docx (3 Mo) à envoyer avant 17 h.",
+    "Bravo ! Score final : 100 % (excellent) [A+] & bien joué."
+   ]
+  },
+  {
+   "nom": "Phrases mixtes",
+   "modeles": [
+    {
+     "t": "Écris à {mail} avant le {date} (objet : \"{0}\").",
+     "o": [
+      [
+       "Devoir de maths"
+      ],
+      [
+       "Sortie scolaire"
+      ],
+      [
+       "Inscription club"
+      ],
+      [
+       "Question urgente"
+      ]
+     ]
+    },
+    {
+     "t": "Offre spéciale : {0} à {prix} (-{n:10:50} %) jusqu'au {date}.",
+     "o": [
+      [
+       "cahier"
+      ],
+      [
+       "sac à dos"
+      ],
+      [
+       "calculatrice"
+      ],
+      [
+       "trousse"
+      ]
+     ]
+    },
+    {
+     "t": "{tag} : {0} sur {mail} (réponse sous {n:2:7} jours).",
+     "o": [
+      [
+       "questions"
+      ],
+      [
+       "devoirs"
+      ],
+      [
+       "remarques"
+      ]
+     ]
+    },
+    {
+     "t": "Facture n° {n:100:999} : {prix} (TVA {n:5:20} %) à régler avant le {date}."
+    },
+    {
+     "t": "Bravo ! Score final : {n:60:100} % (excellent) [{0}] & bien joué !",
+     "o": [
+      [
+       "A+"
+      ],
+      [
+       "A"
+      ],
+      [
+       "B+"
+      ]
+     ]
+    },
+    {
+     "t": "Rappel : réunion le {date} à {heure} ; salle {n:1:30} (bâtiment {0}).",
+     "o": [
+      [
+       "A"
+      ],
+      [
+       "B"
+      ],
+      [
+       "C"
+      ]
+     ]
+    },
+    {
+     "t": "Reçu : {fichier} ({n:1:9} Mo) - envoyé à {mail2}."
+    }
+   ],
+   "fixes": []
+  },
+  {
+   "nom": "Défi expert",
+   "modeles": [
+    {
+     "t": "Mot de passe de test : {mdp2}"
+    },
+    {
+     "t": "Identifiant : {mail2} | code : {mdp}"
+    },
+    {
+     "t": "Chemin : C:\\Cours\\{0}\\{fichier}",
+     "o": [
+      [
+       "Maths"
+      ],
+      [
+       "Devoirs"
+      ],
+      [
+       "Sport"
+      ]
+     ]
+    },
+    {
+     "t": "Dans la cellule C{n:1:9}, tape =SOMME(B{n:2:5}:B{n:6:15})."
+    },
+    {
+     "t": "Balise : <{0}>{1}</{0}>",
+     "o": [
+      [
+       "p",
+       "Bonjour"
+      ],
+      [
+       "h1",
+       "Titre"
+      ],
+      [
+       "b",
+       "Important"
+      ],
+      [
+       "li",
+       "Courses"
+      ]
+     ]
+    },
+    {
+     "t": "Envoie à : {mail2} et {mail2}."
+    },
+    {
+     "t": "Connexion : {mail2} / {mdp2}"
+    }
+   ],
+   "fixes": []
+  }
  ],
- "allophone": [
-  {"t":"Bonjour.","e":"👋"},
-  {"t":"Je m'appelle Brahim.","e":"🙂"},
-  {"t":"Comment vas-tu ?","e":"💬"},
-  {"t":"Je vais bien.","e":"😀"},
-  {"t":"Et toi ?","e":"🤝"},
-  {"t":"Merci beaucoup.","e":"🙏"},
-  {"t":"S'il te plaît.","e":"🙏"},
-  {"t":"Ça va ? Oui, ça va.","e":"👍"},
-  {"t":"J'ai 15 ans.","e":"🎂"},
-  {"t":"J'habite en France.","e":"🏠"},
-  {"t":"Voici ma mère.","e":"👩"},
-  {"t":"Voici mon père.","e":"👨"},
-  {"t":"J'ai un frère et deux cousines.","e":"👨‍👩‍👧"},
-  {"t":"Mon frère s'appelle Omar.","e":"👦"},
-  {"t":"Ma famille est grande.","e":"👪"},
-  {"t":"Nous sommes six.","e":"🔢"},
-  {"t":"Mon grand-père est gentil.","e":"👴"},
-  {"t":"Ma grand-mère cuisine bien.","e":"👵"},
-  {"t":"Tu as des frères ? Oui, j'ai deux frères.","e":"👬"},
-  {"t":"Quel âge as-tu ? J'ai 16 ans.","e":"🎈"},
-  {"t":"Je suis à l'école.","e":"🏫"},
-  {"t":"Voici mon cahier.","e":"📓"},
-  {"t":"Voici mon stylo.","e":"🖊️"},
-  {"t":"Le professeur est là.","e":"👨‍🏫"},
-  {"t":"Ouvre ton livre, s'il te plaît.","e":"📖"},
-  {"t":"Je ne comprends pas.","e":"❓"},
-  {"t":"Peux-tu répéter ?","e":"🔁"},
-  {"t":"Je comprends maintenant.","e":"💡"},
-  {"t":"Aujourd'hui, nous faisons des maths.","e":"➕"},
-  {"t":"Il y a 20 élèves dans la classe.","e":"🧑‍🎓"},
-  {"t":"J'ai faim.","e":"🍽️"},
-  {"t":"J'ai soif.","e":"💧"},
-  {"t":"Je mange du pain.","e":"🥖"},
-  {"t":"Je bois de l'eau.","e":"🚰"},
-  {"t":"Une pomme coûte 1 euro.","e":"🍎"},
-  {"t":"Combien ça coûte ?","e":"🛒"},
-  {"t":"Ça coûte 3,50 €.","e":"💶"},
-  {"t":"Je voudrais un thé, s'il vous plaît.","e":"☕"},
-  {"t":"Qu'est-ce que tu aimes manger ?","e":"🍕"},
-  {"t":"J'aime le riz, le poulet et les légumes.","e":"🍗"},
-  {"t":"Il est 8 h 30.","e":"⏰"},
-  {"t":"Aujourd'hui, il fait beau.","e":"☀️"},
-  {"t":"Il pleut aujourd'hui !","e":"🌧️"},
-  {"t":"Où est la gare ?","e":"🚉"},
-  {"t":"Tout droit, puis à gauche.","e":"⬅️"},
-  {"t":"Le bus passe à 7 h 15.","e":"🚌"},
-  {"t":"Je vais à la bibliothèque.","e":"📚"},
-  {"t":"En cas d'urgence, j'appelle le 112.","e":"🚑"},
-  {"t":"À demain ! Bonne soirée.","e":"🌙"},
-  {"t":"Merci, au revoir !","e":"👋"}
+ "niveauxAllophone": [
+  {
+   "nom": "Mots simples",
+   "modeles": [
+    {
+     "t": "{0}.",
+     "o": [
+      [
+       "Bonjour",
+       "👋"
+      ],
+      [
+       "Merci",
+       "🙏"
+      ],
+      [
+       "Au revoir",
+       "👋"
+      ],
+      [
+       "Salut",
+       "🙂"
+      ],
+      [
+       "Bravo",
+       "👏"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Je suis {0}.",
+     "o": [
+      [
+       "Brahim",
+       "🙂"
+      ],
+      [
+       "Lina",
+       "🙂"
+      ],
+      [
+       "Karim",
+       "🙂"
+      ],
+      [
+       "Sofia",
+       "🙂"
+      ],
+      [
+       "Amina",
+       "🙂"
+      ],
+      [
+       "Omar",
+       "🙂"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Voici {0}.",
+     "o": [
+      [
+       "mon cahier",
+       "📓"
+      ],
+      [
+       "mon livre",
+       "📖"
+      ],
+      [
+       "mon sac",
+       "🎒"
+      ],
+      [
+       "ma table",
+       "🪑"
+      ],
+      [
+       "mon stylo",
+       "🖊️"
+      ],
+      [
+       "ma chaise",
+       "🪑"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Le {0} est {1}.",
+     "o": [
+      [
+       "chat",
+       "noir",
+       "🐈‍⬛"
+      ],
+      [
+       "chien",
+       "grand",
+       "🐕"
+      ],
+      [
+       "livre",
+       "bleu",
+       "📘"
+      ],
+      [
+       "sac",
+       "rouge",
+       "🎒"
+      ],
+      [
+       "bus",
+       "jaune",
+       "🚌"
+      ],
+      [
+       "ballon",
+       "blanc",
+       "⚽"
+      ]
+     ],
+     "e": 2
+    },
+    {
+     "t": "Je {0}.",
+     "o": [
+      [
+       "lis",
+       "📖"
+      ],
+      [
+       "mange",
+       "🍽️"
+      ],
+      [
+       "dors",
+       "😴"
+      ],
+      [
+       "joue",
+       "🎮"
+      ],
+      [
+       "bois",
+       "🥤"
+      ],
+      [
+       "marche",
+       "🚶"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "Bonjour.",
+     "e": "👋"
+    },
+    {
+     "t": "Je vais bien.",
+     "e": "😀"
+    },
+    {
+     "t": "Merci beaucoup.",
+     "e": "🙏"
+    },
+    {
+     "t": "Ma famille est grande.",
+     "e": "👪"
+    },
+    {
+     "t": "Nous sommes six.",
+     "e": "🔢"
+    },
+    {
+     "t": "Voici mon cahier.",
+     "e": "📓"
+    },
+    {
+     "t": "Voici mon stylo.",
+     "e": "🖊️"
+    },
+    {
+     "t": "Je ne comprends pas.",
+     "e": "❓"
+    },
+    {
+     "t": "Je comprends maintenant.",
+     "e": "💡"
+    },
+    {
+     "t": "Je mange du pain.",
+     "e": "🥖"
+    }
+   ]
+  },
+  {
+   "nom": "Accents et ?",
+   "modeles": [
+    {
+     "t": "Tu as {0} ?",
+     "o": [
+      [
+       "faim",
+       "🍽️"
+      ],
+      [
+       "soif",
+       "💧"
+      ],
+      [
+       "froid",
+       "🥶"
+      ],
+      [
+       "chaud",
+       "🥵"
+      ],
+      [
+       "sommeil",
+       "😴"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Où est {0} ?",
+     "o": [
+      [
+       "le prof",
+       "👨‍🏫"
+      ],
+      [
+       "la classe",
+       "🏫"
+      ],
+      [
+       "le bus",
+       "🚌"
+      ],
+      [
+       "ma veste",
+       "🧥"
+      ],
+      [
+       "mon sac",
+       "🎒"
+      ],
+      [
+       "la gare",
+       "🚉"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Je vais {0}.",
+     "o": [
+      [
+       "à la maison",
+       "🏠"
+      ],
+      [
+       "à la piscine",
+       "🏊"
+      ],
+      [
+       "à la mer",
+       "🌊"
+      ],
+      [
+       "à Paris",
+       "🗼"
+      ],
+      [
+       "à la gare",
+       "🚉"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Il est {0}, il {1}.",
+     "o": [
+      [
+       "fatigué",
+       "dort",
+       "😴"
+      ],
+      [
+       "content",
+       "sourit",
+       "😀"
+      ],
+      [
+       "malade",
+       "reste au lit",
+       "🤒"
+      ]
+     ],
+     "e": 2
+    },
+    {
+     "t": "Merci, {0}.",
+     "o": [
+      [
+       "madame",
+       "🙏"
+      ],
+      [
+       "monsieur",
+       "🙏"
+      ],
+      [
+       "Léa",
+       "🙏"
+      ],
+      [
+       "Théo",
+       "🙏"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "Et toi ?",
+     "e": "🤝"
+    },
+    {
+     "t": "Voici ma mère.",
+     "e": "👩"
+    },
+    {
+     "t": "Voici mon père.",
+     "e": "👨"
+    },
+    {
+     "t": "Le professeur est là.",
+     "e": "👨‍🏫"
+    },
+    {
+     "t": "Où est la gare ?",
+     "e": "🚉"
+    },
+    {
+     "t": "Tout droit, puis à gauche.",
+     "e": "⬅️"
+    },
+    {
+     "t": "Je vais à la bibliothèque.",
+     "e": "📚"
+    }
+   ]
+  },
+  {
+   "nom": "Apostrophe et tiret",
+   "modeles": [
+    {
+     "t": "Je m'appelle {0}.",
+     "o": [
+      [
+       "Brahim",
+       "🙂"
+      ],
+      [
+       "Lina",
+       "🙂"
+      ],
+      [
+       "Karim",
+       "🙂"
+      ],
+      [
+       "Sofia",
+       "🙂"
+      ],
+      [
+       "Amina",
+       "🙂"
+      ],
+      [
+       "Omar",
+       "🙂"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "J'ai {0}.",
+     "o": [
+      [
+       "un frère",
+       "👦"
+      ],
+      [
+       "une cousine",
+       "👧"
+      ],
+      [
+       "un chat",
+       "🐱"
+      ],
+      [
+       "un vélo",
+       "🚲"
+      ],
+      [
+       "deux amis",
+       "🧑‍🤝‍🧑"
+      ],
+      [
+       "un cahier",
+       "📓"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Peux-tu {0} ?",
+     "o": [
+      [
+       "répéter",
+       "🔁"
+      ],
+      [
+       "m'aider",
+       "🤝"
+      ],
+      [
+       "parler lentement",
+       "🐢"
+      ],
+      [
+       "ouvrir la porte",
+       "🚪"
+      ],
+      [
+       "écrire ici",
+       "✍️"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "{0} est {1}.",
+     "o": [
+      [
+       "Mon grand-père",
+       "gentil",
+       "👴"
+      ],
+      [
+       "Ma grand-mère",
+       "gentille",
+       "👵"
+      ],
+      [
+       "Mon grand-père",
+       "sympa",
+       "😄"
+      ],
+      [
+       "Ma grand-mère",
+       "contente",
+       "😀"
+      ]
+     ],
+     "e": 2
+    },
+    {
+     "t": "C'est {0}.",
+     "o": [
+      [
+       "un stylo",
+       "🖊️"
+      ],
+      [
+       "mon sac",
+       "🎒"
+      ],
+      [
+       "le prof",
+       "👨‍🏫"
+      ],
+      [
+       "ma cousine",
+       "👧"
+      ],
+      [
+       "mon ami",
+       "🧑‍🤝‍🧑"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "Je m'appelle Brahim.",
+     "e": "🙂"
+    },
+    {
+     "t": "Comment vas-tu ?",
+     "e": "💬"
+    },
+    {
+     "t": "J'habite en France.",
+     "e": "🏠"
+    },
+    {
+     "t": "J'ai un frère et deux cousines.",
+     "e": "👨‍👩‍👧"
+    },
+    {
+     "t": "Mon frère s'appelle Omar.",
+     "e": "👦"
+    },
+    {
+     "t": "Mon grand-père est gentil.",
+     "e": "👴"
+    },
+    {
+     "t": "Ma grand-mère cuisine bien.",
+     "e": "👵"
+    },
+    {
+     "t": "Tu as des frères ? Oui, j'ai deux frères.",
+     "e": "👬"
+    },
+    {
+     "t": "Je suis à l'école.",
+     "e": "🏫"
+    },
+    {
+     "t": "Peux-tu répéter ?",
+     "e": "🔁"
+    },
+    {
+     "t": "Aujourd'hui, nous faisons des maths.",
+     "e": "➕"
+    },
+    {
+     "t": "J'ai faim.",
+     "e": "🍽️"
+    },
+    {
+     "t": "J'ai soif.",
+     "e": "💧"
+    },
+    {
+     "t": "Je bois de l'eau.",
+     "e": "🚰"
+    },
+    {
+     "t": "Qu'est-ce que tu aimes manger ?",
+     "e": "🍕"
+    },
+    {
+     "t": "J'aime le riz, le poulet et les légumes.",
+     "e": "🍗"
+    },
+    {
+     "t": "Aujourd'hui, il fait beau.",
+     "e": "☀️"
+    }
+   ]
+  },
+  {
+   "nom": "Chiffres et heures",
+   "modeles": [
+    {
+     "t": "J'ai {n:11:18} ans.",
+     "e": "🎂"
+    },
+    {
+     "t": "Il est {n:7:11} h {0}.",
+     "o": [
+      [
+       "00"
+      ],
+      [
+       "15"
+      ],
+      [
+       "30"
+      ],
+      [
+       "45"
+      ]
+     ],
+     "e": "⏰"
+    },
+    {
+     "t": "Nous sommes {n:15:30} élèves.",
+     "e": "🧑‍🎓"
+    },
+    {
+     "t": "Voici la salle {n:1:30}.",
+     "e": "🚪"
+    },
+    {
+     "t": "Le bus {n:1:60} passe à {n:6:9} h {0}.",
+     "o": [
+      [
+       "10"
+      ],
+      [
+       "25"
+      ],
+      [
+       "40"
+      ],
+      [
+       "55"
+      ]
+     ],
+     "e": "🚌"
+    },
+    {
+     "t": "Il y a {n:2:9} {0} sur la table.",
+     "o": [
+      [
+       "livres",
+       "📚"
+      ],
+      [
+       "stylos",
+       "🖊️"
+      ],
+      [
+       "pommes",
+       "🍎"
+      ],
+      [
+       "cahiers",
+       "📓"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "J'ai 15 ans.",
+     "e": "🎂"
+    },
+    {
+     "t": "Il y a 20 élèves dans la classe.",
+     "e": "🧑‍🎓"
+    },
+    {
+     "t": "Il est 8 h 30.",
+     "e": "⏰"
+    },
+    {
+     "t": "Le bus passe à 7 h 15.",
+     "e": "🚌"
+    },
+    {
+     "t": "En cas d'urgence, j'appelle le 112.",
+     "e": "🚑"
+    }
+   ]
+  },
+  {
+   "nom": "Prix et !",
+   "modeles": [
+    {
+     "t": "Ça fait {prix}.",
+     "e": "💶"
+    },
+    {
+     "t": "Attention : {0} !",
+     "o": [
+      [
+       "le sol est mouillé",
+       "⚠️"
+      ],
+      [
+       "le feu est rouge",
+       "🚦"
+      ],
+      [
+       "la porte est ouverte",
+       "🚪"
+      ],
+      [
+       "c'est chaud",
+       "🔥"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Bravo ! Tu as {n:5:20} sur 20.",
+     "e": "🎉"
+    },
+    {
+     "t": "{0} : {prix}.",
+     "o": [
+      [
+       "Le pain",
+       "🥖"
+      ],
+      [
+       "Le lait",
+       "🥛"
+      ],
+      [
+       "Les pommes",
+       "🍎"
+      ],
+      [
+       "Le riz",
+       "🍚"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Je voudrais {0}, merci !",
+     "o": [
+      [
+       "du pain",
+       "🥖"
+      ],
+      [
+       "de l'eau",
+       "🚰"
+      ],
+      [
+       "un thé",
+       "☕"
+      ],
+      [
+       "une pomme",
+       "🍎"
+      ],
+      [
+       "un jus",
+       "🧃"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "Ça va ? Oui, ça va.",
+     "e": "👍"
+    },
+    {
+     "t": "Il pleut aujourd'hui !",
+     "e": "🌧️"
+    },
+    {
+     "t": "À demain ! Bonne soirée.",
+     "e": "🌙"
+    },
+    {
+     "t": "Merci, au revoir !",
+     "e": "👋"
+    }
+   ]
+  },
+  {
+   "nom": "Accents ê â î ï",
+   "modeles": [
+    {
+     "t": "Où est la {0} ?",
+     "o": [
+      [
+       "forêt",
+       "🌲"
+      ],
+      [
+       "fenêtre",
+       "🪟"
+      ],
+      [
+       "pâtisserie",
+       "🥐"
+      ],
+      [
+       "gare",
+       "🚉"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Ma {0} est très {1}.",
+     "o": [
+      [
+       "maîtresse",
+       "gentille",
+       "👩‍🏫"
+      ],
+      [
+       "fenêtre",
+       "grande",
+       "🪟"
+      ],
+      [
+       "forêt",
+       "calme",
+       "🌲"
+      ],
+      [
+       "voiture",
+       "rapide",
+       "🚗"
+      ]
+     ],
+     "e": 2
+    },
+    {
+     "t": "Héloïse aime {0}.",
+     "o": [
+      [
+       "la forêt",
+       "🌲"
+      ],
+      [
+       "la fête",
+       "🎉"
+      ],
+      [
+       "le maïs",
+       "🌽"
+      ],
+      [
+       "la musique",
+       "🎵"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Tout droit, puis {0}.",
+     "o": [
+      [
+       "à gauche",
+       "⬅️"
+      ],
+      [
+       "à droite",
+       "➡️"
+      ]
+     ],
+     "e": 1
+    },
+    {
+     "t": "Je suis très {0} !",
+     "o": [
+      [
+       "content",
+       "😀"
+      ],
+      [
+       "fatigué",
+       "😴"
+      ],
+      [
+       "pressé",
+       "🏃"
+      ],
+      [
+       "étonné",
+       "😲"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": [
+    {
+     "t": "S'il te plaît.",
+     "e": "🙏"
+    },
+    {
+     "t": "Quel âge as-tu ? J'ai 16 ans.",
+     "e": "🎈"
+    },
+    {
+     "t": "Ouvre ton livre, s'il te plaît.",
+     "e": "📖"
+    },
+    {
+     "t": "Une pomme coûte 1 euro.",
+     "e": "🍎"
+    },
+    {
+     "t": "Combien ça coûte ?",
+     "e": "🛒"
+    },
+    {
+     "t": "Ça coûte 3,50 €.",
+     "e": "💶"
+    },
+    {
+     "t": "Je voudrais un thé, s'il vous plaît.",
+     "e": "☕"
+    }
+   ]
+  },
+  {
+   "nom": "E-mail et @",
+   "modeles": [
+    {
+     "t": "Mon e-mail : {mail}.",
+     "e": "📧"
+    },
+    {
+     "t": "Écris-moi : {mail}.",
+     "e": "✉️"
+    },
+    {
+     "t": "Mon e-mail : {mail} - écris-moi !",
+     "e": "📧"
+    },
+    {
+     "t": "Le site : {site}.",
+     "e": "🌐"
+    },
+    {
+     "t": "Mon e-mail est {mail}, sans majuscule.",
+     "e": "📧"
+    }
+   ],
+   "fixes": []
+  },
+  {
+   "nom": "Tout mélanger",
+   "modeles": [
+    {
+     "t": "Prix : {prix} (soit {n:10:50} % de moins) !",
+     "e": "🏷️"
+    },
+    {
+     "t": "Rendez-vous à {heure} : salle {n:1:30} (pas en retard !).",
+     "e": "⏰"
+    },
+    {
+     "t": "Un petit calcul : {calc:1:9}.",
+     "e": "🧮"
+    },
+    {
+     "t": "Écris à {mail} avant le {date} !",
+     "e": "📧"
+    },
+    {
+     "t": "Voici mon pseudo : {tag} !",
+     "e": "🎮"
+    },
+    {
+     "t": "Elle dit : \"{0}\".",
+     "o": [
+      [
+       "Bonjour",
+       "👋"
+      ],
+      [
+       "Merci beaucoup",
+       "🙏"
+      ],
+      [
+       "À demain",
+       "🌙"
+      ],
+      [
+       "Je comprends",
+       "💡"
+      ]
+     ],
+     "e": 1
+    }
+   ],
+   "fixes": []
+  }
  ],
  "tutos": [
-  {"id":"maj","titre":"Les majuscules","texte":["Maintiens la touche Maj (la flèche vers le haut) et tape une lettre.","Relâche Maj, puis continue en minuscule."],"touches":["Maj","+","B"],"essai":"Bonjour Paris"},
-  {"id":"chiffres","titre":"Les chiffres","texte":["Sur un clavier d’ordinateur, les chiffres sont en haut du clavier.","Maintiens Maj et tape le chiffre : Maj + 2 donne 2.","Sans Maj, tu obtiens é, è, à… et pas le chiffre."],"touches":["Maj","+","2"],"essai":"2025 18"},
-  {"id":"arobase","titre":"L’arobase @","texte":["Maintiens AltGr (à droite de la barre d’espace).","Tape la touche à (en haut, à côté de ç).","Si ça ne marche pas : Ctrl + Alt + à."],"touches":["AltGr","+","à @"],"essai":"nom@exemple.fr"},
-  {"id":"accents","titre":"Les accents directs : é è à ù ç","texte":["Ces lettres ont leur propre touche, en haut du clavier.","é = touche 2 · è = touche 7 · ç = touche 9 · à = touche 0.","ù est à droite de la lettre M."],"touches":["é","è","à","ù","ç"],"essai":"été très à où ça"},
-  {"id":"circonflexe","titre":"L’accent circonflexe : ê â î ô û","texte":["Tape la touche ^ (à droite de P). Il ne se passe rien : c’est normal.","Tape ensuite la voyelle : ^ puis e donne ê."],"touches":["^","puis","e"],"essai":"forêt hôtel âge"},
-  {"id":"trema","titre":"Le tréma : ë ï ü","texte":["Maintiens Maj et tape ^ : cela fait ¨ (rien ne s’affiche encore).","Tape ensuite la voyelle : ¨ puis e donne ë."],"touches":["Maj + ^","puis","e"],"essai":"Noël maïs"},
-  {"id":"capaccent","titre":"Les majuscules avec accent : É À È Ç","texte":["Active Verr. Maj (le cadenas, à gauche).","Tape é, à, è ou ç : tu obtiens É, À, È, Ç.","Désactive Verr. Maj ensuite.","Autre méthode (Windows, pavé numérique) : Alt + 0201 donne É, Alt + 0192 donne À, Alt + 0199 donne Ç."],"touches":["Verr. Maj","puis","é"],"essai":"École À Ça Élodie"},
-  {"id":"altgr","titre":"Les symboles avec AltGr : # { } [ ] | € ","texte":["Maintiens AltGr et tape la touche indiquée.","# = AltGr + 3 · [ = AltGr + 5 · ] = AltGr + ) · € = AltGr + E."],"touches":["AltGr","+","3 #"],"essai":"#[]€"},
-  {"id":"signes","titre":"Parenthèses, tiret, guillemets, apostrophe","texte":["Ces signes sont en haut du clavier, sans Maj.","( = touche 5 · ) = touche à droite du 0 · - = touche 6 · ' = touche 4 · \" = touche 3 · _ = touche 8.","% = Maj + ù · + = Maj + = · = = touche = · & = touche 1 · * = à droite de ù."],"touches":["(","5"],"essai":"(a) \"b\" c-d l'eau"},
-  {"id":"ponct","titre":"La ponctuation en français","texte":["En français, on met une espace avant ? ! : ; mais pas avant la virgule et le point.","? = Maj + virgule · . = Maj + point-virgule · / = Maj + deux-points.","! , ; : ont leur touche en bas à droite."],"touches":["Maj","+",","],"essai":"Ça va ? Oui, ça va !"},
-  {"id":"effacer","titre":"Corriger une erreur","texte":["La touche ⌫ (Retour arrière) efface le dernier caractère.","Ctrl + ⌫ efface un mot entier.","Dans le jeu, les erreurs sont comptées : vise juste avant d’aller vite."],"touches":["⌫"],"essai":""}
+  {
+   "id": "maj",
+   "titre": "Les majuscules",
+   "texte": [
+    "Maintiens la touche Maj (la flèche vers le haut) et tape une lettre.",
+    "Relâche Maj, puis continue en minuscule."
+   ],
+   "touches": [
+    "Maj",
+    "+",
+    "B"
+   ],
+   "essai": "Bonjour Paris"
+  },
+  {
+   "id": "chiffres",
+   "titre": "Les chiffres",
+   "texte": [
+    "Sur un clavier d’ordinateur, les chiffres sont en haut du clavier.",
+    "Maintiens Maj et tape le chiffre : Maj + 2 donne 2.",
+    "Sans Maj, tu obtiens é, è, à… et pas le chiffre."
+   ],
+   "touches": [
+    "Maj",
+    "+",
+    "2"
+   ],
+   "essai": "2025 18"
+  },
+  {
+   "id": "arobase",
+   "titre": "L’arobase @",
+   "texte": [
+    "Maintiens AltGr (à droite de la barre d’espace).",
+    "Tape la touche à (en haut, à côté de ç).",
+    "Si ça ne marche pas : Ctrl + Alt + à."
+   ],
+   "touches": [
+    "AltGr",
+    "+",
+    "à @"
+   ],
+   "essai": "nom@exemple.fr"
+  },
+  {
+   "id": "mail",
+   "titre": "Écrire une adresse e-mail",
+   "texte": [
+    "Une adresse e-mail a trois parties : le nom, le @ et le site, par exemple lea.martin@exemple.fr.",
+    "Le point est Maj + point-virgule. Le @ est AltGr + à. Le tiret bas _ est la touche 8, sans Maj."
+   ],
+   "touches": [
+    "Maj + ;",
+    "AltGr + à",
+    "8"
+   ],
+   "essai": "lea.martin@exemple.fr"
+  },
+  {
+   "id": "accents",
+   "titre": "Les accents directs : é è à ù ç",
+   "texte": [
+    "Ces lettres ont leur propre touche, en haut du clavier.",
+    "é = touche 2 · è = touche 7 · ç = touche 9 · à = touche 0.",
+    "ù est à droite de la lettre M."
+   ],
+   "touches": [
+    "é",
+    "è",
+    "à",
+    "ù",
+    "ç"
+   ],
+   "essai": "été très à où ça"
+  },
+  {
+   "id": "circonflexe",
+   "titre": "L’accent circonflexe : ê â î ô û",
+   "texte": [
+    "Tape la touche ^ (à droite de P). Il ne se passe rien : c’est normal.",
+    "Tape ensuite la voyelle : ^ puis e donne ê."
+   ],
+   "touches": [
+    "^",
+    "puis",
+    "e"
+   ],
+   "essai": "forêt hôtel âge"
+  },
+  {
+   "id": "trema",
+   "titre": "Le tréma : ë ï ü",
+   "texte": [
+    "Maintiens Maj et tape ^ : cela fait ¨ (rien ne s’affiche encore).",
+    "Tape ensuite la voyelle : ¨ puis e donne ë."
+   ],
+   "touches": [
+    "Maj + ^",
+    "puis",
+    "e"
+   ],
+   "essai": "Noël maïs"
+  },
+  {
+   "id": "capaccent",
+   "titre": "Les majuscules avec accent : É À È Ç",
+   "texte": [
+    "Active Verr. Maj (le cadenas, à gauche).",
+    "Tape é, à, è ou ç : tu obtiens É, À, È, Ç.",
+    "Désactive Verr. Maj ensuite.",
+    "Autre méthode (Windows, pavé numérique) : Alt + 0201 donne É, Alt + 0192 donne À, Alt + 0199 donne Ç."
+   ],
+   "touches": [
+    "Verr. Maj",
+    "puis",
+    "é"
+   ],
+   "essai": "École À Ça Élodie"
+  },
+  {
+   "id": "altgr",
+   "titre": "Les symboles avec AltGr : # { } [ ] | \\ €",
+   "texte": [
+    "Maintiens AltGr (à droite de la barre d’espace) et tape la touche indiquée.",
+    "# = AltGr + 3 · { = AltGr + 4 · [ = AltGr + 5 · | = AltGr + 6 · \\ = AltGr + 8 · ] = AltGr + ) · } = AltGr + = · € = AltGr + E."
+   ],
+   "touches": [
+    "AltGr",
+    "+",
+    "3 #"
+   ],
+   "essai": "#{}[]|\\€"
+  },
+  {
+   "id": "signes",
+   "titre": "Parenthèses, tiret, guillemets, apostrophe",
+   "texte": [
+    "Ces signes sont en haut du clavier, sans Maj.",
+    "( = touche 5 · ) = touche à droite du 0 · - = touche 6 · ' = touche 4 · \" = touche 3 · _ = touche 8.",
+    "% = Maj + ù · + = Maj + = · = = touche = · & = touche 1 · * = à droite de ù."
+   ],
+   "touches": [
+    "(",
+    "5"
+   ],
+   "essai": "(a) \"b\" c-d l'eau"
+  },
+  {
+   "id": "ponct",
+   "titre": "La ponctuation en français",
+   "texte": [
+    "En français, on met une espace avant ? ! : ; mais pas avant la virgule et le point.",
+    "? = Maj + virgule · . = Maj + point-virgule · / = Maj + deux-points.",
+    "! , ; : ont leur touche en bas à droite."
+   ],
+   "touches": [
+    "Maj",
+    "+",
+    ","
+   ],
+   "essai": "Ça va ? Oui, ça va !"
+  },
+  {
+   "id": "effacer",
+   "titre": "Corriger une erreur",
+   "texte": [
+    "La touche ⌫ (Retour arrière) efface le dernier caractère.",
+    "Ctrl + ⌫ efface un mot entier.",
+    "Dans le jeu, les erreurs sont comptées : vise juste avant d’aller vite."
+   ],
+   "touches": [
+    "⌫"
+   ],
+   "essai": ""
+  }
  ]
 }
 </script>
@@ -387,7 +2605,8 @@ const Moteur=(function(){
     const stars=ex.done?(ex.errors===0?3:(ex.errors<=2?2:1)):0;
     return {len:ex.target.length,okLen:ex.done?ex.target.length:ex.okLen,errors:ex.errors,dels:ex.dels,ms:dur,done:ex.done,stars:stars};
   }
-  function limiteSec(len,allo){return Math.ceil(len*(allo?1.6:1.0))+8;}
+  // Temps accordé par phrase en défi chrono (plus large pour les niveaux 8 à 10 : caractères rares)
+  function limiteSec(len,allo,niv){return Math.ceil(len*(allo?1.6:((niv||0)>=8?1.4:1.0)))+8;}
   function pickSerie(len,n,rnd){ // un exercice tiré au hasard dans chaque tranche, ordre croissant
     const out=[]; if(n>=len){for(let i=0;i<len;i++)out.push(i);return out;}
     for(let k=0;k<n;k++){const a=Math.floor(k*len/n),b=Math.floor((k+1)*len/n);out.push(a+Math.floor(rnd()*(b-a)));}
@@ -430,7 +2649,65 @@ const Moteur=(function(){
       .sort(function(a,b){return b.diff-a.diff;}).slice(0,5);
     return {L:L,err:err,dels:dels,ms:ms,faits:faits,total:res.length,cpm:Math.round(cpm),score:score,parts:parts,rang:rang(score),dur:dur,base:base};
   }
-  return {LAYOUT:LAYOUT,MAP:MAP,howTo:howTo,nom:nom,tutoPour:tutoPour,premiereFaute:premiereFaute,nouvelExo:nouvelExo,traiter:traiter,terminer:terminer,limiteSec:limiteSec,pickSerie:pickSerie,bilan:bilan,norm:norm,rang:rang};
+  /* --- Fabrique de phrases : modèles à trous + tirage au hasard --- */
+  const PRENOMS=["lea","hugo","nina","tom","sofia","karim","lina","theo","zoe","noe","ines","amina","omar","jade","louis","maya"];
+  const NOMS_FAM=["martin","dupont","durand","petit","bernard","moreau","simon","laurent","michel","garcia"];
+  const DOMAINES=["exemple.fr","exemple.com","exemple.org","mail.exemple.fr"];
+  const MAJ="ABCDEFGHJKLMNPQRSTUVWXYZ", MIN="abcdefghjkmnpqrstuvwxyz", CHI="23456789";
+  function ent(a,b,rnd){return a+Math.floor(rnd()*(b-a+1));}
+  function choix(t,rnd){return t[Math.floor(rnd()*t.length)];}
+  function deux(n){return (n<10?"0":"")+n;}
+  function melanger(t,rnd){for(let i=t.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));const x=t[i];t[i]=t[j];t[j]=x;}return t;}
+  function tirerCar(chaine,k,rnd){const o=[];for(let i=0;i<k;i++)o.push(chaine[Math.floor(rnd()*chaine.length)]);return o;}
+  // Générateurs utilisables dans les modèles : {n:a:b} {prix} {mail} {mail2} {site} {url} {tag} {fichier} {date} {heure} {calc} {mdp} {mdp2}
+  const GEN={
+    n:function(a,b,rnd){return String(ent(a,b,rnd));},
+    prix:function(a,b,rnd){return ent(a||1,b||60,rnd)+","+choix(["00","20","50","90","99"],rnd)+" €";},
+    mail:function(a,b,rnd){const p=choix(PRENOMS,rnd),n=choix(NOMS_FAM,rnd);return (rnd()<0.5?p+"."+n:p+"."+n+ent(10,99,rnd))+"@"+choix(DOMAINES,rnd);},
+    mail2:function(a,b,rnd){const p=choix(PRENOMS,rnd),n=choix(NOMS_FAM,rnd);return choix([p+"_"+n,p+"."+n+"_"+ent(10,99,rnd),p+n+ent(1,9,rnd)],rnd)+"@"+choix(DOMAINES,rnd);},
+    site:function(a,b,rnd){return choix(["www.exemple.fr","www.exemple.org","exemple.com","www.exemple.com"],rnd);},
+    url:function(a,b,rnd){return choix(["www.exemple.fr/cours-maths","www.exemple.org/devoirs","exemple.com/classe","exemple.fr/aide","www.exemple.fr/inscription"],rnd);},
+    tag:function(a,b,rnd){return "#"+choix(["Maths","Classe","Equipe","Bravo","Champion","Lycee","Defi","Clavier"],rnd)+ent(10,99,rnd);},
+    fichier:function(a,b,rnd){return choix(["rapport","devoir","expose","cours","exercice","tableau","photo"],rnd)+"_"+choix(["maths","francais","histoire","sport"],rnd)+"_"+ent(1,9,rnd)+choix([".docx",".pdf",".xlsx",".txt"],rnd);},
+    date:function(a,b,rnd){return deux(ent(1,28,rnd))+"/"+deux(ent(1,12,rnd))+"/"+choix(["2026","2027"],rnd);},
+    heure:function(a,b,rnd){return deux(ent(7,19,rnd))+":"+choix(["00","15","30","45"],rnd);},
+    calc:function(a,b,rnd){
+      a=a||2;b=b||30;const op=choix(b<=10?["+","-","+"]:["+","-","x","*","/"],rnd);let x,y,r;
+      if(op==="+"){x=ent(a,b,rnd);y=ent(a,b,rnd);r=x+y;}
+      else if(op==="-"){x=ent(a,b,rnd);y=ent(a,b,rnd);if(y>x){const t=x;x=y;y=t;}r=x-y;}
+      else if(op==="/"){y=ent(2,9,rnd);r=ent(2,9,rnd);x=y*r;}
+      else{x=ent(2,12,rnd);y=ent(2,12,rnd);r=x*y;}
+      return x+" "+op+" "+y+" = "+r;},
+    mdp:function(a,b,rnd){return melanger(tirerCar(MAJ,2,rnd).concat(tirerCar(MIN,3,rnd),tirerCar(CHI,2,rnd),tirerCar("@#%&!?+=",1,rnd)),rnd).join("");},
+    mdp2:function(a,b,rnd){return melanger(tirerCar(MAJ,2,rnd).concat(tirerCar(MIN,2,rnd),tirerCar(CHI,2,rnd),tirerCar("{}[]|\\",2,rnd),tirerCar("@#%&*€/?!+=",2,rnd)),rnd).join("");}
+  };
+  // Remplit un modèle : {0},{1}… = éléments d’un groupe de mots tiré au hasard (cohérents entre eux)
+  function fabriquer(m,rnd){
+    const tup=(m.o&&m.o.length)?choix(m.o,rnd):[];
+    const t=m.t.replace(/\{([a-z0-9]+)(?::(\d+):(\d+))?\}/g,function(x,nom,a,b){
+      if(/^\d+$/.test(nom)) return String(tup[+nom]);
+      const g=GEN[nom]; return g?g(a===undefined?0:+a,b===undefined?0:+b,rnd):x;});
+    let e=m.e; if(typeof e==="number") e=tup[e];
+    return {t:t,e:e||""};
+  }
+  // Une phrase d’un niveau : 30 % écrite à la main, 70 % fabriquée à partir d’un modèle
+  function tirerPhrase(niv,rnd){
+    const f=niv.fixes||[],m=niv.modeles||[];
+    if(f.length&&(!m.length||rnd()<0.3)){const x=choix(f,rnd);return typeof x==="string"?{t:x,e:""}:{t:x.t,e:x.e||""};}
+    return fabriquer(choix(m,rnd),rnd);
+  }
+  // Série de n phrases : difficulté progressive (niveauFixe = 0) ou un seul niveau ; pas de doublon
+  function fabriquerSerie(niveaux,n,niveauFixe,rnd){
+    const L=niveaux.length,out=[],vus={};
+    for(let k=0;k<n;k++){
+      const lvl=niveauFixe>0?Math.min(niveauFixe,L)-1:Math.min(L-1,Math.floor(k*L/n));
+      let it=null;
+      for(let essai=0;essai<40;essai++){it=tirerPhrase(niveaux[lvl],rnd);if(!vus[it.t])break;}
+      vus[it.t]=true;it.niv=lvl+1;out.push(it);
+    }
+    return out;
+  }
+  return {GEN:GEN,fabriquer:fabriquer,tirerPhrase:tirerPhrase,fabriquerSerie:fabriquerSerie,LAYOUT:LAYOUT,MAP:MAP,howTo:howTo,nom:nom,tutoPour:tutoPour,premiereFaute:premiereFaute,nouvelExo:nouvelExo,traiter:traiter,terminer:terminer,limiteSec:limiteSec,pickSerie:pickSerie,bilan:bilan,norm:norm,rang:rang};
 })();
 // MOTEUR-FIN
 
@@ -475,12 +2752,13 @@ const Stock=(function(){
 })();
 const DATA=JSON.parse($("#donnees").textContent);
 const TAILLES=[0.9,1,1.15,1.3,1.5];
-const PREFS_DEF={mode:"classique",n:10,chrono:false,pseudo:"",aide:true,fs:1};
+const PREFS_DEF={mode:"classique",n:10,niveau:0,chrono:false,pseudo:"",aide:true,fs:1};
 // Valide des réglages (sauvegarde ou import) : valeurs bornées, champs connus seulement
 function nettoyerPrefs(p){
   const o=Object.assign({},PREFS_DEF); if(!p||typeof p!=="object") return o;
   if(p.mode==="classique"||p.mode==="allophone") o.mode=p.mode;
   if([10,25,50].indexOf(p.n)>=0) o.n=p.n;
+  if(Number.isInteger(p.niveau)&&p.niveau>=0&&p.niveau<=10) o.niveau=p.niveau;
   o.chrono=p.chrono===true; o.aide=p.aide!==false;
   if(typeof p.pseudo==="string") o.pseudo=p.pseudo.replace(/[^\p{L}\p{N} _-]/gu,"").slice(0,20);
   if(TAILLES.indexOf(p.fs)>=0) o.fs=p.fs;
@@ -492,14 +2770,14 @@ function nettoyerHist(a){
     if(!x||typeof x!=="object") return null;
     const n=function(v,mx){v=Number(v);return isFinite(v)?Math.max(0,Math.min(mx,Math.round(v))):0;};
     return {d:/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:"0000-00-00",mode:x.mode==="allophone"?"allophone":"classique",
-      n:[10,25,50].indexOf(x.n)>=0?x.n:10,chrono:x.chrono===true,score:n(x.score,100),err:n(x.err,9999),dels:n(x.dels,9999),ms:n(x.ms,36000000),
+      n:[10,25,50].indexOf(x.n)>=0?x.n:10,niv:n(x.niv,10),chrono:x.chrono===true,score:n(x.score,100),err:n(x.err,9999),dels:n(x.dels,9999),ms:n(x.ms,36000000),
       hard:Array.isArray(x.hard)?x.hard.slice(0,3).map(function(c){return String(c).slice(0,1);}):[]};
   }).filter(Boolean);
 }
 function nettoyerBests(b){
   const o={}; if(!b||typeof b!=="object") return o;
   Object.keys(b).forEach(function(k){
-    if(/^(classique|allophone)-(10|25|50)-(libre|chrono)$/.test(k)&&b[k]&&typeof b[k].score==="number")
+    if(/^(classique|allophone)-(10|25|50)-(libre|chrono)(-p|-n(10|[1-9]))?$/.test(k)&&b[k]&&typeof b[k].score==="number")
       o[k]={score:Math.max(0,Math.min(100,Math.round(b[k].score))),d:/^\d{4}-\d{2}-\d{2}$/.test(b[k].d)?b[k].d:"0000-00-00"};
   });
   return o;
@@ -511,6 +2789,7 @@ function appliquerTaille(){document.documentElement.style.setProperty("--fs",S.p
 
 /* ===== D. ÉCRANS ET NAVIGATION ===== */
 const ECRANS={};
+function niveauxDe(mode){return mode==="allophone"?DATA.niveauxAllophone:DATA.niveauxClassique;}
 function montrer(nom,opt){
   if(S.sess&&S.ecran==="jeu"&&nom!=="jeu"&&!(opt&&opt.force)){ // quitter une partie en cours : on demande
     dialogue({titre:"Quitter la partie ?",texte:["Ta partie en cours ne sera pas enregistrée."],boutons:[
@@ -553,6 +2832,15 @@ ECRANS.accueil=function(){
     ?"Phrases très simples (Je m’appelle… Comment vas-tu ?). On travaille les signes ? - ’ et les accents, avec un dessin pour comprendre."
     :"Phrases naturelles avec majuscules, chiffres, accents et caractères spéciaux : ( ) @ # % € …";};
   majDesc();
+  // Liste déroulante de difficulté (les niveaux dépendent du mode)
+  const selNiv=h("select",{class:"sel",id:"sel-niv","aria-describedby":"desc-niv",onchange:function(e){P.niveau=+e.target.value;sauver();}});
+  const remplirNiv=function(){
+    const nv=niveauxDe(P.mode); if(P.niveau>nv.length) P.niveau=0; selNiv.textContent="";
+    selNiv.appendChild(h("option",{value:"0",text:"Progressive (niveaux 1 à "+nv.length+")"}));
+    nv.forEach(function(x,i){selNiv.appendChild(h("option",{value:String(i+1),text:"Niveau "+(i+1)+" : "+x.nom}));});
+    selNiv.value=String(P.niveau);
+  };
+  remplirNiv();
   const pseudo=h("input",{class:"txt",id:"pseudo",type:"text",maxlength:"20",autocomplete:"off",value:P.pseudo,"aria-describedby":"pseudo-note",
     oninput:function(e){P.pseudo=nettoyerPrefs({pseudo:e.target.value}).pseudo;sauver();}});
   return h("section",{},
@@ -560,13 +2848,16 @@ ECRANS.accueil=function(){
       h("p",{text:"Recopie les phrases le plus juste possible. Gagne des étoiles. Vise 100 / 100 !"})),
     h("div",{class:"card"},
       h("h2",{text:"1. Quel mode ?"}),
-      groupe("mode",[{v:"classique",l:"Classique"},{v:"allophone",l:"Allophone (phrases très simples)"}],P.mode,function(v){P.mode=v;sauver();majDesc();}),desc,
-      h("h2",{text:"2. Combien d’exercices ?"}),
+      groupe("mode",[{v:"classique",l:"Classique"},{v:"allophone",l:"Allophone (phrases très simples)"}],P.mode,function(v){P.mode=v;sauver();majDesc();remplirNiv();}),desc,
+      h("h2",{text:"2. Quelle difficulté ?"}),
+      h("p",{},h("label",{class:"sr",for:"sel-niv",text:"Difficulté : "}),selNiv),
+      h("p",{class:"note",id:"desc-niv",text:"Progressive : les phrases deviennent de plus en plus difficiles au fil de la partie. Chaque phrase est tirée au hasard : tu ne tapes jamais deux fois la même série."}),
+      h("h2",{text:"3. Combien d’exercices ?"}),
       groupe("n",[{v:10,l:"10 (rapide)"},{v:25,l:"25"},{v:50,l:"50 (complet)"}],P.n,function(v){P.n=+v;sauver();}),
-      h("h2",{text:"3. Avec ou sans chrono ?"}),
+      h("h2",{text:"4. Avec ou sans chrono ?"}),
       groupe("chrono",[{v:"libre",l:"Sans chrono"},{v:"chrono",l:"Défi chronométré"}],P.chrono?"chrono":"libre",function(v){P.chrono=v==="chrono";sauver();}),
       h("p",{class:"note",text:"Sans chrono : on mesure le temps, mais il ne compte pas dans le score. Défi chrono : un compte à rebours par phrase."}),
-      h("h2",{text:"4. Options"}),
+      h("h2",{text:"5. Options"}),
       h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:P.aide,onchange:function(e){P.aide=e.target.checked;sauver();}})," Montrer la touche à taper sur le clavier"),
       h("p",{},h("label",{for:"pseudo",text:"Pseudo (facultatif, pas ton vrai nom) : "}),pseudo),
       h("p",{class:"note",id:"pseudo-note",text:"Le pseudo reste sur cet appareil. Il apparaît seulement sur ton résultat."}),
@@ -595,13 +2886,16 @@ ECRANS.tuto=function(opt){
 ECRANS.apropos=function(){
   return h("section",{},h("h1",{text:"À propos"}),
     h("div",{class:"card"},
-      h("p",{text:"Clavier en jeu, version 1.0. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
+      h("p",{text:"Clavier en jeu, version 1.1. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
       h("h2",{text:"Comment est calculé le score /100 ?"}),
       h("ul",{},
         h("li",{text:"Précision : moins d’erreurs, plus de points. Une série de fautes d’affilée compte pour une seule erreur."}),
         h("li",{text:"Fluidité : part des caractères tapés sans hésiter (moins de 2 secondes, 3 secondes en mode allophone)."}),
         h("li",{text:"Défi chrono seulement : vitesse (signes par minute) et nombre d’exercices finis dans le temps."}),
-        h("li",{text:"Sans chrono : seulement précision (65) et fluidité (35). Le temps total est affiché, mais ne compte pas."})),
+        h("li",{text:"Sans chrono : seulement précision (65) et fluidité (35). Le temps total est affiché, mais ne compte pas."}),
+        h("li",{text:"Le score ne tient pas compte du niveau : compare seulement des parties de même difficulté. Les niveaux 7 à 10 (e-mails, symboles rares) sont volontairement plus durs."})),
+      h("h2",{text:"Les niveaux et le tirage au hasard"}),
+      h("p",{text:"Classique : 10 niveaux (lettres, accents, chiffres, ponctuation, tréma, parenthèses et %, e-mails et @, calculs et fichiers, phrases mixtes, défi expert). Allophone : 8 niveaux. Les phrases sont fabriquées à partir de modèles à trous remplis au hasard, avec des mots qui vont ensemble. Les adresses e-mail, sites et mots de passe sont inventés : ils n’existent pas."}),
       h("h2",{text:"Limites connues"}),
       h("ul",{},
         h("li",{text:"Les aides sont faites pour le clavier PC français AZERTY. Sur Mac ou avec un autre clavier, les touches indiquées peuvent différer."}),
@@ -623,7 +2917,7 @@ ECRANS.confid=function(){
 };
 ECRANS.records=function(){
   const cles=Object.keys(S.bests).sort();
-  const nomCle=function(k){const p=k.split("-");return (p[0]==="allophone"?"Allophone":"Classique")+" · "+p[1]+" exercices · "+(p[2]==="chrono"?"chrono":"sans chrono");};
+  const nomCle=function(k){const p=k.split("-");const d=p[3]==="p"?"progressive":(p[3]?"niveau "+p[3].slice(1):"progressive");return (p[0]==="allophone"?"Allophone":"Classique")+" · "+p[1]+" exercices · "+(p[2]==="chrono"?"chrono":"sans chrono")+" · "+d;};
   const fich=h("input",{type:"file",accept:".json,application/json",hidden:true,"aria-label":"Choisir un fichier à importer",onchange:function(e){importer(e.target.files[0]);e.target.value="";}});
   return h("section",{},h("h1",{text:"🏅 Records"}),
     h("div",{class:"card"},h("h2",{text:"Meilleurs scores"}),
@@ -632,7 +2926,7 @@ ECRANS.records=function(){
       :h("p",{text:"Pas encore de partie. Joue pour faire apparaître tes records !"})),
     h("div",{class:"card"},h("h2",{text:"Dernières parties"}),
       S.hist.length?h("table",{},h("thead",{},h("tr",{},["Date","Mode","Score","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
-        h("tbody",{},S.hist.slice(-10).reverse().map(function(x){return h("tr",{},[x.d,(x.mode==="allophone"?"Allo":"Classique")+" "+x.n+(x.chrono?" ⏱":""),x.score+"/100",x.err,x.dels,dureeTxt(x.ms)].map(function(c){return h("td",{text:String(c)});}));})))
+        h("tbody",{},S.hist.slice(-10).reverse().map(function(x){return h("tr",{},[x.d,(x.mode==="allophone"?"Allo":"Classique")+" "+x.n+(x.chrono?" ⏱":"")+(x.niv?" niv."+x.niv:" prog."),x.score+"/100",x.err,x.dels,dureeTxt(x.ms)].map(function(c){return h("td",{text:String(c)});}));})))
       :h("p",{text:"Rien pour le moment."})),
     h("div",{class:"card"},h("h2",{text:"Mes données"}),
       h("p",{class:"note",text:"Tout reste sur cet appareil. Exporte pour garder une copie ou changer d’appareil."}),
@@ -687,9 +2981,9 @@ function dialogue(o){
 /* ===== E. JEU ===== */
 let T={iv:0,to:0,clavier:null}; // minuteurs et touches du clavier visuel
 function lancer(){
-  const P=S.prefs, banque=P.mode==="allophone"?DATA.allophone:DATA.classique.map(function(t){return {t:t,e:""};});
-  const idx=Moteur.pickSerie(banque.length,P.n,Math.random);
-  S.sess={items:idx.map(function(i){return banque[i];}),i:0,res:[],times:[],errs:[],ex:null,mode:P.mode,chrono:P.chrono,n:P.n,serie:0,serieMax:0,pause:false,verrou:false,debut:performance.now()};
+  const P=S.prefs, nv=niveauxDe(P.mode), nf=Math.min(P.niveau,nv.length);
+  const items=Moteur.fabriquerSerie(nv,P.n,nf,Math.random);
+  S.sess={items:items,niveaux:nv,niveau:nf,i:0,res:[],times:[],errs:[],ex:null,mode:P.mode,chrono:P.chrono,n:P.n,serie:0,serieMax:0,pause:false,verrou:false,debut:performance.now()};
   montrer("jeu",{force:true});
 }
 function arreterJeu(){clearInterval(T.iv);clearTimeout(T.to);S.sess=null;}
@@ -722,7 +3016,7 @@ ECRANS.jeu=function(){
   const msg=h("div",{class:"msg",id:"msg","aria-live":"polite"});
   return h("section",{},
     h("div",{class:"hud"},
-      h("span",{class:"chip",id:"c-num"}),h("span",{class:"chip",id:"c-temps"}),h("span",{class:"chip",id:"c-serie",title:"Phrases sans erreur d’affilée"}),
+      h("span",{class:"chip",id:"c-niv"}),h("span",{class:"chip",id:"c-num"}),h("span",{class:"chip",id:"c-temps"}),h("span",{class:"chip",id:"c-serie",title:"Phrases sans erreur d’affilée"}),
       h("span",{class:"chip",id:"c-caps",hidden:true,text:"🔒 Verr. Maj activée"}),
       h("button",{class:"btn ghost",type:"button",text:"⏸ Pause",onclick:function(){pause(true);}}),
       h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:S.prefs.aide,onchange:function(e){S.prefs.aide=e.target.checked;sauver();majClavier();}})," Aide clavier")),
@@ -764,7 +3058,8 @@ function prochainExo(){
   const s=S.sess; if(!s) return;
   if(s.i>=s.items.length){finDePartie();return;}
   const it=s.items[s.i]; s.ex=Moteur.nouvelExo(it.t); s.verrou=false;
-  s.limite=Moteur.limiteSec(it.t.length,s.mode==="allophone");
+  s.limite=Moteur.limiteSec(it.t.length,s.mode==="allophone",it.niv);
+  $("#c-niv").textContent="Niveau "+it.niv+" : "+s.niveaux[it.niv-1].nom;
   const saisie=$("#saisie"); saisie.value=""; saisie.disabled=false;
   $("#emoji").textContent=it.e||""; $("#emoji").hidden=!it.e;
   $("#msg").textContent="";$("#msg").className="msg";
@@ -818,7 +3113,7 @@ function surSaisie(){
 }
 function finirExo(tempsEcoule){
   const s=S.sess; if(!s||s.verrou) return; s.verrou=true; clearInterval(T.iv);
-  const r=Moteur.terminer(s.ex,performance.now()); s.res.push(r);
+  const r=Moteur.terminer(s.ex,performance.now()); r.niv=s.items[s.i].niv; s.res.push(r);
   s.times=s.times.concat(s.ex.times); s.errs=s.errs.concat(s.ex.errList);
   s.serie=(r.done&&r.errors===0)?s.serie+1:0; s.serieMax=Math.max(s.serieMax,s.serie); majSerieChip();
   $("#saisie").disabled=true;
@@ -845,18 +3140,18 @@ document.addEventListener("visibilitychange",function(){if(document.hidden&&S.ec
 function finDePartie(){
   const s=S.sess; clearInterval(T.iv);
   const b=Moteur.bilan(s.res,s.times,s.errs,{chrono:s.chrono,allo:s.mode==="allophone"});
-  const cle=s.mode+"-"+s.n+"-"+(s.chrono?"chrono":"libre"), ancien=S.bests[cle];
+  const cle=s.mode+"-"+s.n+"-"+(s.chrono?"chrono":"libre")+(s.niveau?"-n"+s.niveau:"-p"), ancien=S.bests[cle];
   const record=!ancien||b.score>ancien.score;
   if(record) S.bests[cle]={score:b.score,d:jourLocal()};
-  S.hist.push({d:jourLocal(),mode:s.mode,n:s.n,chrono:s.chrono,score:b.score,err:b.err,dels:b.dels,ms:Math.round(b.ms),hard:b.dur.slice(0,3).map(function(x){return x.c;})});
+  S.hist.push({d:jourLocal(),mode:s.mode,n:s.n,niv:s.niveau,chrono:s.chrono,score:b.score,err:b.err,dels:b.dels,ms:Math.round(b.ms),hard:b.dur.slice(0,3).map(function(x){return x.c;})});
   S.hist=S.hist.slice(-50); sauver();
-  S.dernier={b:b,res:s.res,mode:s.mode,n:s.n,chrono:s.chrono,serieMax:s.serieMax,record:record,premier:!ancien};
+  S.dernier={b:b,res:s.res,mode:s.mode,n:s.n,niveau:s.niveau,chrono:s.chrono,serieMax:s.serieMax,record:record,premier:!ancien};
   montrer("fin",{force:true});
 }
 function texteResultat(d){
   const b=d.b, pseudo=S.prefs.pseudo?(S.prefs.pseudo+" — "):"";
   return pseudo+"Clavier en jeu : "+b.score+" / 100 ("+b.rang.t+")\n"
-    +(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.chrono?"défi chrono":"sans chrono")+"\n"
+    +(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.niveau?"niveau "+d.niveau:"difficulté progressive")+", "+(d.chrono?"défi chrono":"sans chrono")+"\n"
     +"Erreurs : "+b.err+" · Effacements : "+b.dels+" · Temps : "+dureeTxt(b.ms)+" · Vitesse : "+b.cpm+" signes/min\n"
     +(b.dur.length?"Touches à travailler : "+b.dur.map(function(x){return x.c===" "?"espace":x.c;}).join(" "):"Aucune touche difficile");
 }
@@ -871,8 +3166,8 @@ ECRANS.fin=function(){
         h("td",{text:x.n?sec1(x.moy):"—"}),h("td",{text:hw?hw.text:"—"}),
         h("td",{},tu?h("button",{class:"btn ghost",type:"button",text:"Tuto",onclick:function(){montrer("tuto",{ancre:tu});}}):null));
     }))):h("p",{text:"Aucune touche difficile : bravo !"});
-  const phrases=h("details",{},h("summary",{text:"Détail des phrases"}),h("table",{},h("thead",{},h("tr",{},["N°","Étoiles","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
-    h("tbody",{},d.res.map(function(r,i){return h("tr",{},[i+1,r.done?"★".repeat(r.stars)+"☆".repeat(3-r.stars):"non fini",r.errors,r.dels,sec1(r.ms)].map(function(c){return h("td",{text:String(c)});}));}))));
+  const phrases=h("details",{},h("summary",{text:"Détail des phrases"}),h("table",{},h("thead",{},h("tr",{},["N°","Niveau","Étoiles","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
+    h("tbody",{},d.res.map(function(r,i){return h("tr",{},[i+1,r.niv||"",r.done?"★".repeat(r.stars)+"☆".repeat(3-r.stars):"non fini",r.errors,r.dels,sec1(r.ms)].map(function(c){return h("td",{text:String(c)});}));}))));
   return h("section",{},
     h("div",{class:"card",style:"text-align:center"},
       h("h1",{text:"Partie terminée !"}),
