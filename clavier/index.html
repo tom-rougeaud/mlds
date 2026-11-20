@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<!--
+  Clavier en jeu — entraînement à la frappe au clavier (classique + allophone)
+  Auteur : Tom Rougeaud
+  Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
+  Licence : CC BY-NC 4.0 — version 1.0
+  Un seul fichier, sans CDN, sans traceur : tout reste sur l’appareil.
+-->
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; manifest-src 'self'; worker-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'">
+<meta name="theme-color" content="#1D2240">
+<title>Clavier en jeu — s’entraîner à taper</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+/* ===== 1. VARIABLES ET BASE ===== */
+:root{
+  --ink:#1D2240; --soft:#545B7A; --bg:#F3F6FB; --card:#fff; --line:#C9D3E8;
+  --teal:#2F7F86; --teal-d:#235F65; --amber:#E9C46A; --amber-d:#8A5A00;
+  --ok:#1E7A46; --ok-bg:#DDF0E4; --ko:#B3261E; --ko-bg:#F8DAD7; --navy2:#2B3363;
+  --fs:1; --r:20px;
+}
+*{box-sizing:border-box}
+html{font-size:calc(100% * var(--fs))}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Arial,sans-serif;line-height:1.5;min-height:100dvh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+h1,h2,h3{line-height:1.2;margin:.2em 0 .5em}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:4px solid var(--amber-d);outline-offset:2px}
+.wrap{max-width:1100px;margin:0 auto;padding:1rem}
+#app:focus{outline:none}
+[hidden]{display:none!important}
+
+/* ===== 2. EN-TÊTE ET NAVIGATION ===== */
+header.top{background:linear-gradient(135deg,var(--ink),var(--navy2));color:#fff;border-radius:0 0 28px 28px;padding:.8rem 1rem 1rem}
+.top .in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between}
+.logo{display:flex;align-items:center;gap:.6rem;font-weight:800;font-size:1.5rem;cursor:pointer;background:none;border:0;color:#fff;padding:.2rem .4rem;border-radius:14px}
+.logo .ic{background:var(--amber);color:var(--ink);border-radius:14px;padding:.1rem .5rem;font-size:1.5rem}
+nav.menu{display:flex;flex-wrap:wrap;gap:.4rem}
+.nb{min-height:44px;min-width:44px;border-radius:999px;border:2px solid rgba(255,255,255,.35);background:rgba(255,255,255,.08);color:#fff;padding:.3rem .9rem;cursor:pointer;font-weight:700}
+.nb:hover,.nb[aria-current="page"]{background:#fff;color:var(--ink)}
+
+/* ===== 3. CARTES ET BOUTONS ===== */
+.card{background:var(--card);border:2px solid var(--line);border-radius:var(--r);padding:1.2rem;margin:1rem 0}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem}
+.btn{min-height:48px;border-radius:999px;border:2px solid var(--teal-d);background:var(--teal);color:#fff;font-weight:800;padding:.5rem 1.4rem;cursor:pointer;font-size:1.1rem}
+.btn:hover{background:var(--teal-d)}
+.btn.big{font-size:1.5rem;padding:.8rem 2.2rem}
+.btn.ghost{background:#fff;color:var(--teal-d)}
+.btn.ghost:hover{background:#E6F1F2}
+.btn.danger{background:#fff;color:var(--ko);border-color:var(--ko)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.choix{display:flex;flex-wrap:wrap;gap:.5rem}
+.choix label{cursor:pointer}
+.choix input{position:absolute;opacity:0;width:1px;height:1px}
+.choix span{display:inline-flex;align-items:center;gap:.4rem;min-height:48px;border:2px solid var(--line);border-radius:999px;padding:.4rem 1.1rem;background:#fff;font-weight:700}
+.choix input:checked+span{background:var(--ink);color:#fff;border-color:var(--ink)}
+.choix input:checked+span::before{content:"✔"}
+.choix input:focus-visible+span{outline:4px solid var(--amber-d);outline-offset:2px}
+.hero{display:grid;grid-template-columns:1fr;gap:.5rem;text-align:center;padding:1rem}
+.hero h1{font-size:clamp(2rem,6vw,3.2rem)}
+.pill{display:inline-block;background:var(--amber);color:var(--ink);border-radius:999px;padding:.1rem .8rem;font-weight:800}
+.note{color:var(--soft);font-size:.95rem}
+input.txt{min-height:44px;border:2px solid var(--line);border-radius:14px;padding:.3rem .8rem;width:100%;max-width:300px;background:#fff}
+
+/* ===== 4. ÉCRAN DE JEU ===== */
+.hud{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;justify-content:space-between}
+.chip{background:#fff;border:2px solid var(--line);border-radius:999px;padding:.2rem .9rem;font-weight:800;min-height:44px;display:inline-flex;align-items:center;gap:.4rem}
+.chip.warn{background:var(--ko-bg);border-color:var(--ko);color:var(--ko)}
+.bar{height:14px;border-radius:999px;background:#DCE3F2;overflow:hidden;margin:.6rem 0}
+.bar>i{display:block;height:100%;background:var(--teal);width:0;transition:width .25s}
+.zone{background:#fff;border:3px solid var(--ink);border-radius:var(--r);padding:1.2rem 1rem;position:relative}
+.emoji{font-size:clamp(3rem,9vw,5rem);text-align:center;line-height:1}
+.phrase{font:700 clamp(1.6rem,3.6vw,2.6rem)/1.9 Consolas,"Courier New",monospace;white-space:pre-wrap;word-break:normal;overflow-wrap:anywhere;text-align:center;margin:.3rem 0;user-select:none}
+.phrase span{border-radius:6px;padding:0 .02em}
+.phrase .w{white-space:nowrap}
+.phrase .todo{color:#6D7390}
+.phrase .ok{color:var(--ok);background:var(--ok-bg)}
+.phrase .bad{color:var(--ko);background:var(--ko-bg);text-decoration:underline wavy}
+.phrase .cur{background:var(--amber);color:var(--ink);box-shadow:0 3px 0 var(--amber-d)}
+.phrase .extra{color:var(--ko);background:var(--ko-bg)}
+#saisie{position:absolute;opacity:0;pointer-events:none;width:1px;height:1px;left:0;top:0}
+.focus-msg{position:absolute;inset:0;background:rgba(29,34,64,.88);color:#fff;border-radius:calc(var(--r) - 3px);display:grid;place-items:center;font-size:1.5rem;font-weight:800;cursor:text;text-align:center;padding:1rem}
+.msg{min-height:2.2em;text-align:center;font-weight:800;font-size:1.2rem}
+.msg.ko{color:var(--ko)} .msg.ok{color:var(--ok)}
+.stars{font-size:2rem;letter-spacing:.2rem}
+.pop{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+
+/* ===== 5. CLAVIER VISUEL (AZERTY) ===== */
+.kbbox{margin-top:1rem}
+.kb{display:grid;gap:.3rem;user-select:none}
+.krow{display:flex;gap:.3rem}
+.key{flex:var(--w,1) 1 0;min-width:0;height:clamp(2.4rem,4.4vw,3.5rem);border-radius:.7rem;background:#fff;border:2px solid var(--line);border-bottom-width:5px;display:grid;place-items:center;position:relative;font-weight:800;font-size:clamp(1.1rem,2.6vw,2rem);color:var(--ink)}
+.key.sp{border-color:transparent;background:transparent}
+.key.mod{font-size:clamp(.7rem,1.4vw,1rem);background:#EDF1F9}
+.key .s{position:absolute;top:2px;left:6px;font-size:.45em;color:var(--soft)}
+.key .a{position:absolute;bottom:0;right:6px;font-size:.45em;color:var(--teal-d)}
+.key.hl{background:var(--amber);border-color:var(--amber-d);transform:translateY(3px);border-bottom-width:2px}
+.key.hl2{background:#FBEFC8;border:3px dashed var(--amber-d)}
+.key[data-step]::after{content:attr(data-step);position:absolute;top:-9px;right:-5px;background:var(--ink);color:#fff;border-radius:999px;font-size:.7rem;width:1.3rem;height:1.3rem;display:grid;place-items:center}
+.howto{text-align:center;font-weight:800;font-size:1.25rem;min-height:1.8em;margin:.3rem 0}
+
+/* ===== 6. RÉSULTATS ET TUTOS ===== */
+.score{font-size:clamp(3.5rem,14vw,7rem);font-weight:900;line-height:1;color:var(--ink)}
+.score small{font-size:.35em;color:var(--soft)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.7rem}
+.stat{background:#EDF1F9;border-radius:16px;padding:.6rem .8rem;text-align:center}
+.stat b{display:block;font-size:1.8rem}
+table{border-collapse:collapse;width:100%}
+th,td{border-bottom:2px solid var(--line);padding:.4rem .5rem;text-align:left;vertical-align:top}
+.cap{display:inline-block;min-width:2.4rem;text-align:center;font:800 1.3rem Consolas,monospace;background:#fff;border:2px solid var(--ink);border-bottom-width:5px;border-radius:.6rem;padding:0 .5rem;margin:0 .1rem}
+.tuto h3{font-size:1.4rem}
+.tuto .touches{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.5rem 0;font-size:1.1rem}
+.essai{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.5rem}
+.essai input{min-height:48px;font:700 1.3rem Consolas,monospace;border:2px solid var(--line);border-radius:14px;padding:.2rem .8rem;width:min(100%,360px)}
+.essai input.good{border-color:var(--ok);background:var(--ok-bg)}
+
+/* ===== 7. FENÊTRES, PAUSE, ALERTES ===== */
+.veil{position:fixed;inset:0;background:rgba(29,34,64,.7);display:grid;place-items:center;padding:1rem;z-index:50}
+.dlg{background:#fff;border-radius:24px;max-width:520px;width:100%;padding:1.4rem;max-height:90dvh;overflow:auto}
+.dlg .acts{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1rem}
+#toast{position:fixed;left:50%;bottom:1rem;transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:.6rem 1.2rem;font-weight:700;z-index:60;max-width:92vw}
+.update{background:var(--amber);border-radius:16px;padding:.5rem 1rem;margin:.5rem 0;font-weight:700;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;justify-content:space-between}
+footer{text-align:center;color:var(--soft);padding:1.5rem 1rem 2rem;font-size:.95rem}
+@media (max-width:700px){.phrase{line-height:1.7}.key .s,.key .a{display:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media print{header.top,nav,.btn,footer{display:none}}
+</style>
+</head>
+<body>
+<!-- ===== STRUCTURE DE LA PAGE : les écrans sont construits par le script ===== -->
+<header class="top"><div class="in">
+  <button class="logo" id="logo" type="button" aria-label="Retour à l’accueil"><span class="ic" aria-hidden="true">⌨</span> Clavier en jeu</button>
+  <nav class="menu" aria-label="Menu principal" id="menu"></nav>
+</div></header>
+<main class="wrap" id="app" tabindex="-1"></main>
+<div class="wrap" id="maj-zone" aria-live="polite"></div>
+<footer>Conçu par Tom Rougeaud · CC BY-NC 4.0 · v1.0 · <button class="nb" style="color:var(--ink);border-color:var(--line);background:#fff" id="btn-install-pied" type="button">Installer l’appli</button></footer>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+<div id="dlg-zone"></div>
+
+<!-- ===== CONTENU PÉDAGOGIQUE (séparé du moteur) =====
+  Chaque phrase est tapée telle quelle : l’apostrophe est droite (') car c’est celle du clavier. -->
+<script type="application/json" id="donnees">
+{
+ "version": 1,
+ "classique": [
+  "Le chat dort sur le canapé.",
+  "Mon frère joue au foot avec Paul.",
+  "Il fait beau ce matin.",
+  "Nous mangeons une pizza ce soir.",
+  "Lina lit un livre dans sa chambre.",
+  "Le bus arrive devant le lycée.",
+  "Karim et Sofia travaillent ensemble.",
+  "La classe commence à huit heures.",
+  "Nous partons en vacances à Paris.",
+  "Tom regarde la télé avec sa mère.",
+  "Il y a 28 élèves dans la classe.",
+  "Mon numéro de salle est le 14.",
+  "Le cours commence à 8 h 30.",
+  "J'ai acheté 3 cahiers et 2 stylos.",
+  "Il reste 15 minutes avant la pause.",
+  "Mon anniversaire est le 27 mars.",
+  "Le train part à 17 h 45 du quai 6.",
+  "La baguette coûte 1,20 euro.",
+  "En 2024, la ville comptait 12 500 habitants.",
+  "Appelle le 112 en cas d'urgence.",
+  "Salut ! Comment vas-tu aujourd'hui ?",
+  "Il y a du pain, du fromage et du jambon.",
+  "Attention : le sol est mouillé !",
+  "Tu viens avec nous ce soir ? Oui, avec plaisir.",
+  "C'est l'heure de la récré ; on y va !",
+  "Peut-être qu'il pleuvra demain, mais je garde espoir.",
+  "Quel est ton plat préféré ? Moi, j'adore les pâtes.",
+  "Pourquoi pas ? Allons-y tous ensemble !",
+  "Demain : maths, français, anglais et sport.",
+  "Qu'est-ce que tu fais ce week-end ?",
+  "Noël est une fête que j'aime beaucoup.",
+  "Où as-tu mis ma veste à capuche ?",
+  "Ça fait longtemps que je ne t'ai pas vu.",
+  "À demain, je t'attends devant l'école.",
+  "Élodie a préparé une très belle présentation.",
+  "La forêt est calme, l'hôtel est tout près.",
+  "Il a oublié son âge ; quelle étourderie !",
+  "Le maïs est cuit et le héros est ému.",
+  "Été comme hiver, j'aime écouter de la musique.",
+  "Mathéo a déjà fini l'exercice ; il est très rapide.",
+  "Écris-moi à prof.maths@exemple.fr pour toute question.",
+  "Le prix est de 12,50 € (taxes comprises).",
+  "Remise de 20 % sur tous les cahiers (offre limitée).",
+  "Mon pseudo : #Champion2025 (sans espace).",
+  "2 + 3 = 5 et 10 / 2 = 5 : le calcul est juste !",
+  "Elle a dit : \"Je serai là à 18 h\" et elle est venue.",
+  "Le groupe #lycée a reçu 45 messages (dont 3 importants).",
+  "Total : 3 x 4 = 12 ; puis 12 + 8 = 20 (réponse exacte).",
+  "Fichier : devoir_maths_2.docx (3 Mo) à envoyer avant 17 h.",
+  "Bravo ! Score final : 100 % (excellent) [A+] & bien joué."
+ ],
+ "allophone": [
+  {"t":"Bonjour.","e":"👋"},
+  {"t":"Je m'appelle Brahim.","e":"🙂"},
+  {"t":"Comment vas-tu ?","e":"💬"},
+  {"t":"Je vais bien.","e":"😀"},
+  {"t":"Et toi ?","e":"🤝"},
+  {"t":"Merci beaucoup.","e":"🙏"},
+  {"t":"S'il te plaît.","e":"🙏"},
+  {"t":"Ça va ? Oui, ça va.","e":"👍"},
+  {"t":"J'ai 15 ans.","e":"🎂"},
+  {"t":"J'habite en France.","e":"🏠"},
+  {"t":"Voici ma mère.","e":"👩"},
+  {"t":"Voici mon père.","e":"👨"},
+  {"t":"J'ai un frère et deux cousines.","e":"👨‍👩‍👧"},
+  {"t":"Mon frère s'appelle Omar.","e":"👦"},
+  {"t":"Ma famille est grande.","e":"👪"},
+  {"t":"Nous sommes six.","e":"🔢"},
+  {"t":"Mon grand-père est gentil.","e":"👴"},
+  {"t":"Ma grand-mère cuisine bien.","e":"👵"},
+  {"t":"Tu as des frères ? Oui, j'ai deux frères.","e":"👬"},
+  {"t":"Quel âge as-tu ? J'ai 16 ans.","e":"🎈"},
+  {"t":"Je suis à l'école.","e":"🏫"},
+  {"t":"Voici mon cahier.","e":"📓"},
+  {"t":"Voici mon stylo.","e":"🖊️"},
+  {"t":"Le professeur est là.","e":"👨‍🏫"},
+  {"t":"Ouvre ton livre, s'il te plaît.","e":"📖"},
+  {"t":"Je ne comprends pas.","e":"❓"},
+  {"t":"Peux-tu répéter ?","e":"🔁"},
+  {"t":"Je comprends maintenant.","e":"💡"},
+  {"t":"Aujourd'hui, nous faisons des maths.","e":"➕"},
+  {"t":"Il y a 20 élèves dans la classe.","e":"🧑‍🎓"},
+  {"t":"J'ai faim.","e":"🍽️"},
+  {"t":"J'ai soif.","e":"💧"},
+  {"t":"Je mange du pain.","e":"🥖"},
+  {"t":"Je bois de l'eau.","e":"🚰"},
+  {"t":"Une pomme coûte 1 euro.","e":"🍎"},
+  {"t":"Combien ça coûte ?","e":"🛒"},
+  {"t":"Ça coûte 3,50 €.","e":"💶"},
+  {"t":"Je voudrais un thé, s'il vous plaît.","e":"☕"},
+  {"t":"Qu'est-ce que tu aimes manger ?","e":"🍕"},
+  {"t":"J'aime le riz, le poulet et les légumes.","e":"🍗"},
+  {"t":"Il est 8 h 30.","e":"⏰"},
+  {"t":"Aujourd'hui, il fait beau.","e":"☀️"},
+  {"t":"Il pleut aujourd'hui !","e":"🌧️"},
+  {"t":"Où est la gare ?","e":"🚉"},
+  {"t":"Tout droit, puis à gauche.","e":"⬅️"},
+  {"t":"Le bus passe à 7 h 15.","e":"🚌"},
+  {"t":"Je vais à la bibliothèque.","e":"📚"},
+  {"t":"En cas d'urgence, j'appelle le 112.","e":"🚑"},
+  {"t":"À demain ! Bonne soirée.","e":"🌙"},
+  {"t":"Merci, au revoir !","e":"👋"}
+ ],
+ "tutos": [
+  {"id":"maj","titre":"Les majuscules","texte":["Maintiens la touche Maj (la flèche vers le haut) et tape une lettre.","Relâche Maj, puis continue en minuscule."],"touches":["Maj","+","B"],"essai":"Bonjour Paris"},
+  {"id":"chiffres","titre":"Les chiffres","texte":["Sur un clavier d’ordinateur, les chiffres sont en haut du clavier.","Maintiens Maj et tape le chiffre : Maj + 2 donne 2.","Sans Maj, tu obtiens é, è, à… et pas le chiffre."],"touches":["Maj","+","2"],"essai":"2025 18"},
+  {"id":"arobase","titre":"L’arobase @","texte":["Maintiens AltGr (à droite de la barre d’espace).","Tape la touche à (en haut, à côté de ç).","Si ça ne marche pas : Ctrl + Alt + à."],"touches":["AltGr","+","à @"],"essai":"nom@exemple.fr"},
+  {"id":"accents","titre":"Les accents directs : é è à ù ç","texte":["Ces lettres ont leur propre touche, en haut du clavier.","é = touche 2 · è = touche 7 · ç = touche 9 · à = touche 0.","ù est à droite de la lettre M."],"touches":["é","è","à","ù","ç"],"essai":"été très à où ça"},
+  {"id":"circonflexe","titre":"L’accent circonflexe : ê â î ô û","texte":["Tape la touche ^ (à droite de P). Il ne se passe rien : c’est normal.","Tape ensuite la voyelle : ^ puis e donne ê."],"touches":["^","puis","e"],"essai":"forêt hôtel âge"},
+  {"id":"trema","titre":"Le tréma : ë ï ü","texte":["Maintiens Maj et tape ^ : cela fait ¨ (rien ne s’affiche encore).","Tape ensuite la voyelle : ¨ puis e donne ë."],"touches":["Maj + ^","puis","e"],"essai":"Noël maïs"},
+  {"id":"capaccent","titre":"Les majuscules avec accent : É À È Ç","texte":["Active Verr. Maj (le cadenas, à gauche).","Tape é, à, è ou ç : tu obtiens É, À, È, Ç.","Désactive Verr. Maj ensuite.","Autre méthode (Windows, pavé numérique) : Alt + 0201 donne É, Alt + 0192 donne À, Alt + 0199 donne Ç."],"touches":["Verr. Maj","puis","é"],"essai":"École À Ça Élodie"},
+  {"id":"altgr","titre":"Les symboles avec AltGr : # { } [ ] | € ","texte":["Maintiens AltGr et tape la touche indiquée.","# = AltGr + 3 · [ = AltGr + 5 · ] = AltGr + ) · € = AltGr + E."],"touches":["AltGr","+","3 #"],"essai":"#[]€"},
+  {"id":"signes","titre":"Parenthèses, tiret, guillemets, apostrophe","texte":["Ces signes sont en haut du clavier, sans Maj.","( = touche 5 · ) = touche à droite du 0 · - = touche 6 · ' = touche 4 · \" = touche 3 · _ = touche 8.","% = Maj + ù · + = Maj + = · = = touche = · & = touche 1 · * = à droite de ù."],"touches":["(","5"],"essai":"(a) \"b\" c-d l'eau"},
+  {"id":"ponct","titre":"La ponctuation en français","texte":["En français, on met une espace avant ? ! : ; mais pas avant la virgule et le point.","? = Maj + virgule · . = Maj + point-virgule · / = Maj + deux-points.","! , ; : ont leur touche en bas à droite."],"touches":["Maj","+",","],"essai":"Ça va ? Oui, ça va !"},
+  {"id":"effacer","titre":"Corriger une erreur","texte":["La touche ⌫ (Retour arrière) efface le dernier caractère.","Ctrl + ⌫ efface un mot entier.","Dans le jeu, les erreurs sont comptées : vise juste avant d’aller vite."],"touches":["⌫"],"essai":""}
+ ]
+}
+</script>
+<script>
+/* =====================================================================
+   CLAVIER EN JEU — script principal
+   Auteur : Tom Rougeaud · Réalisé avec l’aide de l’IA : Claude Sonnet 5.5 (Anthropic)
+   Sections : A. Moteur (fonctions pures) · B. Outils · C. Stockage · D. Écrans · E. Jeu ·
+              F. Fin de partie · G. Installation / plein écran / mise à jour · H. Démarrage
+   ===================================================================== */
+"use strict";
+
+/* ===== A. MOTEUR : fonctions pures, sans accès à la page (donc testables) ===== */
+// MOTEUR-DEBUT
+const Moteur=(function(){
+  // Clavier AZERTY d’ordinateur PC : [touche seule, avec Maj, avec AltGr]
+  const LAYOUT=[
+    [["²","",""],["&","1",""],["é","2","~"],["\"","3","#"],["'","4","{"],["(","5","["],["-","6","|"],["è","7","`"],["_","8","\\"],["ç","9","^"],["à","0","@"],[")","°","]"],["=","+","}"]],
+    [["a","",""],["z","",""],["e","","€"],["r","",""],["t","",""],["y","",""],["u","",""],["i","",""],["o","",""],["p","",""],["^","¨",""],["$","£","¤"]],
+    [["q","",""],["s","",""],["d","",""],["f","",""],["g","",""],["h","",""],["j","",""],["k","",""],["l","",""],["m","",""],["ù","%",""],["*","µ",""]],
+    [["<",">",""],["w","",""],["x","",""],["c","",""],["v","",""],["b","",""],["n","",""],[",","?",""],[";",".",""],[":","/",""],["!","§",""]]
+  ];
+  const DEADKEY="k1-10"; // touche ^ / ¨ (touche morte)
+  const MAP={}; // caractère -> {id, mod, c}
+  LAYOUT.forEach(function(row,r){row.forEach(function(k,c){
+    const id="k"+r+"-"+c; const b=k[0]; let s=k[1]; const a=k[2];
+    if(!s && /^[a-z]$/.test(b)) s=b.toUpperCase();
+    const morte=(r===1&&c===10);
+    if(!morte){ if(b) MAP[b]={id:id,mod:"",c:c}; if(s) MAP[s]={id:id,mod:"shift",c:c}; }
+    if(a) MAP[a]={id:id,mod:"altgr",c:c};
+  });});
+  const CIRC={"â":"a","ê":"e","î":"i","ô":"o","û":"u","Â":"A","Ê":"E","Î":"I","Ô":"O","Û":"U"};
+  const TREMA={"ä":"a","ë":"e","ï":"i","ö":"o","ü":"u","ÿ":"y","Ä":"A","Ë":"E","Ï":"I","Ö":"O","Ü":"U"};
+  const CAPACC={"É":"é","È":"è","À":"à","Ù":"ù","Ç":"ç"};
+  const NOMS={" ":"espace",",":"virgule",".":"point","?":"point d’interrogation","!":"point d’exclamation",":":"deux-points",";":"point-virgule","'":"apostrophe","-":"tiret","(":"parenthèse ouvrante",")":"parenthèse fermante","@":"arobase","#":"dièse","%":"pourcentage","€":"euro","+":"plus","=":"égal","/":"barre oblique","\"":"guillemet droit","[":"crochet ouvrant","]":"crochet fermant","{":"accolade ouvrante","}":"accolade fermante","&":"esperluette (et commercial)","*":"astérisque","_":"tiret bas","°":"degré","|":"barre verticale","\\":"barre oblique inverse","^":"accent circonflexe seul","$":"dollar","<":"inférieur à",">":"supérieur à"};
+
+  function nom(ch){
+    if(NOMS[ch]) return NOMS[ch];
+    if(/[0-9]/.test(ch)) return "chiffre "+ch;
+    if(ch!==ch.toLowerCase()) return "majuscule « "+ch+" »";
+    return "lettre « "+ch+" »";
+  }
+  function modKeys(loc){ // quelle touche Maj / AltGr utiliser (main opposée)
+    if(loc.mod==="shift") return [loc.c<=5?"shiftR":"shiftL"];
+    if(loc.mod==="altgr") return ["altgr"];
+    return [];
+  }
+  function etiquette(id){ // nom d’une touche pour les consignes
+    const m=/^k(\d)-(\d+)$/.exec(id); const k=LAYOUT[+m[1]][+m[2]];
+    if(+m[1]===0 && /[0-9]/.test(k[1])) return k[1];
+    return k[0].toUpperCase();
+  }
+  // Comment taper un caractère : {steps:[{keys:[ids],txt}], text}  (null si impossible)
+  function howTo(ch){
+    let steps=null;
+    if(ch===" ") steps=[{keys:["space"],txt:"Barre d’espace"}];
+    else if(MAP[ch]){
+      const loc=MAP[ch]; const lab=etiquette(loc.id); let txt;
+      if(loc.mod==="shift") txt="Maj + "+(/[a-z]/i.test(ch)?ch:lab);
+      else if(loc.mod==="altgr") txt="AltGr + "+lab+((ch==="^"||ch==="`"||ch==="~")?", puis Espace":"");
+      else txt="Touche "+lab+(+/^k0-/.test(loc.id)?" (sans Maj)":"");
+      steps=[{keys:modKeys(loc).concat([loc.id]),txt:txt}];
+    } else if(CIRC[ch]||TREMA[ch]){
+      const voy=CIRC[ch]||TREMA[ch]; const v=MAP[voy]; const tr=!!TREMA[ch];
+      steps=[
+        {keys:tr?["shiftL",DEADKEY]:[DEADKEY],txt:tr?"Maj + ^ (fait ¨)":"^"},
+        {keys:modKeys(v).concat([v.id]),txt:(v.mod==="shift"?"Maj + ":"")+voy.toLowerCase()}
+      ];
+    } else if(CAPACC[ch]){
+      const loc=MAP[CAPACC[ch]];
+      steps=[{keys:["caps"],txt:"Verr. Maj"},{keys:[loc.id],txt:CAPACC[ch]}];
+    }
+    if(!steps) return null;
+    return {steps:steps,text:steps.map(function(s){return s.txt;}).join("  puis  ")};
+  }
+  function tutoPour(ch){ // numéro de tuto conseillé pour un caractère
+    if(/[0-9]/.test(ch)) return "chiffres";
+    if(ch==="@") return "arobase";
+    if("éèàùç".indexOf(ch)>=0) return "accents";
+    if(CIRC[ch]&&ch===ch.toLowerCase()) return "circonflexe";
+    if(TREMA[ch]&&ch===ch.toLowerCase()) return "trema";
+    if(CAPACC[ch]||CIRC[ch]||TREMA[ch]) return "capaccent";
+    if(/[A-Z]/.test(ch)) return "maj";
+    if("#{}[]|€\\^".indexOf(ch)>=0) return "altgr";
+    if("()-'\"_%+=&*".indexOf(ch)>=0) return "signes";
+    if(",.?!:;/".indexOf(ch)>=0) return "ponct";
+    return null;
+  }
+  function norm(s){return s.replace(/’/g,"'").replace(/[  ]/g," ");}
+  function premiereFaute(t,v){ // indice du premier caractère faux, -1 si tout est juste
+    for(let i=0;i<v.length;i++){ if(i>=t.length||v[i]!==t[i]) return i; }
+    return -1;
+  }
+  function nouvelExo(cible){
+    return {target:cible,val:"",errors:0,dels:0,started:false,tFirst:0,lastOk:0,tEnd:0,streak:false,okLen:0,done:false,times:[],errList:[]};
+  }
+  // Traite une nouvelle valeur du champ de saisie ; met à jour erreurs, suppressions, temps par caractère
+  function traiter(ex,brut,now){
+    const v=norm(brut), prev=ex.val, t=ex.target;
+    if(!ex.started && v.length>0){ex.started=true;ex.tFirst=now;ex.lastOk=now;}
+    if(v.length<prev.length) ex.dels++;
+    const fw=premiereFaute(t,v);
+    if(fw>=0){
+      if(v.length>prev.length && !ex.streak){ // nouvelle erreur (une seule par série de fautes)
+        ex.errors++; ex.errList.push(fw<t.length?t[fw]:"⌫"); ex.streak=true;
+      }
+    } else {
+      ex.streak=false;
+      if(v.length>ex.okLen){
+        const n=v.length-ex.okLen, dt=(now-ex.lastOk)/n;
+        for(let j=ex.okLen;j<v.length;j++){ if(j>0) ex.times.push({c:t[j],ms:dt}); }
+        ex.okLen=v.length; ex.lastOk=now;
+      } else if(v.length<ex.okLen){ ex.okLen=v.length; ex.lastOk=now; }
+    }
+    ex.val=v;
+    if(v===t && !ex.done){ex.done=true;ex.tEnd=now;}
+    return v;
+  }
+  function terminer(ex,now){
+    const dur=ex.started?Math.max(0,(ex.done?ex.tEnd:now)-ex.tFirst):0;
+    const stars=ex.done?(ex.errors===0?3:(ex.errors<=2?2:1)):0;
+    return {len:ex.target.length,okLen:ex.done?ex.target.length:ex.okLen,errors:ex.errors,dels:ex.dels,ms:dur,done:ex.done,stars:stars};
+  }
+  function limiteSec(len,allo){return Math.ceil(len*(allo?1.6:1.0))+8;}
+  function pickSerie(len,n,rnd){ // un exercice tiré au hasard dans chaque tranche, ordre croissant
+    const out=[]; if(n>=len){for(let i=0;i<len;i++)out.push(i);return out;}
+    for(let k=0;k<n;k++){const a=Math.floor(k*len/n),b=Math.floor((k+1)*len/n);out.push(a+Math.floor(rnd()*(b-a)));}
+    return out;
+  }
+  function somme(tab,k){return tab.reduce(function(s,x){return s+x[k];},0);}
+  function borne(x){return Math.max(0,Math.min(1,x));}
+  function mediane(a){const s=a.slice().sort(function(x,y){return x-y;});return s.length?s[Math.floor(s.length/2)]:0;}
+  function rang(score){
+    if(score>=90) return {t:"Maître(sse) du clavier",e:"🏆"};
+    if(score>=75) return {t:"Doigts d’or",e:"🥇"};
+    if(score>=60) return {t:"Dactylo en forme",e:"🥈"};
+    if(score>=40) return {t:"En progression",e:"🥉"};
+    return {t:"Premiers pas",e:"🌱"};
+  }
+  // Bilan d’une partie : score /100, totaux, caractères difficiles
+  function bilan(res,times,errs,o){
+    const L=somme(res,"len"),err=somme(res,"errors"),dels=somme(res,"dels"),ms=somme(res,"ms"),ok=somme(res,"okLen");
+    const faits=res.filter(function(r){return r.done;}).length;
+    const prec=borne(1-5*(err/Math.max(1,L)));
+    const lim=o.allo?3000:2000;
+    const flu=times.length?times.filter(function(t){return t.ms<=lim;}).length/times.length:0;
+    const cpm=ms>0?ok/(ms/60000):0;
+    const vit=borne(cpm/(o.allo?90:150));
+    const fin=res.length?faits/res.length:0;
+    const parts=o.chrono
+      ?[{k:"Précision",v:Math.round(45*prec),max:45},{k:"Fluidité",v:Math.round(20*flu),max:20},{k:"Vitesse",v:Math.round(25*vit),max:25},{k:"Exercices finis",v:Math.round(10*fin),max:10}]
+      :[{k:"Précision",v:Math.round(65*prec),max:65},{k:"Fluidité",v:Math.round(35*flu),max:35}];
+    const score=parts.reduce(function(s,p){return s+p.v;},0);
+    // statistiques par caractère attendu
+    const pc={};
+    times.forEach(function(t){const x=pc[t.c]||(pc[t.c]={c:t.c,n:0,ms:0,err:0});x.n++;x.ms+=t.ms;});
+    errs.forEach(function(c){const x=pc[c]||(pc[c]={c:c,n:0,ms:0,err:0});x.err++;});
+    const base=Math.max(200,mediane(times.map(function(t){return t.ms;})));
+    const dur=Object.keys(pc).map(function(k){
+      const x=pc[k]; const moy=x.n?x.ms/x.n:0;
+      const lent=x.n>=1 && moy>Math.max(1.8*base,base+600);
+      x.moy=moy; x.diff=x.err*3+(lent?1+(moy-base)/1000:0); return x;
+    }).filter(function(x){return x.diff>0 && x.c!==" " && x.c!=="⌫" || (x.diff>0 && x.c===" " && x.err>0);})
+      .sort(function(a,b){return b.diff-a.diff;}).slice(0,5);
+    return {L:L,err:err,dels:dels,ms:ms,faits:faits,total:res.length,cpm:Math.round(cpm),score:score,parts:parts,rang:rang(score),dur:dur,base:base};
+  }
+  return {LAYOUT:LAYOUT,MAP:MAP,howTo:howTo,nom:nom,tutoPour:tutoPour,premiereFaute:premiereFaute,nouvelExo:nouvelExo,traiter:traiter,terminer:terminer,limiteSec:limiteSec,pickSerie:pickSerie,bilan:bilan,norm:norm,rang:rang};
+})();
+// MOTEUR-FIN
+
+/* ===== B. OUTILS ===== */
+const $=function(s,r){return (r||document).querySelector(s);};
+// Crée un élément sans jamais passer par innerHTML (sécurité)
+function h(tag,props){
+  const e=document.createElement(tag); const p=props||{};
+  Object.keys(p).forEach(function(k){
+    const v=p[k];
+    if(k==="class") e.className=v; else if(k==="text") e.textContent=v;
+    else if(k.indexOf("on")===0) e.addEventListener(k.slice(2),v);
+    else if(v===true) e.setAttribute(k,""); else if(v!==false&&v!=null) e.setAttribute(k,v);
+  });
+  for(let i=2;i<arguments.length;i++){
+    [].concat(arguments[i]).forEach(function(c){
+      if(c==null||c===false) return;
+      e.appendChild(typeof c==="object"?c:document.createTextNode(String(c)));
+    });
+  }
+  return e;
+}
+function dureeTxt(ms){const s=Math.round(ms/1000);return Math.floor(s/60)+" min "+String(s%60).padStart(2,"0")+" s";}
+function sec1(ms){return (ms/1000).toFixed(1).replace(".",",")+" s";}
+let toastTimer=0;
+function toast(msg){const t=$("#toast");t.textContent=msg;t.hidden=false;clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.hidden=true;},3500);}
+function jourLocal(){const d=new Date();return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");}
+
+/* ===== C. STOCKAGE (protégé, avec repli en mémoire) ===== */
+const Stock=(function(){
+  const mem={}, P="clavier_v1_"; let alerte=false;
+  function get(k){try{const v=localStorage.getItem(P+k);return v===null?(k in mem?mem[k]:null):v;}catch(e){return k in mem?mem[k]:null;}}
+  function set(k,v){
+    mem[k]=v;
+    try{localStorage.setItem(P+k,v);return true;}
+    catch(e){if(!alerte){alerte=true;toast("Sauvegarde impossible sur cet appareil : le jeu continue sans enregistrer.");}return false;}
+  }
+  function del(k){delete mem[k];try{localStorage.removeItem(P+k);}catch(e){}}
+  function getJ(k,def){try{const v=get(k);return v===null?def:JSON.parse(v);}catch(e){return def;}}
+  function setJ(k,v){return set(k,JSON.stringify(v));}
+  return {get:get,set:set,del:del,getJ:getJ,setJ:setJ};
+})();
+const DATA=JSON.parse($("#donnees").textContent);
+const TAILLES=[0.9,1,1.15,1.3,1.5];
+const PREFS_DEF={mode:"classique",n:10,chrono:false,pseudo:"",aide:true,fs:1};
+// Valide des réglages (sauvegarde ou import) : valeurs bornées, champs connus seulement
+function nettoyerPrefs(p){
+  const o=Object.assign({},PREFS_DEF); if(!p||typeof p!=="object") return o;
+  if(p.mode==="classique"||p.mode==="allophone") o.mode=p.mode;
+  if([10,25,50].indexOf(p.n)>=0) o.n=p.n;
+  o.chrono=p.chrono===true; o.aide=p.aide!==false;
+  if(typeof p.pseudo==="string") o.pseudo=p.pseudo.replace(/[^\p{L}\p{N} _-]/gu,"").slice(0,20);
+  if(TAILLES.indexOf(p.fs)>=0) o.fs=p.fs;
+  return o;
+}
+function nettoyerHist(a){
+  if(!Array.isArray(a)) return [];
+  return a.slice(-50).map(function(x){
+    if(!x||typeof x!=="object") return null;
+    const n=function(v,mx){v=Number(v);return isFinite(v)?Math.max(0,Math.min(mx,Math.round(v))):0;};
+    return {d:/^\d{4}-\d{2}-\d{2}$/.test(x.d)?x.d:"0000-00-00",mode:x.mode==="allophone"?"allophone":"classique",
+      n:[10,25,50].indexOf(x.n)>=0?x.n:10,chrono:x.chrono===true,score:n(x.score,100),err:n(x.err,9999),dels:n(x.dels,9999),ms:n(x.ms,36000000),
+      hard:Array.isArray(x.hard)?x.hard.slice(0,3).map(function(c){return String(c).slice(0,1);}):[]};
+  }).filter(Boolean);
+}
+function nettoyerBests(b){
+  const o={}; if(!b||typeof b!=="object") return o;
+  Object.keys(b).forEach(function(k){
+    if(/^(classique|allophone)-(10|25|50)-(libre|chrono)$/.test(k)&&b[k]&&typeof b[k].score==="number")
+      o[k]={score:Math.max(0,Math.min(100,Math.round(b[k].score))),d:/^\d{4}-\d{2}-\d{2}$/.test(b[k].d)?b[k].d:"0000-00-00"};
+  });
+  return o;
+}
+const S={prefs:nettoyerPrefs(Stock.getJ("prefs",null)),hist:nettoyerHist(Stock.getJ("hist",[])),bests:nettoyerBests(Stock.getJ("bests",{})),
+  ecran:"accueil",sess:null,tLoad:Date.now(),touched:false,propose:false,dlg:null};
+function sauver(){Stock.setJ("prefs",S.prefs);Stock.setJ("hist",S.hist);Stock.setJ("bests",S.bests);}
+function appliquerTaille(){document.documentElement.style.setProperty("--fs",S.prefs.fs);}
+
+/* ===== D. ÉCRANS ET NAVIGATION ===== */
+const ECRANS={};
+function montrer(nom,opt){
+  if(S.sess&&S.ecran==="jeu"&&nom!=="jeu"&&!(opt&&opt.force)){ // quitter une partie en cours : on demande
+    dialogue({titre:"Quitter la partie ?",texte:["Ta partie en cours ne sera pas enregistrée."],boutons:[
+      {l:"Continuer à jouer",ghost:true},{l:"Quitter",danger:true,fn:function(){montrer(nom,{force:true});}}]});
+    return;
+  }
+  if(S.ecran==="jeu") arreterJeu();
+  S.ecran=nom; const app=$("#app"); app.textContent="";
+  app.appendChild(ECRANS[nom](opt||{}));
+  majMenu(); window.scrollTo(0,0);
+  if(nom==="jeu") demarrerJeuUI(); else app.focus({preventScroll:true});
+}
+function majMenu(){
+  const m=$("#menu"); m.textContent="";
+  [["accueil","Accueil"],["tuto","Tutos"],["records","Records"],["apropos","À propos"],["confid","Confidentialité"]].forEach(function(x){
+    const b=h("button",{class:"nb",type:"button",text:x[1],onclick:function(){montrer(x[0]);}});
+    if(S.ecran===x[0]||(x[0]==="accueil"&&(S.ecran==="jeu"||S.ecran==="fin"))) b.setAttribute("aria-current","page");
+    m.appendChild(b);
+  });
+  m.appendChild(h("button",{class:"nb",type:"button","aria-label":"Réduire le texte",text:"A−",onclick:function(){changerTaille(-1);}}));
+  m.appendChild(h("button",{class:"nb",type:"button","aria-label":"Agrandir le texte",text:"A+",onclick:function(){changerTaille(1);}}));
+  if(pleinEcranDispo()) m.appendChild(h("button",{class:"nb",type:"button",text:pleinEcranActif()?"Quitter le plein écran":"Plein écran",onclick:basculerPlein}));
+}
+function changerTaille(d){
+  const i=Math.max(0,Math.min(TAILLES.length-1,TAILLES.indexOf(S.prefs.fs)+d));
+  S.prefs.fs=TAILLES[i];appliquerTaille();sauver();
+}
+// Groupe de boutons radio « pilule »
+function groupe(nom,options,courant,onchange){
+  return h("div",{class:"choix",role:"radiogroup"},options.map(function(o){
+    const inp=h("input",{type:"radio",name:nom,value:String(o.v),onchange:function(){onchange(o.v);}});
+    if(String(o.v)===String(courant)) inp.checked=true;
+    return h("label",{},inp,h("span",{text:o.l}));
+  }));
+}
+ECRANS.accueil=function(){
+  const P=S.prefs, allo=P.mode==="allophone";
+  const desc=h("p",{class:"note",id:"desc-mode"});
+  const majDesc=function(){desc.textContent=P.mode==="allophone"
+    ?"Phrases très simples (Je m’appelle… Comment vas-tu ?). On travaille les signes ? - ’ et les accents, avec un dessin pour comprendre."
+    :"Phrases naturelles avec majuscules, chiffres, accents et caractères spéciaux : ( ) @ # % € …";};
+  majDesc();
+  const pseudo=h("input",{class:"txt",id:"pseudo",type:"text",maxlength:"20",autocomplete:"off",value:P.pseudo,"aria-describedby":"pseudo-note",
+    oninput:function(e){P.pseudo=nettoyerPrefs({pseudo:e.target.value}).pseudo;sauver();}});
+  return h("section",{},
+    h("div",{class:"hero card"},h("h1",{text:"⌨ Clavier en jeu"}),
+      h("p",{text:"Recopie les phrases le plus juste possible. Gagne des étoiles. Vise 100 / 100 !"})),
+    h("div",{class:"card"},
+      h("h2",{text:"1. Quel mode ?"}),
+      groupe("mode",[{v:"classique",l:"Classique"},{v:"allophone",l:"Allophone (phrases très simples)"}],P.mode,function(v){P.mode=v;sauver();majDesc();}),desc,
+      h("h2",{text:"2. Combien d’exercices ?"}),
+      groupe("n",[{v:10,l:"10 (rapide)"},{v:25,l:"25"},{v:50,l:"50 (complet)"}],P.n,function(v){P.n=+v;sauver();}),
+      h("h2",{text:"3. Avec ou sans chrono ?"}),
+      groupe("chrono",[{v:"libre",l:"Sans chrono"},{v:"chrono",l:"Défi chronométré"}],P.chrono?"chrono":"libre",function(v){P.chrono=v==="chrono";sauver();}),
+      h("p",{class:"note",text:"Sans chrono : on mesure le temps, mais il ne compte pas dans le score. Défi chrono : un compte à rebours par phrase."}),
+      h("h2",{text:"4. Options"}),
+      h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:P.aide,onchange:function(e){P.aide=e.target.checked;sauver();}})," Montrer la touche à taper sur le clavier"),
+      h("p",{},h("label",{for:"pseudo",text:"Pseudo (facultatif, pas ton vrai nom) : "}),pseudo),
+      h("p",{class:"note",id:"pseudo-note",text:"Le pseudo reste sur cet appareil. Il apparaît seulement sur ton résultat."}),
+      h("p",{style:"text-align:center"},h("button",{class:"btn big",type:"button",text:"▶ Jouer",onclick:lancer}))),
+    h("div",{class:"grid2"},
+      h("div",{class:"card"},h("h3",{text:"📘 Tutos"}),h("p",{text:"@, accents, tréma, majuscules avec accent : comment les taper."}),h("button",{class:"btn ghost",type:"button",text:"Voir les tutos",onclick:function(){montrer("tuto");}})),
+      h("div",{class:"card"},h("h3",{text:"🏅 Records"}),h("p",{text:"Tes meilleurs scores et tes dernières parties."}),h("button",{class:"btn ghost",type:"button",text:"Voir mes records",onclick:function(){montrer("records");}}))));
+};
+ECRANS.tuto=function(opt){
+  const cartes=DATA.tutos.map(function(t){
+    const fb=h("span",{class:"note","aria-live":"polite"});
+    const essai=t.essai?h("div",{class:"essai"},
+      h("label",{for:"e-"+t.id,text:"Essaie ici :"}),
+      h("input",{id:"e-"+t.id,type:"text",autocomplete:"off",autocapitalize:"off",spellcheck:"false",placeholder:t.essai,
+        oninput:function(e){const ok=Moteur.norm(e.target.value)===t.essai;e.target.classList.toggle("good",ok);fb.textContent=ok?"✔ Bravo !":"";}}),fb):null;
+    return h("article",{class:"card tuto",id:"tuto-"+t.id},h("h3",{text:t.titre}),
+      t.texte.map(function(p){return h("p",{text:p});}),
+      h("div",{class:"touches","aria-label":"Touches"},t.touches.map(function(x){return /^(\+|puis)$/.test(x)?h("span",{text:x}):h("span",{class:"cap",text:x});})),
+      t.essai?h("p",{class:"note"},"Phrase à taper : ",h("b",{text:t.essai})):null,essai);
+  });
+  const sec=h("section",{},h("h1",{text:"📘 Tutos : taper tous les caractères"}),
+    h("p",{class:"note",text:"Ces astuces sont pour un clavier d’ordinateur PC français (AZERTY). Sur un Mac, certaines touches changent."}),cartes);
+  if(opt.ancre) setTimeout(function(){const el=$("#tuto-"+opt.ancre);if(el){el.scrollIntoView({block:"start"});el.style.outline="4px solid var(--amber-d)";}},50);
+  return sec;
+};
+ECRANS.apropos=function(){
+  return h("section",{},h("h1",{text:"À propos"}),
+    h("div",{class:"card"},
+      h("p",{text:"Clavier en jeu, version 1.0. Conçu par Tom Rougeaud, avec l’aide de l’IA Claude Sonnet 5.5 (Anthropic). Licence CC BY-NC 4.0 : tu peux partager et adapter, sans usage commercial."}),
+      h("h2",{text:"Comment est calculé le score /100 ?"}),
+      h("ul",{},
+        h("li",{text:"Précision : moins d’erreurs, plus de points. Une série de fautes d’affilée compte pour une seule erreur."}),
+        h("li",{text:"Fluidité : part des caractères tapés sans hésiter (moins de 2 secondes, 3 secondes en mode allophone)."}),
+        h("li",{text:"Défi chrono seulement : vitesse (signes par minute) et nombre d’exercices finis dans le temps."}),
+        h("li",{text:"Sans chrono : seulement précision (65) et fluidité (35). Le temps total est affiché, mais ne compte pas."})),
+      h("h2",{text:"Limites connues"}),
+      h("ul",{},
+        h("li",{text:"Les aides sont faites pour le clavier PC français AZERTY. Sur Mac ou avec un autre clavier, les touches indiquées peuvent différer."}),
+        h("li",{text:"Le jeu est pensé pour un clavier physique : sur téléphone, le clavier tactile ne montre pas les mêmes touches."}),
+        h("li",{text:"Le son et la lecture à voix haute ne sont pas inclus : aucune donnée ne part de l’appareil."})),
+      h("p",{},h("button",{class:"btn ghost",type:"button",text:"Installer l’appli",onclick:function(){ouvrirInstall(true);}}))));
+};
+ECRANS.confid=function(){
+  return h("section",{},h("h1",{text:"Confidentialité"}),
+    h("div",{class:"card"},
+      h("p",{text:"Ce jeu ne collecte aucune donnée. Rien n’est envoyé sur Internet : pas de compte, pas de statistiques, pas de publicité."}),
+      h("h2",{text:"Ce qui est gardé sur ton appareil"}),
+      h("ul",{},
+        h("li",{text:"Tes réglages (mode, nombre d’exercices, taille du texte, pseudo facultatif)."}),
+        h("li",{text:"Tes scores et tes dernières parties (date, score, erreurs, temps, touches difficiles)."}),
+        h("li",{text:"Ton choix pour la fenêtre d’installation."})),
+      h("p",{text:"Ces informations restent dans le navigateur de cet appareil. Tu peux les effacer à tout moment dans « Records »."}),
+      h("p",{text:"Le fichier « Exporter » est à toi : garde-le et protège-le toi-même. Il ne contient pas de nom, seulement ton pseudo facultatif. Ne mets pas ton vrai nom comme pseudo."})));
+};
+ECRANS.records=function(){
+  const cles=Object.keys(S.bests).sort();
+  const nomCle=function(k){const p=k.split("-");return (p[0]==="allophone"?"Allophone":"Classique")+" · "+p[1]+" exercices · "+(p[2]==="chrono"?"chrono":"sans chrono");};
+  const fich=h("input",{type:"file",accept:".json,application/json",hidden:true,"aria-label":"Choisir un fichier à importer",onchange:function(e){importer(e.target.files[0]);e.target.value="";}});
+  return h("section",{},h("h1",{text:"🏅 Records"}),
+    h("div",{class:"card"},h("h2",{text:"Meilleurs scores"}),
+      cles.length?h("table",{},h("thead",{},h("tr",{},h("th",{text:"Partie"}),h("th",{text:"Score"}),h("th",{text:"Date"}))),
+        h("tbody",{},cles.map(function(k){return h("tr",{},h("td",{text:nomCle(k)}),h("td",{text:S.bests[k].score+" / 100"}),h("td",{text:S.bests[k].d}));})))
+      :h("p",{text:"Pas encore de partie. Joue pour faire apparaître tes records !"})),
+    h("div",{class:"card"},h("h2",{text:"Dernières parties"}),
+      S.hist.length?h("table",{},h("thead",{},h("tr",{},["Date","Mode","Score","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
+        h("tbody",{},S.hist.slice(-10).reverse().map(function(x){return h("tr",{},[x.d,(x.mode==="allophone"?"Allo":"Classique")+" "+x.n+(x.chrono?" ⏱":""),x.score+"/100",x.err,x.dels,dureeTxt(x.ms)].map(function(c){return h("td",{text:String(c)});}));})))
+      :h("p",{text:"Rien pour le moment."})),
+    h("div",{class:"card"},h("h2",{text:"Mes données"}),
+      h("p",{class:"note",text:"Tout reste sur cet appareil. Exporte pour garder une copie ou changer d’appareil."}),
+      h("div",{class:"choix"},
+        h("button",{class:"btn ghost",type:"button",text:"Exporter mes données",onclick:exporter}),
+        h("button",{class:"btn ghost",type:"button",text:"Importer",onclick:function(){fich.click();}}),fich,
+        h("button",{class:"btn danger",type:"button",text:"Effacer mes données",onclick:function(){
+          dialogue({titre:"Effacer toutes tes données ?",texte:["Les scores, les parties et les réglages seront supprimés sur cet appareil."],boutons:[
+            {l:"Annuler",ghost:true},{l:"Tout effacer",danger:true,fn:function(){["prefs","hist","bests"].forEach(Stock.del);S.prefs=nettoyerPrefs(null);S.hist=[];S.bests={};appliquerTaille();toast("Données effacées.");montrer("records");}}]});}}))));
+};
+function exporter(){
+  try{
+    const blob=new Blob([JSON.stringify({app:"clavier",version:1,prefs:S.prefs,hist:S.hist,bests:S.bests},null,1)],{type:"application/json"});
+    const a=h("a",{href:URL.createObjectURL(blob),download:"clavier-en-jeu-donnees.json"});
+    document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(a.href);},2000);
+  }catch(e){toast("Export impossible sur ce navigateur.");}
+}
+function importer(f){
+  if(!f) return;
+  if(f.size>200000){toast("Fichier trop gros : import refusé.");return;}
+  const rd=new FileReader();
+  rd.onload=function(){
+    let o=null; try{o=JSON.parse(String(rd.result));}catch(e){}
+    if(!o||o.app!=="clavier"||o.version!==1){toast("Fichier non reconnu : rien n’a été changé.");return;}
+    const p=nettoyerPrefs(o.prefs), hi=nettoyerHist(o.hist), be=nettoyerBests(o.bests);
+    dialogue({titre:"Importer ce fichier ?",texte:["Tes données actuelles seront remplacées par celles du fichier ("+hi.length+" parties)."],boutons:[
+      {l:"Annuler",ghost:true},{l:"Importer",fn:function(){S.prefs=p;S.hist=hi;S.bests=be;appliquerTaille();sauver();toast("Import terminé.");montrer("records");}}]});
+  };
+  rd.onerror=function(){toast("Lecture du fichier impossible.");};
+  rd.readAsText(f);
+}
+
+/* ===== Fenêtre de dialogue accessible (focus piégé, Échap) ===== */
+function fermerDialogue(){const z=$("#dlg-zone");z.textContent="";if(S.dlg&&S.dlg.retour&&document.contains(S.dlg.retour))S.dlg.retour.focus();S.dlg=null;}
+function dialogue(o){
+  fermerDialogue();
+  const fin=function(fn){return function(){fermerDialogue();if(fn)fn();};};
+  const boite=h("div",{class:"dlg",role:"dialog","aria-modal":"true","aria-labelledby":"dlg-t",tabindex:"-1"},
+    h("h2",{id:"dlg-t",text:o.titre}),(o.texte||[]).map(function(t){return h("p",{text:t});}),o.contenu||null,
+    h("div",{class:"acts"},(o.boutons||[]).map(function(b){return h("button",{class:"btn"+(b.ghost?" ghost":"")+(b.danger?" danger":""),type:"button",text:b.l,onclick:fin(b.fn)});})));
+  const voile=h("div",{class:"veil"},boite);
+  S.dlg={retour:document.activeElement,esc:o.esc};
+  boite.addEventListener("keydown",function(e){
+    if(e.key==="Escape"){e.preventDefault();fin(o.esc)();}
+    else if(e.key==="Tab"){const f=boite.querySelectorAll("button,input,textarea,a[href]");if(!f.length)return;const a=f[0],z=f[f.length-1];
+      if(e.shiftKey&&document.activeElement===a){e.preventDefault();z.focus();}else if(!e.shiftKey&&document.activeElement===z){e.preventDefault();a.focus();}}
+  });
+  $("#dlg-zone").appendChild(voile);
+  const b1=boite.querySelector("button"); (b1||boite).focus();
+}
+
+/* ===== E. JEU ===== */
+let T={iv:0,to:0,clavier:null}; // minuteurs et touches du clavier visuel
+function lancer(){
+  const P=S.prefs, banque=P.mode==="allophone"?DATA.allophone:DATA.classique.map(function(t){return {t:t,e:""};});
+  const idx=Moteur.pickSerie(banque.length,P.n,Math.random);
+  S.sess={items:idx.map(function(i){return banque[i];}),i:0,res:[],times:[],errs:[],ex:null,mode:P.mode,chrono:P.chrono,n:P.n,serie:0,serieMax:0,pause:false,verrou:false,debut:performance.now()};
+  montrer("jeu",{force:true});
+}
+function arreterJeu(){clearInterval(T.iv);clearTimeout(T.to);S.sess=null;}
+// Construit le clavier visuel AZERTY ; retourne {id: élément}
+function construireClavier(){
+  const map={}; const kb=h("div",{class:"kb","aria-hidden":"true"});
+  const spacer=function(w){return h("div",{class:"key sp",style:"--w:"+w});};
+  const mod=function(id,l,w){const e=h("div",{class:"key mod",style:"--w:"+w,text:l});map[id]=e;return e;};
+  const touche=function(r,c){
+    const k=Moteur.LAYOUT[r][c]; const e=h("div",{class:"key"},h("span",{text:/^[a-z]$/.test(k[0])?k[0].toUpperCase():k[0]}));
+    if(k[1]&&!/^[a-z]$/.test(k[0])) e.appendChild(h("span",{class:"s",text:k[1]}));
+    if(k[2]) e.appendChild(h("span",{class:"a",text:k[2]}));
+    map["k"+r+"-"+c]=e;return e;
+  };
+  const rangee=function(){return h("div",{class:"krow"},[].slice.call(arguments));};
+  const r0=[];for(let c=0;c<13;c++)r0.push(touche(0,c));r0.push(mod("back","⌫ Effacer",2));
+  const r1=[spacer(1.5)];for(let c=0;c<12;c++)r1.push(touche(1,c));r1.push(spacer(1.5));
+  const r2=[mod("caps","Verr. Maj",1.8)];for(let c=0;c<12;c++)r2.push(touche(2,c));r2.push(spacer(1.2));
+  const r3=[mod("shiftL","⇧ Maj",1.4)];for(let c=0;c<11;c++)r3.push(touche(3,c));r3.push(mod("shiftR","⇧ Maj",2.6));
+  const r4=[spacer(3.5),mod("space","Espace",7),mod("altgr","AltGr",1.5),spacer(3)];
+  [r0,r1,r2,r3,r4].forEach(function(r){kb.appendChild(rangee.apply(null,r));});
+  return {kb:kb,map:map};
+}
+ECRANS.jeu=function(){
+  const s=S.sess; if(!s) return h("p",{text:"Aucune partie."});
+  T.clavier=construireClavier();
+  const phrase=h("div",{class:"phrase",id:"phrase"});
+  const saisie=h("input",{id:"saisie",type:"text",autocomplete:"off",autocapitalize:"off",autocorrect:"off",spellcheck:"false","aria-label":"Zone de saisie : recopie la phrase affichée"});
+  const cache=h("div",{class:"focus-msg",id:"focus-msg",hidden:true,text:"Clique ici, puis tape la phrase"});
+  const msg=h("div",{class:"msg",id:"msg","aria-live":"polite"});
+  return h("section",{},
+    h("div",{class:"hud"},
+      h("span",{class:"chip",id:"c-num"}),h("span",{class:"chip",id:"c-temps"}),h("span",{class:"chip",id:"c-serie",title:"Phrases sans erreur d’affilée"}),
+      h("span",{class:"chip",id:"c-caps",hidden:true,text:"🔒 Verr. Maj activée"}),
+      h("button",{class:"btn ghost",type:"button",text:"⏸ Pause",onclick:function(){pause(true);}}),
+      h("label",{class:"chip",style:"cursor:pointer"},h("input",{type:"checkbox",checked:S.prefs.aide,onchange:function(e){S.prefs.aide=e.target.checked;sauver();majClavier();}})," Aide clavier")),
+    h("div",{class:"bar"},h("i",{id:"progres"})),
+    h("div",{class:"zone",id:"zone"},h("div",{class:"emoji",id:"emoji","aria-hidden":"true"}),phrase,saisie,cache),
+    msg,
+    h("div",{class:"kbbox"},h("div",{class:"howto",id:"howto","aria-live":"off"}),T.clavier.kb));
+};
+function demarrerJeuUI(){ // appelé après l’affichage de l’écran de jeu
+  const s=S.sess,zone=$("#zone"),saisie=$("#saisie"),cache=$("#focus-msg");
+  const focus=function(){if(!s.pause&&!s.verrou)saisie.focus({preventScroll:true});};
+  saisie.addEventListener("focus",function(){cache.hidden=true;});
+  saisie.addEventListener("blur",function(){if(!s.pause&&!document.hidden&&S.dlg===null)cache.hidden=false;});
+  saisie.addEventListener("input",function(e){if(!e.isComposing)surSaisie();});
+  saisie.addEventListener("compositionend",surSaisie);
+  saisie.addEventListener("paste",function(e){e.preventDefault();toast("Le copier-coller est désactivé : tape la phrase !");});
+  saisie.addEventListener("drop",function(e){e.preventDefault();});
+  saisie.addEventListener("select",function(){const l=saisie.value.length;saisie.setSelectionRange(l,l);});
+  saisie.addEventListener("keydown",function(e){
+    if(["ArrowLeft","ArrowUp","ArrowDown","Home","PageUp","PageDown"].indexOf(e.key)>=0) e.preventDefault();
+    majCaps(e);
+  });
+  saisie.addEventListener("keyup",majCaps);
+  zone.addEventListener("click",focus);
+  cache.addEventListener("click",focus);
+  document.addEventListener("keydown",gardeClavier);
+  prochainExo();
+}
+function gardeClavier(e){ // une touche tapée ailleurs ramène la saisie
+  if(S.ecran!=="jeu"){document.removeEventListener("keydown",gardeClavier);return;}
+  const s=S.sess,a=document.activeElement;
+  if(s&&!s.pause&&!s.verrou&&S.dlg===null&&a&&a.id!=="saisie"&&a.tagName!=="BUTTON"&&a.tagName!=="INPUT"&&e.key.length===1&&!e.ctrlKey&&!e.altKey&&!e.metaKey)
+    $("#saisie").focus({preventScroll:true});
+}
+function majCaps(e){
+  try{const on=e.getModifierState&&e.getModifierState("CapsLock");const c=$("#c-caps");if(c)c.hidden=!on;}catch(x){}
+}
+function prochainExo(){
+  const s=S.sess; if(!s) return;
+  if(s.i>=s.items.length){finDePartie();return;}
+  const it=s.items[s.i]; s.ex=Moteur.nouvelExo(it.t); s.verrou=false;
+  s.limite=Moteur.limiteSec(it.t.length,s.mode==="allophone");
+  const saisie=$("#saisie"); saisie.value=""; saisie.disabled=false;
+  $("#emoji").textContent=it.e||""; $("#emoji").hidden=!it.e;
+  $("#msg").textContent="";$("#msg").className="msg";
+  $("#c-num").textContent="Exercice "+(s.i+1)+" / "+s.items.length;
+  $("#progres").style.width=Math.round(s.i/s.items.length*100)+"%";
+  majSerieChip(); dessiner(); majClavier(); majTemps();
+  clearInterval(T.iv); T.iv=setInterval(majTemps,150);
+  saisie.focus({preventScroll:true});
+}
+function majSerieChip(){const s=S.sess;$("#c-serie").textContent="🔥 Série : "+s.serie;}
+function majTemps(){
+  const s=S.sess; if(!s||!s.ex||s.pause) return; const c=$("#c-temps"); if(!c) return;
+  if(!s.chrono){c.textContent="Sans chrono";c.classList.remove("warn");return;}
+  const el=s.ex.started&&!s.ex.done?(performance.now()-s.ex.tFirst)/1000:0;
+  const reste=Math.max(0,Math.ceil(s.limite-el));
+  c.textContent="⏱ "+reste+" s"; c.classList.toggle("warn",reste<=5);
+  if(s.ex.started&&!s.ex.done&&!s.verrou&&el>=s.limite) finirExo(true);
+}
+// Affiche la phrase : mots insécables, caractères justes en vert, faux en rouge
+function dessiner(){
+  const ex=S.sess.ex,t=ex.target,v=ex.val,fw=Moteur.premiereFaute(t,v),box=$("#phrase");
+  box.textContent=""; let mot=h("span",{class:"w"});
+  for(let i=0;i<t.length;i++){
+    let cls="todo"; if(i<v.length) cls=(fw===-1||i<fw)?"ok":"bad"; else if(i===v.length&&fw===-1) cls="cur";
+    const sp=h("span",{class:cls,text:t[i]});
+    if(t[i]===" "){box.appendChild(mot);mot=h("span",{class:"w"});box.appendChild(sp);} else mot.appendChild(sp);
+  }
+  if(v.length>t.length) mot.appendChild(h("span",{class:"extra",text:"⌫"}));
+  box.appendChild(mot);
+}
+// Met en évidence la touche suivante sur le clavier visuel
+function majClavier(){
+  const s=S.sess; if(!s||!s.ex||!T.clavier) return; const ex=s.ex;
+  Object.keys(T.clavier.map).forEach(function(id){const e=T.clavier.map[id];e.classList.remove("hl","hl2");e.removeAttribute("data-step");});
+  const how=$("#howto"); how.textContent=""; if(!S.prefs.aide||ex.done) return;
+  const fw=Moteur.premiereFaute(ex.target,ex.val);
+  if(fw!==-1){T.clavier.map.back.classList.add("hl");how.textContent="✖ Erreur : efface avec ⌫ (Retour arrière)";return;}
+  const ch=ex.target[ex.val.length]; const hw=Moteur.howTo(ch); if(!hw) return;
+  hw.steps.forEach(function(st,k){st.keys.forEach(function(id){const e=T.clavier.map[id];if(!e)return;
+    e.classList.add(k===0?"hl":"hl2"); if(hw.steps.length>1)e.setAttribute("data-step",String(k+1));});});
+  how.textContent="Prochain : « "+(ch===" "?"espace":ch)+" » → "+hw.text;
+}
+function surSaisie(){
+  const s=S.sess; if(!s||!s.ex||s.pause||s.verrou) return; const saisie=$("#saisie");
+  const v=Moteur.traiter(s.ex,saisie.value,performance.now());
+  if(saisie.value!==v) saisie.value=v;
+  dessiner(); majClavier();
+  const fw=Moteur.premiereFaute(s.ex.target,v);
+  const m=$("#msg"); m.textContent=fw!==-1?"Efface avec ⌫ puis recommence.":""; m.className="msg"+(fw!==-1?" ko":"");
+  if(s.ex.done) finirExo(false);
+}
+function finirExo(tempsEcoule){
+  const s=S.sess; if(!s||s.verrou) return; s.verrou=true; clearInterval(T.iv);
+  const r=Moteur.terminer(s.ex,performance.now()); s.res.push(r);
+  s.times=s.times.concat(s.ex.times); s.errs=s.errs.concat(s.ex.errList);
+  s.serie=(r.done&&r.errors===0)?s.serie+1:0; s.serieMax=Math.max(s.serieMax,s.serie); majSerieChip();
+  $("#saisie").disabled=true;
+  const m=$("#msg"); m.className="msg "+(r.done?"ok":"ko");
+  m.textContent="";
+  if(r.done){m.appendChild(document.createTextNode((r.errors===0?"✔ Parfait ! ":"✔ Terminé. ")));m.appendChild(h("span",{class:"stars pop",text:"★".repeat(r.stars)+"☆".repeat(3-r.stars)}));}
+  else m.textContent="⏱ Temps écoulé. On passe à la suite.";
+  s.i++; T.to=setTimeout(prochainExo,r.done?1000:1500);
+}
+function pause(on){
+  const s=S.sess; if(!s||!s.ex||s.verrou||S.ecran!=="jeu") return;
+  if(on&&!s.pause){
+    s.pause=true; s.pauseDebut=performance.now(); clearInterval(T.iv); $("#saisie").disabled=true;
+    dialogue({titre:"⏸ Pause",texte:["Le temps est arrêté."],esc:function(){pause(false);},boutons:[{l:"▶ Reprendre",fn:function(){pause(false);}},{l:"Quitter la partie",danger:true,fn:function(){montrer("accueil",{force:true});}}]});
+  } else if(!on&&s.pause){
+    const d=performance.now()-s.pauseDebut; s.ex.tFirst+=d; s.ex.lastOk+=d; s.pause=false;
+    const saisie=$("#saisie"); saisie.disabled=false; saisie.focus({preventScroll:true});
+    clearInterval(T.iv); T.iv=setInterval(majTemps,150);
+  }
+}
+document.addEventListener("visibilitychange",function(){if(document.hidden&&S.ecran==="jeu")pause(true);});
+
+/* ===== F. FIN DE PARTIE ===== */
+function finDePartie(){
+  const s=S.sess; clearInterval(T.iv);
+  const b=Moteur.bilan(s.res,s.times,s.errs,{chrono:s.chrono,allo:s.mode==="allophone"});
+  const cle=s.mode+"-"+s.n+"-"+(s.chrono?"chrono":"libre"), ancien=S.bests[cle];
+  const record=!ancien||b.score>ancien.score;
+  if(record) S.bests[cle]={score:b.score,d:jourLocal()};
+  S.hist.push({d:jourLocal(),mode:s.mode,n:s.n,chrono:s.chrono,score:b.score,err:b.err,dels:b.dels,ms:Math.round(b.ms),hard:b.dur.slice(0,3).map(function(x){return x.c;})});
+  S.hist=S.hist.slice(-50); sauver();
+  S.dernier={b:b,res:s.res,mode:s.mode,n:s.n,chrono:s.chrono,serieMax:s.serieMax,record:record,premier:!ancien};
+  montrer("fin",{force:true});
+}
+function texteResultat(d){
+  const b=d.b, pseudo=S.prefs.pseudo?(S.prefs.pseudo+" — "):"";
+  return pseudo+"Clavier en jeu : "+b.score+" / 100 ("+b.rang.t+")\n"
+    +(d.mode==="allophone"?"Mode allophone":"Mode classique")+", "+d.n+" exercices, "+(d.chrono?"défi chrono":"sans chrono")+"\n"
+    +"Erreurs : "+b.err+" · Effacements : "+b.dels+" · Temps : "+dureeTxt(b.ms)+" · Vitesse : "+b.cpm+" signes/min\n"
+    +(b.dur.length?"Touches à travailler : "+b.dur.map(function(x){return x.c===" "?"espace":x.c;}).join(" "):"Aucune touche difficile");
+}
+ECRANS.fin=function(){
+  const d=S.dernier; if(!d) return h("p",{text:"Pas de résultat."});
+  const b=d.b;
+  const tuiles=[["⏱",dureeTxt(b.ms),"Temps de frappe"],["✖",b.err,"Erreurs"],["⌫",b.dels,"Effacements"],["⚡",b.cpm,"Signes par minute"],["✔",b.faits+" / "+b.total,"Phrases finies"],["🔥",d.serieMax,"Meilleure série sans erreur"]];
+  const dur=b.dur.length?h("table",{},h("thead",{},h("tr",{},["Touche","Nom","Erreurs","Temps moyen","Comment la taper",""].map(function(t){return h("th",{text:t});}))),
+    h("tbody",{},b.dur.map(function(x){
+      const hw=Moteur.howTo(x.c), tu=Moteur.tutoPour(x.c);
+      return h("tr",{},h("td",{},h("span",{class:"cap",text:x.c===" "?"␣":x.c})),h("td",{text:Moteur.nom(x.c)}),h("td",{text:String(x.err)}),
+        h("td",{text:x.n?sec1(x.moy):"—"}),h("td",{text:hw?hw.text:"—"}),
+        h("td",{},tu?h("button",{class:"btn ghost",type:"button",text:"Tuto",onclick:function(){montrer("tuto",{ancre:tu});}}):null));
+    }))):h("p",{text:"Aucune touche difficile : bravo !"});
+  const phrases=h("details",{},h("summary",{text:"Détail des phrases"}),h("table",{},h("thead",{},h("tr",{},["N°","Étoiles","Erreurs","Effacements","Temps"].map(function(t){return h("th",{text:t});}))),
+    h("tbody",{},d.res.map(function(r,i){return h("tr",{},[i+1,r.done?"★".repeat(r.stars)+"☆".repeat(3-r.stars):"non fini",r.errors,r.dels,sec1(r.ms)].map(function(c){return h("td",{text:String(c)});}));}))));
+  return h("section",{},
+    h("div",{class:"card",style:"text-align:center"},
+      h("h1",{text:"Partie terminée !"}),
+      S.prefs.pseudo?h("p",{class:"pill",text:S.prefs.pseudo}):null,
+      h("div",{class:"score pop","aria-label":"Score : "+b.score+" sur 100"},String(b.score),h("small",{text:" / 100"})),
+      h("p",{style:"font-size:1.6rem;font-weight:800",text:b.rang.e+" "+b.rang.t}),
+      d.record?h("p",{class:"pill",text:d.premier?"Premier score enregistré !":"Nouveau record !"}):null),
+    h("div",{class:"card"},h("h2",{text:"Ton bilan"}),h("div",{class:"stats"},tuiles.map(function(t){return h("div",{class:"stat"},h("span",{"aria-hidden":"true",text:t[0]}),h("b",{text:String(t[1])}),h("span",{text:t[2]}));})),
+      h("p",{class:"note"},b.parts.map(function(p){return p.k+" : "+p.v+" / "+p.max;}).join(" · ")+(d.chrono?"":" · Le temps ne compte pas dans le score (sans chrono).")),
+      ),
+    h("div",{class:"card"},h("h2",{text:"Les touches difficiles"}),
+      h("p",{class:"note",text:"Touches où tu as fait des erreurs ou mis plus de temps que d’habitude."}),dur),
+    h("div",{class:"card"},phrases),
+    h("div",{class:"choix"},
+      h("button",{class:"btn big",type:"button",text:"↻ Rejouer",onclick:lancer}),
+      h("button",{class:"btn ghost",type:"button",text:"Accueil",onclick:function(){montrer("accueil");}}),
+      h("button",{class:"btn ghost",type:"button",text:"Copier mon résultat",onclick:function(){copier(texteResultat(d));}}),
+      h("button",{class:"btn ghost",type:"button",text:"Imprimer",onclick:function(){try{window.print();}catch(e){}}})));
+};
+function copier(txt){
+  const secours=function(){
+    const ta=h("textarea",{readonly:true,rows:"6",style:"width:100%",text:txt});
+    dialogue({titre:"Copie ton résultat",texte:["Sélectionne le texte puis copie-le (Ctrl + C)."],contenu:ta,boutons:[{l:"Fermer"}]});
+    setTimeout(function(){ta.select();},50);
+  };
+  try{ if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function(){toast("Résultat copié !");},secours); else secours(); }
+  catch(e){secours();}
+}
+
+/* ===== G. INSTALLATION, PLEIN ÉCRAN, MISE À JOUR ===== */
+let promptInstall=null;
+window.addEventListener("beforeinstallprompt",function(e){e.preventDefault();promptInstall=e;});
+window.addEventListener("appinstalled",function(){promptInstall=null;Stock.set("install","installed");fermerDialogue();toast("Appli installée !");});
+function estInstallee(){
+  try{return matchMedia("(display-mode: standalone)").matches||matchMedia("(display-mode: fullscreen)").matches||navigator.standalone===true;}catch(e){return false;}
+}
+function estIOS(){return /iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);}
+function schemaIOS(){ // schéma SVG : Partager → Sur l’écran d’accueil → Ajouter
+  const NS="http://www.w3.org/2000/svg", svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox","0 0 300 90");svg.setAttribute("role","img");svg.setAttribute("aria-label","Partager, puis Sur l’écran d’accueil, puis Ajouter");svg.style.width="100%";
+  const el=function(t,a){const e=document.createElementNS(NS,t);Object.keys(a).forEach(function(k){e.setAttribute(k,a[k]);});svg.appendChild(e);return e;};
+  [[10,"Partager"],[110,"Sur l’écran d’accueil"],[210,"Ajouter"]].forEach(function(x,i){
+    el("rect",{x:x[0],y:8,width:80,height:50,rx:12,fill:"#EDF1F9",stroke:"#1D2240","stroke-width":2});
+    const t=el("text",{x:x[0]+40,y:80,"text-anchor":"middle","font-size":10,fill:"#1D2240"});t.textContent=x[1];
+    if(i===0){el("rect",{x:x[0]+28,y:28,width:24,height:22,rx:3,fill:"none",stroke:"#1D2240","stroke-width":2});el("path",{d:"M"+(x[0]+40)+" 34 V12 M"+(x[0]+32)+" 20 L"+(x[0]+40)+" 12 L"+(x[0]+48)+" 20",fill:"none",stroke:"#1D2240","stroke-width":2});}
+    if(i===1){el("rect",{x:x[0]+26,y:20,width:28,height:28,rx:6,fill:"none",stroke:"#1D2240","stroke-width":2});el("path",{d:"M"+(x[0]+40)+" 27 V41 M"+(x[0]+33)+" 34 H"+(x[0]+47),fill:"none",stroke:"#1D2240","stroke-width":2});}
+    if(i===2){const t2=el("text",{x:x[0]+40,y:40,"text-anchor":"middle","font-size":16,"font-weight":"bold",fill:"#2F7F86"});t2.textContent="Ajouter";}
+  });
+  el("path",{d:"M92 33 H108 M200 33 H208",stroke:"#1D2240","stroke-width":2});
+  return svg;
+}
+function ouvrirInstall(manuel){
+  const plusTard=function(){Stock.set("install_later",String(Date.now()+5*86400000));};
+  const note="Rien n’est envoyé à un tiers : l’appli reste sur ton appareil et marche sans Internet.";
+  if(estInstallee()){dialogue({titre:"Appli déjà installée",texte:["Tu utilises déjà l’appli installée."],boutons:[{l:"Fermer"}]});return;}
+  if(promptInstall){
+    dialogue({titre:"Installer l’appli ?",texte:["Ajoute « Clavier en jeu » à ton écran d’accueil pour jouer plus vite, même sans Internet.",note],esc:plusTard,boutons:[
+      {l:"Installer l’appli",fn:function(){try{promptInstall.prompt();promptInstall.userChoice.then(function(c){if(c.outcome!=="accepted")plusTard();promptInstall=null;});}catch(e){toast("Installation impossible ici.");}}},
+      {l:"Plus tard",ghost:true,fn:plusTard},{l:"Ne plus proposer",ghost:true,fn:function(){Stock.set("install","never");}}]});
+  } else if(estIOS()){
+    dialogue({titre:"Installer sur iPhone / iPad",texte:["Dans Safari : appuie sur Partager, puis « Sur l’écran d’accueil », puis « Ajouter ».",note],contenu:schemaIOS(),esc:plusTard,boutons:[
+      {l:"Compris"},{l:"Plus tard",ghost:true,fn:plusTard},{l:"Ne plus proposer",ghost:true,fn:function(){Stock.set("install","never");}}]});
+  } else if(manuel){
+    dialogue({titre:"Installer l’appli",texte:["Ouvre le menu de ton navigateur (⋮ ou …), puis cherche « Installer l’appli » ou « Ajouter à l’écran d’accueil ».","Si le choix n’apparaît pas, ce navigateur ne sait pas installer l’appli.",note],boutons:[{l:"Fermer"}]});
+  }
+}
+// Propose l’installation seulement hors partie, après un peu d’usage
+function proposerInstall(){
+  if(S.propose||S.dlg!==null||!S.touched||Date.now()-S.tLoad<8000||S.ecran==="jeu") return;
+  if(estInstallee()) return;
+  const st=Stock.get("install"); if(st==="never"||st==="installed") return;
+  if(Date.now()<(+Stock.get("install_later")||0)) return;
+  if(!(promptInstall||estIOS())) return;
+  S.propose=true; ouvrirInstall(false);
+}
+const pleinEcranDispo=function(){const r=document.documentElement;return !estIOS()&&!!(r.requestFullscreen||r.webkitRequestFullscreen);};
+const pleinEcranActif=function(){return !!(document.fullscreenElement||document.webkitFullscreenElement);};
+function basculerPlein(){
+  try{
+    if(pleinEcranActif()) (document.exitFullscreen||document.webkitExitFullscreen).call(document);
+    else {const r=document.documentElement;(r.requestFullscreen||r.webkitRequestFullscreen).call(r);}
+  }catch(e){toast("Plein écran impossible ici.");}
+}
+document.addEventListener("fullscreenchange",majMenu);
+document.addEventListener("webkitfullscreenchange",majMenu);
+function surveillerMiseAJour(reg){
+  if(!reg) return;
+  const montrerBandeau=function(){
+    const z=$("#maj-zone"); if(z.firstChild) return;
+    z.appendChild(h("div",{class:"update",role:"status"},h("span",{text:"Nouvelle version disponible."}),
+      h("button",{class:"btn",type:"button",text:"Recharger",onclick:function(){if(reg.waiting)reg.waiting.postMessage("SKIP_WAITING");else location.reload();}})));
+  };
+  if(reg.waiting&&navigator.serviceWorker.controller) montrerBandeau();
+  reg.addEventListener("updatefound",function(){const w=reg.installing;if(!w)return;
+    w.addEventListener("statechange",function(){if(w.state==="installed"&&navigator.serviceWorker.controller)montrerBandeau();});});
+  let rech=false; navigator.serviceWorker.addEventListener("controllerchange",function(){if(rech)return;rech=true;location.reload();});
+}
+
+/* ===== H. DÉMARRAGE ===== */
+window.addEventListener("error",function(){toast("Un problème est survenu, recommence.");});
+window.addEventListener("unhandledrejection",function(){toast("Un problème est survenu, recommence.");});
+["pointerdown","keydown"].forEach(function(ev){document.addEventListener(ev,function(){S.touched=true;},{once:true,capture:true});});
+setInterval(proposerInstall,3000);
+$("#logo").addEventListener("click",function(){montrer("accueil");});
+$("#btn-install-pied").addEventListener("click",function(){ouvrirInstall(true);});
+appliquerTaille();
+montrer("accueil");
+if("serviceWorker" in navigator&&location.protocol!=="file:"){
+  try{navigator.serviceWorker.register("./sw.js").then(surveillerMiseAJour,function(){});}catch(e){}
+}
+</script>
+</body>
+</html>
